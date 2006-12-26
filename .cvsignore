@@ -1,0 +1,5 @@
+build
+build-test
+crashrep.*.zip
+log
+log.?

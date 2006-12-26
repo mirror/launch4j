@@ -1,0 +1,27 @@
+<launch4jConfig>
+  <headerType>gui</headerType>
+  <dontWrapJar>true</dontWrapJar>
+  <jar>launch4j.jar</jar>
+  <outfile>../launch4j.exe</outfile>
+  <errTitle>launch4j</errTitle>
+  <chdir>.</chdir>
+  <customProcName>true</customProcName>
+  <stayAlive>false</stayAlive>
+  <jre>
+    <minVersion>1.4.0</minVersion>
+  </jre>
+  <splash>
+    <file>launch4j.bmp</file>
+    <waitForWindow>true</waitForWindow>
+    <timeout>60</timeout>
+    <timeoutErr>true</timeoutErr>
+  </splash>
+  <versionInfo>
+    <fileDescription>Cross-platform Java application wrapper</fileDescription>
+    <copyright>Copyright (C) 2004, 2006 Grzegorz Kowal</copyright>
+    <productName>launch4j</productName>
+    <companyName>http://launch4j.sourceforge.net/</companyName>
+    <internalName>GUI launcher</internalName>
+    <originalFilename>launch4j.exe</originalFilename>
+  </versionInfo>
+</launch4jConfig>

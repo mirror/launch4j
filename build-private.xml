@@ -1,0 +1,214 @@
+<project name="launch4j" default="compile" basedir=".">
+	<description>
+		launch4j private build file
+	</description>
+	<property name="src" location="src" />
+	<property name="lib" location="lib" />
+	<property name="bin" location="bin" />
+	<property name="build" location="build" />
+	<property name="build.web" location="web" />
+	<property name="web.src" location="l4j/web" />
+	<property name="dist" location="${user.home}/dist/${ant.project.name}" />
+	<property name="jar" location="./${ant.project.name}.jar" />
+	<property name="launch4j.dir" location="." />
+	<property file="${src}/launch4j.properties"/>
+
+	<path id="dist.classpath">
+		<pathelement path="${build}" />
+		<fileset dir="${lib}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${build}" />
+		<mkdir dir="${dist}" />
+	</target>
+
+	<target name="compile" depends="init" description="compile the source">
+		<javac srcdir="${src}" destdir="${build}" classpathref="dist.classpath" source="1.4" debug="on" />
+		<copy todir="${build}/images">
+			<fileset dir="${src}/images">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<copy todir="${build}">
+			<fileset dir="${src}">
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="binutils-linux">
+		<antcall target="clean-binutils" />
+		<copy todir="${bin}">
+			<fileset dir="${bin}/bin-linux">
+				<include name="*" />
+			</fileset>
+		</copy>
+		<chmod file="${bin}/windres" perm="+x" />
+		<chmod file="${bin}/ld" perm="+x" />
+		<chmod file="launch4j" perm="+x" />
+	</target>
+
+	<target name="binutils-solaris-sparc">
+		<antcall target="clean-binutils" />
+		<copy todir="${bin}">
+			<fileset dir="${bin}/bin-solaris-sparc">
+				<include name="*" />
+			</fileset>
+		</copy>
+		<chmod file="${bin}/windres" perm="+x" />
+		<chmod file="${bin}/ld" perm="+x" />
+		<chmod file="launch4j" perm="+x" />
+	</target>
+	
+	<target name="binutils-macosx">
+		<antcall target="clean-binutils" />
+		<copy todir="${bin}">
+			<fileset dir="${bin}/bin-macosx">
+				<include name="*" />
+			</fileset>
+		</copy>
+		<chmod file="${bin}/windres" perm="+x" />
+		<chmod file="${bin}/ld" perm="+x" />
+		<chmod file="launch4j" perm="+x" />
+	</target>
+
+	<target name="binutils-win32">
+		<antcall target="clean-binutils" />
+		<copy todir="${bin}">
+			<fileset dir="${bin}/bin-win32">
+				<include name="*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="jar" depends="compile" description="create jar">
+		<fileset dir="${lib}" id="lib.dist.fileset">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathconvert pathsep=" " property="dist.classpath" refid="lib.dist.fileset">
+			<map from="${lib}" to="./lib" />
+		</pathconvert>
+		<!-- Put everything in ${build} into a jar file -->
+		<jar jarfile="${jar}">
+			<fileset dir="${build}" includes="**/*" />
+			<manifest>
+				<attribute name="Main-Class" value="net.sf.launch4j.Main" />
+				<attribute name="Class-Path" value=". ${dist.classpath}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="demo" depends="jar, binutils-linux" description="build the demos">
+		<ant dir="./demo/ConsoleApp" inheritAll="false" />
+		<ant dir="./demo/SimpleApp" inheritAll="false" />
+	</target>
+
+	<target name="dist.linux" depends="jar, webdocs" description="generate the Linux distribution">
+		<antcall target="binutils-linux" />
+		<!-- changes executables to default mode!
+				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
+				compression="gzip" excludes="**/build/** **/CVS/** **/*.exe"/> -->
+		<exec executable="tar" failonerror="true">
+			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-linux.tgz ./launch4j" />
+		</exec>
+	</target>
+
+	<target name="dist.solaris-sparc" depends="jar, webdocs" description="generate the Linux distribution">
+		<antcall target="binutils-solaris-sparc" />
+		<!-- changes executables to default mode!
+				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
+				compression="gzip" excludes="**/build/** **/CVS/** **/*.exe"/> -->
+		<exec executable="tar" failonerror="true">
+			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-solaris-sparc.tgz ./launch4j" />
+		</exec>
+	</target>
+
+	<target name="dist.macosx" depends="jar, webdocs" description="generate the Mac OS X distribution">
+		<antcall target="binutils-macosx" />
+		<!-- changes executables to default mode!
+				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
+				compression="gzip" excludes="**/build/** **/CVS/** **/*.exe"/> -->
+		<exec executable="tar" failonerror="true">
+			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-macosx.tgz ./launch4j" />
+		</exec>
+	</target>
+
+	<target name="dist.win32" depends="jar, webdocs, binutils-linux" description="generate the Windows distribution">
+		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${build}:./lib/xstream.jar" />
+		<launch4j configFile="./l4j/launch4j.xml" fileVersion="${versionNumber}" txtFileVersion="${version}" productVersion="${versionNumber}" txtProductVersion="${version}" />
+		<launch4j configFile="./l4j/launch4jc.xml" fileVersion="${versionNumber}" txtFileVersion="${version}" productVersion="${versionNumber}" txtProductVersion="${version}" />
+		<antcall target="binutils-win32" />
+		<zip destfile="${dist}/${ant.project.name}-${version}-win32.zip">
+			<zipfileset dir="." prefix="launch4j" excludes="**/build/** **/CVS/** bin/bin*/** l4j/** build-private.xml launch4j" />
+		</zip>
+	</target>
+
+	<target name="webdocs">
+		<concat destfile="${build.web}/index.html">
+			<filelist dir="${web.src}" files="header.html, index.html, footer.html" />
+		</concat>
+		<concat destfile="${build.web}/changelog.html">
+			<filelist dir="${web.src}" files="header.html, changelog.html, footer.html" />
+		</concat>
+		<concat destfile="${build.web}/docs.html">
+			<filelist dir="${web.src}" files="header.html, docs.html, footer.html" />
+		</concat>
+		<concat destfile="${build.web}/links.html">
+			<filelist dir="${web.src}" files="header.html, links.html, footer.html" />
+		</concat>
+
+		<concat destfile="${build.web}/index_es.html">
+			<filelist dir="${web.src}" files="header_es.html, index_es.html, footer_es.html" />
+		</concat>
+		<concat destfile="${build.web}/changelog_es.html">
+			<filelist dir="${web.src}" files="header_es.html, changelog_es.html, footer_es.html" />
+		</concat>
+		<concat destfile="${build.web}/docs_es.html">
+			<filelist dir="${web.src}" files="header_es.html, docs_es.html, footer_es.html" />
+		</concat>
+		<concat destfile="${build.web}/links_es.html">
+			<filelist dir="${web.src}" files="header_es.html, links_es.html, footer_es.html" />
+		</concat>
+
+		<replace dir="${build.web}">
+			<include name="**/*.html"/>
+			<replacefilter token="$$version" value="${version}"/>
+		</replace>
+
+		<copy todir="${build.web}">
+			<fileset dir="${web.src}">
+				<include name="**/*" />
+				<exclude name="**/*.html" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="dist" depends="demo, webdocs, dist.win32, dist.macosx, dist.linux, dist.solaris-sparc, clean" description="generate all distributions" />
+
+	<target name="clean-binutils">
+		<delete>
+			<fileset dir="${bin}" includes="*" excludes="COPYING" />
+		</delete>
+	</target>
+
+	<target name="clean" description="clean up">
+		<antcall target="clean-binutils" />
+		<delete file="${jar}" />
+		<delete>
+			<fileset dir="." includes="*.exe" />
+		</delete>
+		<delete>
+			<fileset dir="${build.web}" includes="*" />
+		</delete>
+		<ant dir="./demo/ConsoleApp" target="clean" inheritAll="false" />
+		<ant dir="./demo/SimpleApp" target="clean" inheritAll="false" />
+	</target>
+
+	<target name="clean.all" depends="clean" description="clean up">
+		<delete dir="${build}" />
+	</target>
+</project>

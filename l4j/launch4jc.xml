@@ -1,0 +1,21 @@
+<launch4jConfig>
+  <headerType>console</headerType>
+  <dontWrapJar>true</dontWrapJar>
+  <jar>launch4j.jar</jar>
+  <outfile>../launch4jc.exe</outfile>
+  <errTitle>launch4j</errTitle>
+  <chdir>.</chdir>
+  <customProcName>true</customProcName>
+  <stayAlive>false</stayAlive>
+  <jre>
+    <minVersion>1.4.0</minVersion>
+  </jre>
+  <versionInfo>
+    <fileDescription>Cross-platform Java application wrapper</fileDescription>
+    <copyright>Copyright (C) 2004, 2006 Grzegorz Kowal</copyright>
+    <productName>launch4j</productName>
+    <companyName>http://launch4j.sourceforge.net/</companyName>
+    <internalName>Console launcher</internalName>
+    <originalFilename>launch4jc.exe</originalFilename>
+  </versionInfo>
+</launch4jConfig>
