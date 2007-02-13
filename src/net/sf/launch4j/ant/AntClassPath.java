@@ -14,6 +14,10 @@ import net.sf.launch4j.config.ClassPath;
 public class AntClassPath extends ClassPath {
 	private final List wrappedPaths = new ArrayList();
 
+	public void setCp(String cp){
+		wrappedPaths.add(cp);
+	}
+	
 	public void addCp(StringWrapper cp) {
 		wrappedPaths.add(cp);
 	}
