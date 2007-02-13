@@ -26,4 +26,3 @@ public class AntClassPath extends ClassPath {
 		setPaths(StringWrapper.unwrap(wrappedPaths));
 	}
 }
-/* cvs test */
