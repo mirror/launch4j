@@ -404,31 +404,6 @@ BOOL prepare(HMODULE hLibrary, const char *lpCmdLine) {
 		return FALSE;			
 	}
 
-	// Process priority
-	priority = loadInt(hLibrary, PRIORITY_CLASS);
-
-    // Append a path to the Path environment variable
-	char jreBinPath[_MAX_PATH];
-	strcpy(jreBinPath, cmd);
-	strcat(jreBinPath, "\\bin");
-	if (!appendToPathVar(jreBinPath)) {
-		return FALSE;
-	}
-
-	// Set environment variables
-	char envVars[MAX_VAR_SIZE] = {0};
-	loadString(hLibrary, ENV_VARIABLES, envVars);
-	char *var = strtok(envVars, "\t");
-	while (var != NULL) {
-		char *varValue = strchr(var, '=');
-		*varValue++ = 0;
-		*tmp = 0;
-		expandVars(tmp, varValue, exePath, pathLen);
-		SetEnvironmentVariable(var, tmp);
-		var = strtok(NULL, "\t"); 
-	}
-	*tmp = 0;
-
 	// Working dir
 	char tmp_path[_MAX_PATH] = {0};
 	GetCurrentDirectory(_MAX_PATH, oldPwd);
@@ -438,11 +413,6 @@ BOOL prepare(HMODULE hLibrary, const char *lpCmdLine) {
 		strcat(workingDir, tmp_path);
 		_chdir(workingDir);
 	}
-
-	// Custom process name
-	const BOOL setProcName = loadBool(hLibrary, SET_PROC_NAME)
-			&& strstr(lpCmdLine, "--l4j-default-proc") == NULL;
-	const BOOL wrapper = loadBool(hLibrary, WRAPPER);
 
 	// Use bundled jre or find java
 	if (loadString(hLibrary, JRE_PATH, tmp_path)) {
@@ -478,6 +448,36 @@ BOOL prepare(HMODULE hLibrary, const char *lpCmdLine) {
 			return FALSE;
 		}
 	}
+
+    // Append a path to the Path environment variable
+	char jreBinPath[_MAX_PATH];
+	strcpy(jreBinPath, cmd);
+	strcat(jreBinPath, "\\bin");
+	if (!appendToPathVar(jreBinPath)) {
+		return FALSE;
+	}
+
+	// Set environment variables
+	char envVars[MAX_VAR_SIZE] = {0};
+	loadString(hLibrary, ENV_VARIABLES, envVars);
+	char *var = strtok(envVars, "\t");
+	while (var != NULL) {
+		char *varValue = strchr(var, '=');
+		*varValue++ = 0;
+		*tmp = 0;
+		expandVars(tmp, varValue, exePath, pathLen);
+		SetEnvironmentVariable(var, tmp);
+		var = strtok(NULL, "\t"); 
+	}
+	*tmp = 0;
+
+	// Process priority
+	priority = loadInt(hLibrary, PRIORITY_CLASS);
+
+	// Custom process name
+	const BOOL setProcName = loadBool(hLibrary, SET_PROC_NAME)
+			&& strstr(lpCmdLine, "--l4j-default-proc") == NULL;
+	const BOOL wrapper = loadBool(hLibrary, WRAPPER);
 
 	appendLauncher(setProcName, exePath, pathLen, cmd);
 
