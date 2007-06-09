@@ -24,6 +24,7 @@
  */
 package net.sf.launch4j.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.sf.launch4j.binding.IValidatable;
@@ -43,10 +44,24 @@ public class Jre implements IValidatable {
 	// __________________________________________________________________________________
 	public static final String VERSION_PATTERN = "(\\d\\.){2}\\d(_\\d+)?";
 
+	public static final String JDK_PREFERENCE_JRE_ONLY = "jreOnly";
+	public static final String JDK_PREFERENCE_PREFER_JRE = "preferJre";
+	public static final String JDK_PREFERENCE_PREFER_JDK = "preferJdk";
+	public static final String JDK_PREFERENCE_JDK_ONLY = "jdkOnly";
+
+	private static final String[] JDK_PREFERENCE_NAMES = new String[] {
+			JDK_PREFERENCE_JRE_ONLY,
+			JDK_PREFERENCE_PREFER_JRE,
+			JDK_PREFERENCE_PREFER_JDK,
+			JDK_PREFERENCE_JDK_ONLY };
+
+	public static final int DEFAULT_JDK_PREFERENCE_INDEX
+			= Arrays.asList(JDK_PREFERENCE_NAMES).indexOf(JDK_PREFERENCE_PREFER_JRE);
+
 	private String path;
 	private String minVersion;
 	private String maxVersion;
-	private boolean dontUsePrivateJres;
+	private String jdkPreference;
 	private int initialHeapSize;
 	private int maxHeapSize;
 	private List options;
@@ -73,6 +88,8 @@ public class Jre implements IValidatable {
 				Messages.getString("Jre.initial.heap"));
 		Validator.checkTrue(maxHeapSize == 0 || initialHeapSize <= maxHeapSize,
 				"jre.maxHeapSize", Messages.getString("Jre.max.heap"));
+		Validator.checkIn(getJdkPreference(), JDK_PREFERENCE_NAMES,
+				"jre.jdkPreference", Messages.getString("Jre.jdkPreference.invalid"));
 		Validator.checkOptStrings(options,
 				Validator.MAX_ARGS,
 				Validator.MAX_ARGS,
@@ -118,13 +135,24 @@ public class Jre implements IValidatable {
 		this.minVersion = minVersion;
 	}
 
-	/** Include private JREs in search */
-	public boolean isDontUsePrivateJres() {
-		return dontUsePrivateJres;
+	/** Preference for standalone JRE or JDK-private JRE */
+	public String getJdkPreference() {
+		return Validator.isEmpty(jdkPreference) ? JDK_PREFERENCE_PREFER_JRE
+												: jdkPreference;
 	}
 
-	public void setDontUsePrivateJres(boolean dontUsePrivateJres) {
-		this.dontUsePrivateJres = dontUsePrivateJres;
+	public void setJdkPreference(String jdkPreference) {
+		this.jdkPreference = jdkPreference;
+	}
+
+	/** Preference for standalone JRE or JDK-private JRE */
+	public int getJdkPreferenceIndex() {
+		int x = Arrays.asList(JDK_PREFERENCE_NAMES).indexOf(getJdkPreference());
+		return x != -1 ? x : DEFAULT_JDK_PREFERENCE_INDEX;
+	}
+	
+	public void setJdkPreferenceIndex(int x) {
+		jdkPreference = JDK_PREFERENCE_NAMES[x];
 	}
 
 	/** JRE path */

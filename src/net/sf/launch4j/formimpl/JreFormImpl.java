@@ -34,6 +34,7 @@ import javax.swing.JTextField;
 import net.sf.launch4j.binding.Bindings;
 import net.sf.launch4j.binding.Validator;
 import net.sf.launch4j.form.JreForm;
+import net.sf.launch4j.config.Jre;
 
 /**
  * @author Copyright (C) 2006 Grzegorz Kowal
@@ -41,10 +42,16 @@ import net.sf.launch4j.form.JreForm;
 public class JreFormImpl extends JreForm {
 
 	public JreFormImpl(Bindings bindings, JFileChooser fc) {
-		bindings	.add("jre.path", _jrePathField)
+		_jdkPreferenceCombo.setModel(new DefaultComboBoxModel(new String[] {
+				Messages.getString("jdkPreference.jre.only"),
+				Messages.getString("jdkPreference.prefer.jre"),
+				Messages.getString("jdkPreference.prefer.jdk"),
+				Messages.getString("jdkPreference.jdk.only")}));
+		bindings.add("jre.path", _jrePathField)
 				.add("jre.minVersion", _jreMinField)
 				.add("jre.maxVersion", _jreMaxField)
-				.add("jre.dontUsePrivateJres", _dontUsePrivateJresCheck)
+				.add("jre.jdkPreferenceIndex", _jdkPreferenceCombo,
+						Jre.DEFAULT_JDK_PREFERENCE_INDEX)
 				.add("jre.initialHeapSize", _initialHeapSizeField)
 				.add("jre.maxHeapSize", _maxHeapSizeField)
 				.add("jre.options", _jvmOptionsTextArea);

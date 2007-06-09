@@ -116,7 +116,11 @@ public class ConfigPersister {
 	    			.replaceAll("jarArgs>", "cmdLine>")
 	    			.replaceAll("<jarArgs[ ]*/>", "<cmdLine/>")
 	    			.replaceAll("args>", "opt>")
-	    			.replaceAll("<args[ ]*/>", "<opt/>");	
+	    			.replaceAll("<args[ ]*/>", "<opt/>")
+	    			.replaceAll("<dontUsePrivateJres>false</dontUsePrivateJres>",
+	    					"<jdkPreference>" + Jre.JDK_PREFERENCE_PREFER_JRE + "</jdkPreference>")
+	    			.replaceAll("<dontUsePrivateJres>true</dontUsePrivateJres>",
+	    					"<jdkPreference>" + Jre.JDK_PREFERENCE_JRE_ONLY + "</jdkPreference>");
 	    	_config = (Config) _xstream.fromXML(s);
 	    	setConfigPath(f);
 		} catch (Exception e) {

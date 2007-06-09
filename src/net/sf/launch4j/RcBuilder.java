@@ -72,7 +72,7 @@ public class RcBuilder {
 	public static final int MAIN_CLASS = 15;
 	public static final int CLASSPATH = 16;
 	public static final int WRAPPER = 17;
-	public static final int DONT_USE_PRIVATE_JRES = 18;
+	public static final int JDK_PREFERENCE = 18;
 	public static final int ENV_VARIABLES = 19;
 	public static final int PRIORITY_CLASS = 20;
 	public static final int	DOWNLOAD_URL = 	21;
@@ -168,7 +168,7 @@ public class RcBuilder {
 		addWindowsPath(JRE_PATH, jre.getPath());
 		addText(JAVA_MIN_VER, jre.getMinVersion());
 		addText(JAVA_MAX_VER, jre.getMaxVersion());
-		addTrue(DONT_USE_PRIVATE_JRES, jre.isDontUsePrivateJres());
+		addText(JDK_PREFERENCE, String.valueOf(jre.getJdkPreferenceIndex()));
 		StringBuffer options = new StringBuffer();
 		if (jre.getInitialHeapSize() > 0) {
 			options.append("-Xms");

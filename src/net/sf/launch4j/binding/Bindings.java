@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JRadioButton;
@@ -284,5 +285,21 @@ public class Bindings implements PropertyChangeListener {
 	public Bindings add(String property, JList list) {
 		registerPropertyChangeListener(list);
 		return add(new JListBinding(property, list));
+	}
+
+	/**
+	 * Handles JComboBox
+	 */
+	public Bindings add(String property, JComboBox combo, int defaultValue) {
+		registerPropertyChangeListener(combo);
+		return add(new JComboBoxBinding(property, combo, defaultValue));
+	}
+
+	/**
+	 * Handles JComboBox
+	 */
+	public Bindings add(String property, JComboBox combo) {
+		registerPropertyChangeListener(combo);
+		return add(new JComboBoxBinding(property, combo, 0));
 	}
 }
