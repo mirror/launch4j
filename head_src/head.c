@@ -2,25 +2,30 @@
 	Launch4j (http://launch4j.sourceforge.net/)
 	Cross-platform Java application wrapper for creating Windows native executables.
 
-	Copyright (C) 2004, 2006 Grzegorz Kowal
+	Copyright (c) 2004, 2007 Grzegorz Kowal,
+							 Ian Roberts (jdk preference)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 2.1 of the License, or (at your option) any later version.
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
 
-	This library is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
 
-	You should have received a copy of the GNU Lesser General Public
-	License along with this library; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	Except as contained in this notice, the name(s) of the above copyright holders
+	shall not be used in advertising or otherwise to promote the sale, use or other
+	dealings in this Software without prior written authorization.
 
-
-	Compiled with Mingw port of GCC,
-	Bloodshed Dev-C++ IDE (http://www.bloodshed.net/devcpp.html)
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
 */
 
 #include "resource.h"
@@ -183,25 +188,33 @@ void regSearch(const HKEY hKey, const char* keyName, const int searchType) {
 	}
 }
 
-BOOL findJavaHome(char* path, const BOOL dontUsePrivateJres) {
+void regSearchForJre(const char* keyName, const int searchType) {
+	HKEY hKey;
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+			TEXT(keyName),
+			0,
+            KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS,
+			&hKey) == ERROR_SUCCESS) {
+		regSearch(hKey, keyName, searchType);
+		RegCloseKey(hKey);
+	}
+}
+
+BOOL findJavaHome(char* path, const int jdkPreference) {
 	HKEY hKey;
 	const char jre[] = "SOFTWARE\\JavaSoft\\Java Runtime Environment";
 	const char sdk[] = "SOFTWARE\\JavaSoft\\Java Development Kit";
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-			TEXT(jre),
-			0,
-            KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS,
-			&hKey) == ERROR_SUCCESS) {
-		regSearch(hKey, jre, FOUND_JRE);
-		RegCloseKey(hKey);
+	if (jdkPreference == JDK_ONLY || jdkPreference == PREFER_JDK) {
+		regSearchForJre(sdk, FOUND_SDK);
+		if (jdkPreference != JDK_ONLY) {
+			regSearchForJre(jre, FOUND_JRE);
+		}
 	}
-	if (!dontUsePrivateJres && RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-			TEXT(sdk),
-			0,
-            KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS,
-			&hKey) == ERROR_SUCCESS) {
-		regSearch(hKey, sdk, FOUND_SDK);
-		RegCloseKey(hKey);
+	else { // jdkPreference == JRE_ONLY or PREFER_JRE
+		regSearchForJre(jre, FOUND_JRE);
+		if (jdkPreference != JRE_ONLY) {
+			regSearchForJre(sdk, FOUND_SDK);
+		}
 	}
 	if (foundJava != NO_JAVA_FOUND) {
 		char keyBuffer[BIG_STR];
@@ -432,7 +445,7 @@ BOOL prepare(HMODULE hLibrary, const char *lpCmdLine) {
 			return FALSE;
 		}
 		loadString(hLibrary, JAVA_MAX_VER, javaMaxVer);
-		if (!findJavaHome(cmd, loadBool(hLibrary, DONT_USE_PRIVATE_JRES))) {
+		if (!findJavaHome(cmd, loadInt(hLibrary, JDK_PREFERENCE))) {
 			loadString(hLibrary, JRE_VERSION_ERR, errMsg);
 			strcat(errMsg, " ");
 			strcat(errMsg, javaMinVer);
