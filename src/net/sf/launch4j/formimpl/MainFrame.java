@@ -337,16 +337,7 @@ public class MainFrame extends JFrame {
 
 	private class AboutActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			info(Main.getDescription()
-					+ "The following projects are used by launch4j...\n\n"
-					+ "MinGW binutils (http://www.mingw.org/)\n"
-					+ "Commons BeanUtils (http://jakarta.apache.org/commons/beanutils/)\n"
-					+ "Commons Logging (http://jakarta.apache.org/commons/logging/)\n"
-					+ "XStream (http://xstream.codehaus.org/)\n"
-					+ "JGoodies Forms (http://www.jgoodies.com/freeware/forms/)\n"
-					+ "JGoodies Looks (http://www.jgoodies.com/freeware/looks/)\n"
-					+ "Foxtrot (http://foxtrot.sourceforge.net/)\n"
-					+ "Nuvola Icon Theme (http://www.icon-king.com)");
+			info(Main.getDescription());
 		}
 	}
 }
