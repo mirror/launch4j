@@ -157,9 +157,12 @@ public class ConfigPersister {
 			_config.getJre().setPath(props.getProperty(Jre.PATH));
 			_config.getJre().setMinVersion(props.getProperty(Jre.MIN_VERSION));
 			_config.getJre().setMaxVersion(props.getProperty(Jre.MAX_VERSION));
-			List args = new ArrayList();
-			args.add(props.getProperty(Jre.ARGS));
-			_config.getJre().setOptions(args);
+			String args = props.getProperty(Jre.ARGS);
+			if (args != null) {
+				List jreOptions = new ArrayList();
+				jreOptions.add(args);
+				_config.getJre().setOptions(jreOptions);
+			}
 			_config.setCmdLine(props.getProperty(Config.JAR_ARGS));
 			_config.setChdir("true".equals(props.getProperty(Config.CHDIR))
 					? "." : null);
