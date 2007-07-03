@@ -76,10 +76,12 @@ public class JListBinding implements Binding {
 
 	public void put(IValidatable bean) {
 		try {
-			List list = (List) PropertyUtils.getProperty(bean, _property);
 			DefaultListModel model = new DefaultListModel();
-			for (Iterator iter = list.iterator(); iter.hasNext();) {
-				model.addElement(iter.next());
+			List list = (List) PropertyUtils.getProperty(bean, _property);
+			if (list != null) {
+				for (Iterator iter = list.iterator(); iter.hasNext();) {
+					model.addElement(iter.next());
+				}
 			}
 			_list.setModel(model);
 		} catch (Exception e) {
