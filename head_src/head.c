@@ -3,7 +3,7 @@
 	Cross-platform Java application wrapper for creating Windows native executables.
 
 	Copyright (c) 2004, 2007 Grzegorz Kowal,
-							 Ian Roberts (jdk preference)
+							 Ian Roberts (jdk preference patch)
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -429,15 +429,17 @@ BOOL prepare(HMODULE hLibrary, const char *lpCmdLine) {
 
 	// Use bundled jre or find java
 	if (loadString(hLibrary, JRE_PATH, tmp_path)) {
-		if (tmp_path[0] == '\\' || tmp_path[1] == ':') {
+		char jrePath[MAX_ARGS] = {0};
+		expandVars(jrePath, tmp_path, exePath, pathLen);
+		if (jrePath[0] == '\\' || jrePath[1] == ':') {
 			// Absolute
-			strcpy(cmd, tmp_path);
+			strcpy(cmd, jrePath);
 		} else {
 			// Relative
 			strncpy(cmd, exePath, pathLen);
 			strcat(cmd, "\\");
-			strcat(cmd, tmp_path);
-		}	
+			strcat(cmd, jrePath);
+		}
     }
 	if (!isJrePathOk(cmd)) {
 		if (!loadString(hLibrary, JAVA_MIN_VER, javaMinVer)) {
