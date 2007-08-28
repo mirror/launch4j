@@ -4,7 +4,6 @@
   <jar>launch4j.jar</jar>
   <outfile>../launch4jc.exe</outfile>
   <errTitle>launch4j</errTitle>
-  <chdir>.</chdir>
   <customProcName>true</customProcName>
   <stayAlive>false</stayAlive>
   <jre>
