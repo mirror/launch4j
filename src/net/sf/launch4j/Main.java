@@ -92,7 +92,7 @@ public class Main {
 						" for creating Windows native executables.\n\n" +
 				"Copyright (C) 2004, 2007 Grzegorz Kowal\n\n" +
 				"Launch4j comes with ABSOLUTELY NO WARRANTY.\n" +
-				"This is free software, licensed under the GNU General Public License.\n" +
+				"This is free software, licensed under the BSD License.\n" +
 				"This product includes software developed by the Apache Software Foundation" +
 						" (http://www.apache.org/).";
 	}
