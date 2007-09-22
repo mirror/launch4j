@@ -47,6 +47,7 @@ public class Msg implements IValidatable {
 	private String bundledJreErr;
 	private String jreVersionErr;
 	private String launcherErr;
+	private String instanceAlreadyExistsMsg;
 
 	public void checkInvariants() {
 		Validator.checkOptString(startupErr, 1024, "startupErr",
@@ -57,6 +58,8 @@ public class Msg implements IValidatable {
 				Messages.getString("Msg.jreVersionErr"));
 		Validator.checkOptString(launcherErr, 1024, "launcherErr",
 				Messages.getString("Msg.launcherErr"));
+		Validator.checkOptString(instanceAlreadyExistsMsg, 1024, "instanceAlreadyExistsMsg",
+				Messages.getString("Msg.instanceAlreadyExistsMsg"));
 	}
 
 	public String getStartupErr() {
@@ -96,4 +99,13 @@ public class Msg implements IValidatable {
 	public void setLauncherErr(String launcherErr) {
 		this.launcherErr = launcherErr;
 	}
+
+	public String getInstanceAlreadyExistsMsg() {
+    	return !Validator.isEmpty(instanceAlreadyExistsMsg) ? instanceAlreadyExistsMsg
+    			: "An application instance is already running.";
+    }
+
+	public void setInstanceAlreadyExistsMsg(String instanceAlreadyExistsMsg) {
+    	this.instanceAlreadyExistsMsg = instanceAlreadyExistsMsg;
+    }
 }

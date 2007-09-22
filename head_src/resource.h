@@ -29,36 +29,39 @@
 */
 
 // ICON
-#define APP_ICON 				1
+#define APP_ICON 					1
 
 // BITMAP
-#define SPLASH_BITMAP			1
+#define SPLASH_BITMAP				1
 
 // RCDATA
-#define JRE_PATH				1
-#define JAVA_MIN_VER			2
-#define JAVA_MAX_VER			3
-#define SHOW_SPLASH				4
-#define SPLASH_WAITS_FOR_WINDOW	5
-#define SPLASH_TIMEOUT			6 
-#define SPLASH_TIMEOUT_ERR		7
-#define CHDIR					8
-#define SET_PROC_NAME			9
-#define ERR_TITLE				10
-#define GUI_HEADER_STAYS_ALIVE	11
-#define JVM_OPTIONS				12
-#define CMD_LINE				13
-#define JAR						14
-#define MAIN_CLASS				15
-#define CLASSPATH				16
-#define WRAPPER					17
-#define JDK_PREFERENCE			18
-#define ENV_VARIABLES			19
-#define PRIORITY_CLASS			20
-#define DOWNLOAD_URL			21
-#define SUPPORT_URL				22
+#define JRE_PATH					1
+#define JAVA_MIN_VER				2
+#define JAVA_MAX_VER				3
+#define SHOW_SPLASH					4
+#define SPLASH_WAITS_FOR_WINDOW		5
+#define SPLASH_TIMEOUT				6 
+#define SPLASH_TIMEOUT_ERR			7
+#define CHDIR						8
+#define SET_PROC_NAME				9
+#define ERR_TITLE					10
+#define GUI_HEADER_STAYS_ALIVE		11
+#define JVM_OPTIONS					12
+#define CMD_LINE					13
+#define JAR							14
+#define MAIN_CLASS					15
+#define CLASSPATH					16
+#define WRAPPER						17
+#define JDK_PREFERENCE				18
+#define ENV_VARIABLES				19
+#define PRIORITY_CLASS				20
+#define DOWNLOAD_URL				21
+#define SUPPORT_URL					22
+#define MUTEX_NAME					23
+#define INSTANCE_WINDOW_TITLE		24
 
-#define STARTUP_ERR				101
-#define BUNDLED_JRE_ERR			102
-#define JRE_VERSION_ERR			103
-#define LAUNCHER_ERR			104
+#define STARTUP_ERR					101
+#define BUNDLED_JRE_ERR				102
+#define JRE_VERSION_ERR				103
+#define LAUNCHER_ERR				104
+#define INSTANCE_ALREADY_EXISTS_MSG	105

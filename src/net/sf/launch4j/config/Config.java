@@ -94,6 +94,7 @@ public class Config implements IValidatable {
 	private boolean stayAlive;
 	private File icon;
 	private List variables;
+	private SingleInstance singleInstance;
 	private ClassPath classPath;
 	private Jre jre;
 	private Splash splash;
@@ -373,4 +374,12 @@ public class Config implements IValidatable {
 	public void setMessages(Msg messages) {
 		this.messages = messages;
 	}
+	
+	public SingleInstance getSingleInstance() {
+    	return singleInstance;
+    }
+
+	public void setSingleInstance(SingleInstance singleInstance) {
+    	this.singleInstance = singleInstance;
+    }
 }

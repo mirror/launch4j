@@ -43,6 +43,7 @@
 		    :${launch4j.dir}/lib/xstream.jar" />
 		<launch4j>
 			<config headerType="console" jar="ConsoleApp.jar" outfile="ConsoleApp.exe" errTitle="ConsoleApp" chdir="." customProcName="true" icon="l4j/ConsoleApp.ico">
+				<singleInstance mutexName="net.sf.launch4j.example.ConsoleApp" />
 				<jre minVersion="1.4.0" />
 			</config>
 		</launch4j>

@@ -20,6 +20,7 @@ public abstract class MessagesForm extends JPanel
    protected final JTextArea _jreVersionErrTextArea = new JTextArea();
    protected final JTextArea _launcherErrTextArea = new JTextArea();
    protected final JCheckBox _messagesCheck = new JCheckBox();
+   protected final JTextArea _instanceAlreadyExistsMsgTextArea = new JTextArea();
 
    /**
     * Default constructor
@@ -99,7 +100,7 @@ public abstract class MessagesForm extends JPanel
    public JPanel createPanel()
    {
       JPanel jpanel1 = new JPanel();
-      FormLayout formlayout1 = new FormLayout("FILL:7DLU:NONE,RIGHT:MAX(65DLU;DEFAULT):NONE,FILL:3DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:7DLU:NONE","CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:3DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:3DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:3DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:9DLU:NONE");
+      FormLayout formlayout1 = new FormLayout("FILL:7DLU:NONE,RIGHT:MAX(65DLU;DEFAULT):NONE,FILL:3DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:7DLU:NONE","CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:3DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:3DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:3DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:3DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:9DLU:NONE");
       CellConstraints cc = new CellConstraints();
       jpanel1.setLayout(formlayout1);
 
@@ -153,7 +154,19 @@ public abstract class MessagesForm extends JPanel
       _messagesCheck.setText(Messages.getString("addMessages"));
       jpanel1.add(_messagesCheck,cc.xy(4,2));
 
-      addFillComponents(jpanel1,new int[]{ 1,2,3,4,5 },new int[]{ 1,2,3,4,5,6,7,8,9,10,11 });
+      JLabel jlabel5 = new JLabel();
+      jlabel5.setText(Messages.getString("instanceAlreadyExistsMsg"));
+      jpanel1.add(jlabel5,new CellConstraints(2,12,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+
+      _instanceAlreadyExistsMsgTextArea.setName("instanceAlreadyExistsMsgTextArea");
+      _instanceAlreadyExistsMsgTextArea.setToolTipText(Messages.getString("instanceAlreadyExistsMsgTip"));
+      JScrollPane jscrollpane5 = new JScrollPane();
+      jscrollpane5.setViewportView(_instanceAlreadyExistsMsgTextArea);
+      jscrollpane5.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+      jscrollpane5.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      jpanel1.add(jscrollpane5,cc.xy(4,12));
+
+      addFillComponents(jpanel1,new int[]{ 1,2,3,4,5 },new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13 });
       return jpanel1;
    }
 

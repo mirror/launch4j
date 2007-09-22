@@ -89,12 +89,15 @@ public class RcBuilder {
 	public static final int PRIORITY_CLASS = 20;
 	public static final int	DOWNLOAD_URL = 	21;
 	public static final int SUPPORT_URL = 22;
-
+	public static final int MUTEX_NAME = 23;
+	public static final int INSTANCE_WINDOW_TITLE = 24;
+	
 	public static final int STARTUP_ERR = 101;
 	public static final int BUNDLED_JRE_ERR = 102;
 	public static final int JRE_VERSION_ERR = 103;
-	public static final int LAUNCHER_ERR	 = 104;
-
+	public static final int LAUNCHER_ERR = 104;
+	public static final int INSTANCE_ALREADY_EXISTS_MSG = 105;
+	
 	private final StringBuffer _sb = new StringBuffer();
 
 	public String getContent() {
@@ -123,7 +126,12 @@ public class RcBuilder {
 		addTrue(SET_PROC_NAME, c.isCustomProcName());
 		addTrue(GUI_HEADER_STAYS_ALIVE, c.isStayAlive());
 		addSplash(c.getSplash());
-		addMessages(c.getMessages());
+		addMessages(c);
+
+		if (c.getSingleInstance() != null) {
+			addText(MUTEX_NAME, c.getSingleInstance().getMutexName());
+			addText(INSTANCE_WINDOW_TITLE, c.getSingleInstance().getWindowTitle());
+		}
 
 		if (c.getVariables() != null && !c.getVariables().isEmpty()) {
 			StringBuffer vars = new StringBuffer();
@@ -211,7 +219,8 @@ public class RcBuilder {
 		addBitmap(SPLASH_BITMAP, splash.getFile());
 	}
 	
-	private void addMessages(Msg msg) {
+	private void addMessages(Config c) {
+		Msg msg = c.getMessages();
 		if (msg == null) {
 			msg = new Msg();
 		}
@@ -219,6 +228,9 @@ public class RcBuilder {
 		addText(BUNDLED_JRE_ERR, msg.getBundledJreErr());
 		addText(JRE_VERSION_ERR, msg.getJreVersionErr());
 		addText(LAUNCHER_ERR, msg.getLauncherErr());
+		if (c.getSingleInstance() != null) {
+			addText(INSTANCE_ALREADY_EXISTS_MSG, msg.getInstanceAlreadyExistsMsg());
+		}
 	}
 
 	private void append(StringBuffer sb, List list, String separator) {

@@ -60,6 +60,8 @@ public class ConfigFormImpl extends ConfigForm {
 				new ClassPathFormImpl(_bindings, _fileChooser));
 		_tab.addTab(Messages.getString("tab.header"),
 				new HeaderFormImpl(_bindings));
+		_tab.addTab(Messages.getString("tab.singleInstance"),
+				new SingleInstanceFormImpl(_bindings));
 		_tab.addTab(Messages.getString("tab.jre"),
 				new JreFormImpl(_bindings, _fileChooser));
 		_tab.addTab(Messages.getString("tab.envVars"),

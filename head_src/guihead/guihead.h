@@ -31,6 +31,10 @@
 #define DEFAULT_SPLASH_TIMEOUT	60			/* 60 seconds */
 #define MAX_SPLASH_TIMEOUT		60 * 15		/* 15 minutes */
 
+HWND getInstanceWindow(const HMODULE hLibrary);
+
+BOOL CALLBACK enumwndfn(HWND hwnd, LPARAM lParam);
+
 VOID CALLBACK TimerProc(
   HWND hwnd,     // handle of window for timer messages
   UINT uMsg,     // WM_TIMER message

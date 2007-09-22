@@ -4,6 +4,7 @@
 
 	Copyright (c) 2004, 2007 Grzegorz Kowal,
 							 Ian Roberts (jdk preference patch)
+							 Sylvain Mina (single instance patch)
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +39,8 @@ int foundJava = NO_JAVA_FOUND;
 struct _stat statBuf;
 PROCESS_INFORMATION pi;
 DWORD priority;
+
+char mutexName[STR] = {0};
 
 char errUrl[256] = {0};
 char errTitle[STR] = "Launch4j";
@@ -395,7 +398,7 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
 	return TRUE;
 }
 
-BOOL prepare(HMODULE hLibrary, const char *lpCmdLine) {
+int prepare(HMODULE hLibrary, const char *lpCmdLine) {
     char tmp[MAX_ARGS] = {0};
     debug = strstr(lpCmdLine, "--l4j-debug") != NULL;
 
@@ -417,6 +420,19 @@ BOOL prepare(HMODULE hLibrary, const char *lpCmdLine) {
 		return FALSE;			
 	}
 
+	// Single instance
+	loadString(hLibrary, MUTEX_NAME, mutexName);
+	if (*mutexName) {
+		SECURITY_ATTRIBUTES security;
+		security.nLength = sizeof(SECURITY_ATTRIBUTES);
+		security.bInheritHandle = TRUE;
+		security.lpSecurityDescriptor = NULL;
+		CreateMutexA(&security, FALSE, mutexName);
+		if (GetLastError() == ERROR_ALREADY_EXISTS) {
+			return ERROR_ALREADY_EXISTS;
+		}
+	}
+	
 	// Working dir
 	char tmp_path[_MAX_PATH] = {0};
 	GetCurrentDirectory(_MAX_PATH, oldPwd);

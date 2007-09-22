@@ -44,7 +44,15 @@ int main(int argc, char* argv[])
 		cmdLine = "";
 	}
 	HMODULE hLibrary = NULL;
-	if (!prepare(hLibrary, cmdLine)) {
+	int result = prepare(hLibrary, cmdLine);
+	if (result == ERROR_ALREADY_EXISTS) {
+		char errMsg[BIG_STR] = {0};
+		loadString(hLibrary, INSTANCE_ALREADY_EXISTS_MSG, errMsg);
+		msgBox(errMsg);
+		FreeLibrary(hLibrary);
+		return 2;
+	}
+	if (result != TRUE) {
 		signalError();
 		if (hLibrary != NULL) {
 			FreeLibrary(hLibrary);
@@ -53,7 +61,7 @@ int main(int argc, char* argv[])
 	}
 	FreeLibrary(hLibrary);
 
-	int result = (int) execute(TRUE);
+	result = (int) execute(TRUE);
 	if (result == -1) {
 		signalError();
 	} else {

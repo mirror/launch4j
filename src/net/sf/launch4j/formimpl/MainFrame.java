@@ -143,6 +143,7 @@ public class MainFrame extends JFrame {
 		pack();
 		Dimension scr = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension fr = getSize();
+		fr.width += 25;
 		fr.height += 100;
 		setBounds((scr.width - fr.width) / 2, (scr.height - fr.height) / 2,
 				fr.width, fr.height);

@@ -91,7 +91,7 @@ void appendAppClasspath(char* dst, const char* src, const char* classpath);
 BOOL isJrePathOk(const char* path);
 BOOL expandVars(char *dst, const char *src, const char *exePath,
 		const int pathLen);
-BOOL prepare(HMODULE hLibrary, const char *lpCmdLine);
+int prepare(HMODULE hLibrary, const char *lpCmdLine);
 void closeHandles();
 BOOL appendToPathVar(const char* path);
 DWORD execute(const BOOL wait);

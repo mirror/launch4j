@@ -43,6 +43,7 @@ import java.util.List;
 import org.apache.tools.ant.BuildException;
 
 import net.sf.launch4j.config.Config;
+import net.sf.launch4j.config.SingleInstance;
 import net.sf.launch4j.config.Splash;
 import net.sf.launch4j.config.VersionInfo;
 
@@ -71,6 +72,11 @@ public class AntConfig extends Config {
 	}
 
 	// __________________________________________________________________________________
+
+	public void addSingleInstance(SingleInstance singleInstance) {
+		checkNull(getSingleInstance(), "singleInstance");
+		setSingleInstance(singleInstance);
+	}
 
 	public void addClassPath(AntClassPath classPath) {
 		checkNull(getClassPath(), "classPath");

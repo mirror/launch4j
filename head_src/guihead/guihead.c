@@ -3,6 +3,7 @@
 	Cross-platform Java application wrapper for creating Windows native executables.
 
 	Copyright (c) 2004, 2007 Grzegorz Kowal
+							 Sylvain Mina (single instance patch)
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +33,6 @@
 #include "guihead.h"
 
 extern PROCESS_INFORMATION pi;
-extern char* errMsg;
 
 HWND hWnd;
 DWORD dwExitCode = 0;
@@ -47,7 +47,15 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow) {
 	HMODULE hLibrary = NULL;
-	if (!prepare(hLibrary, lpCmdLine)) {
+	int result = prepare(hLibrary, lpCmdLine);
+	if (result == ERROR_ALREADY_EXISTS) {
+		HWND handle = getInstanceWindow(hLibrary);
+		FreeLibrary(hLibrary);
+		ShowWindow(handle, SW_SHOW);
+		SetForegroundWindow(handle);
+		return 2;
+	}
+	if (result != TRUE) {
 		signalError();
 		if (hLibrary != NULL) {
 			FreeLibrary(hLibrary);
@@ -113,6 +121,23 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	}
 	closeHandles();
 	return dwExitCode;
+}
+
+HWND getInstanceWindow(const HMODULE hLibrary) {
+	char windowTitle[STR];
+	char instWindowTitle[STR] = {0};
+	if (loadString(hLibrary, INSTANCE_WINDOW_TITLE, instWindowTitle)) {
+		HWND handle = FindWindowEx(NULL, NULL, NULL, NULL); 
+		while (handle != NULL) {
+			GetWindowText(handle, windowTitle, STR - 1);
+			if (strstr(windowTitle, instWindowTitle) != NULL) {
+				return handle;
+			} else {
+				handle = FindWindowEx(NULL, handle, NULL, NULL);
+			}
+		}
+	}
+	return NULL;   
 }
 
 BOOL CALLBACK enumwndfn(HWND hwnd, LPARAM lParam) {

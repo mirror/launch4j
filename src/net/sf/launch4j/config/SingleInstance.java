@@ -31,28 +31,44 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
- * Created on Oct 7, 2006
+/**
+ * Created on 2007-09-16
  */
-package net.sf.launch4j.formimpl;
+package net.sf.launch4j.config;
 
-import net.sf.launch4j.binding.Bindings;
-import net.sf.launch4j.config.Msg;
-import net.sf.launch4j.form.MessagesForm;
+import net.sf.launch4j.binding.IValidatable;
+import net.sf.launch4j.binding.Validator;
 
 /**
- * @author Copyright (C) 2006 Grzegorz Kowal
+ * @author Copyright (C) 2007 Grzegorz Kowal
  */
-public class MessagesFormImpl extends MessagesForm {
+public class SingleInstance implements IValidatable {
 
-	public MessagesFormImpl(Bindings bindings) {
-		Msg m = new Msg();
-		bindings.addOptComponent("messages", Msg.class, _messagesCheck)
-				.add("messages.startupErr", _startupErrTextArea, 	m.getStartupErr())
-				.add("messages.bundledJreErr", _bundledJreErrTextArea, m.getBundledJreErr())
-				.add("messages.jreVersionErr", _jreVersionErrTextArea, m.getJreVersionErr())
-				.add("messages.launcherErr", _launcherErrTextArea, m.getLauncherErr())
-				.add("messages.instanceAlreadyExists", _instanceAlreadyExistsMsgTextArea,
-						m.getInstanceAlreadyExistsMsg());
+	private String mutexName;
+	private String windowTitle;
+	
+	public void checkInvariants() {
+		Validator.checkString(mutexName, Validator.MAX_STR,
+				"singleInstance.mutexName",
+				Messages.getString("SingleInstance.mutexName"));
+		Validator.checkOptString(windowTitle, Validator.MAX_STR,
+				"singleInstance.windowTitle",
+				Messages.getString("SingleInstance.windowTitle"));
 	}
+	
+	public String getWindowTitle() {
+    	return windowTitle;
+    }
+	
+	public void setWindowTitle(String appWindowName) {
+    	this.windowTitle = appWindowName;
+    }
+	
+	public String getMutexName() {
+    	return mutexName;
+    }
+	
+	public void setMutexName(String mutexName) {
+    	this.mutexName = mutexName;
+    }
 }
