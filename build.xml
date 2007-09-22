@@ -40,7 +40,7 @@
 		</pathconvert>
 		<!-- Put everything in ${build} into a jar file -->
 		<jar jarfile="${jar}">
-			<fileset dir="${build}" includes="**/*" />
+			<fileset dir="${build}" excludes="**/messages_es.properties" />
 			<manifest>
 				<attribute name="Main-Class" value="net.sf.launch4j.Main" />
 				<attribute name="Class-Path" value=". ${dist.classpath}" />
