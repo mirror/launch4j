@@ -102,7 +102,7 @@ public abstract class SingleInstanceForm extends JPanel
       CellConstraints cc = new CellConstraints();
       jpanel1.setLayout(formlayout1);
 
-      _splashFileLabel.setIcon(loadImage("images\\asterix.gif"));
+      _splashFileLabel.setIcon(loadImage("images/asterix.gif"));
       _splashFileLabel.setName("splashFileLabel");
       _splashFileLabel.setText(Messages.getString("mutexName"));
       jpanel1.add(_splashFileLabel,cc.xy(2,4));
@@ -120,7 +120,7 @@ public abstract class SingleInstanceForm extends JPanel
       _windowTitleField.setToolTipText(Messages.getString("windowTitleTip"));
       jpanel1.add(_windowTitleField,cc.xywh(4,6,2,1));
 
-      _splashFileLabel1.setIcon(loadImage("images\\asterix.gif"));
+      _splashFileLabel1.setIcon(loadImage("images/asterix.gif"));
       _splashFileLabel1.setName("splashFileLabel");
       _splashFileLabel1.setText(Messages.getString("windowTitle"));
       jpanel1.add(_splashFileLabel1,cc.xy(2,6));

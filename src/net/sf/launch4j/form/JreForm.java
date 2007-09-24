@@ -119,12 +119,12 @@ public abstract class JreForm extends JPanel
       CellConstraints cc = new CellConstraints();
       jpanel1.setLayout(formlayout1);
 
-      _jrePathLabel.setIcon(loadImage("images\\asterix-o.gif"));
+      _jrePathLabel.setIcon(loadImage("images/asterix-o.gif"));
       _jrePathLabel.setName("jrePathLabel");
       _jrePathLabel.setText(Messages.getString("jrePath"));
       jpanel1.add(_jrePathLabel,cc.xy(2,2));
 
-      _jreMinLabel.setIcon(loadImage("images\\asterix-o.gif"));
+      _jreMinLabel.setIcon(loadImage("images/asterix-o.gif"));
       _jreMinLabel.setName("jreMinLabel");
       _jreMinLabel.setText(Messages.getString("jreMin"));
       jpanel1.add(_jreMinLabel,cc.xy(2,4));
