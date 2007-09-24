@@ -74,8 +74,8 @@ public class Jre implements IValidatable {
 	private String minVersion;
 	private String maxVersion;
 	private String jdkPreference;
-	private int initialHeapSize;
-	private int maxHeapSize;
+	private Integer initialHeapSize;
+	private Integer maxHeapSize;
 	private List options;
 
 	public void checkInvariants() {
@@ -96,9 +96,10 @@ public class Jre implements IValidatable {
 			Validator.checkTrue(minVersion.compareTo(maxVersion) < 0,
 					"jre.maxVersion", Messages.getString("Jre.max.greater.than.min"));
 		}
-		Validator.checkTrue(initialHeapSize >= 0, "jre.initialHeapSize",
-				Messages.getString("Jre.initial.heap"));
-		Validator.checkTrue(maxHeapSize == 0 || initialHeapSize <= maxHeapSize,
+		Validator.checkTrue(initialHeapSize == null || initialHeapSize.intValue() > 0,
+				"jre.initialHeapSize", Messages.getString("Jre.initial.heap"));
+		Validator.checkTrue(maxHeapSize == null || (maxHeapSize.intValue()
+				>= ((initialHeapSize != null) ? initialHeapSize.intValue() : 1)),
 				"jre.maxHeapSize", Messages.getString("Jre.max.heap"));
 		Validator.checkIn(getJdkPreference(), JDK_PREFERENCE_NAMES,
 				"jre.jdkPreference", Messages.getString("Jre.jdkPreference.invalid"));
@@ -177,20 +178,25 @@ public class Jre implements IValidatable {
 	}
 
 	/** Initial heap size in MB */
-	public int getInitialHeapSize() {
+	public Integer getInitialHeapSize() {
 		return initialHeapSize;
 	}
 
-	public void setInitialHeapSize(int initialHeapSize) {
-		this.initialHeapSize = initialHeapSize;
+	public void setInitialHeapSize(Integer initialHeapSize) {
+		this.initialHeapSize = getInteger(initialHeapSize);
 	}
 
 	/** Max heap size in MB */
-	public int getMaxHeapSize() {
+	public Integer getMaxHeapSize() {
 		return maxHeapSize;
 	}
 
-	public void setMaxHeapSize(int maxHeapSize) {
-		this.maxHeapSize = maxHeapSize;
+	public void setMaxHeapSize(Integer maxHeapSize) {
+		this.maxHeapSize = getInteger(maxHeapSize);
+	}
+	
+	/** Convert 0 to null */
+	private Integer getInteger(Integer i) {
+		return i != null && i.intValue() == 0 ? null : i;
 	}
 }

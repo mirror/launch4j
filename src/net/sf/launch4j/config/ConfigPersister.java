@@ -132,7 +132,9 @@ public class ConfigPersister {
 	    			.replaceAll("<dontUsePrivateJres>false</dontUsePrivateJres>",
 	    					"<jdkPreference>" + Jre.JDK_PREFERENCE_PREFER_JRE + "</jdkPreference>")
 	    			.replaceAll("<dontUsePrivateJres>true</dontUsePrivateJres>",
-	    					"<jdkPreference>" + Jre.JDK_PREFERENCE_JRE_ONLY + "</jdkPreference>");
+	    					"<jdkPreference>" + Jre.JDK_PREFERENCE_JRE_ONLY + "</jdkPreference>")
+	    			.replaceAll("<initialHeapSize>0</initialHeapSize>", "")
+	    			.replaceAll("<maxHeapSize>0</maxHeapSize>", "");
 	    	_config = (Config) _xstream.fromXML(s);
 	    	setConfigPath(f);
 		} catch (Exception e) {

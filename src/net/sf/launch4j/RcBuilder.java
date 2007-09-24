@@ -190,12 +190,12 @@ public class RcBuilder {
 		addText(JAVA_MAX_VER, jre.getMaxVersion());
 		addText(JDK_PREFERENCE, String.valueOf(jre.getJdkPreferenceIndex()));
 		StringBuffer options = new StringBuffer();
-		if (jre.getInitialHeapSize() > 0) {
+		if (jre.getInitialHeapSize() != null) {
 			options.append("-Xms");
 			options.append(jre.getInitialHeapSize());
 			options.append('m');
 		}
-		if (jre.getMaxHeapSize() > 0) {
+		if (jre.getMaxHeapSize() != null) {
 			addSpace(options);
 			options.append("-Xmx");
 			options.append(jre.getMaxHeapSize());
