@@ -90,7 +90,7 @@ public class Jre implements IValidatable {
 					"jre.path", Messages.getString("Jre.specify.jre.path.min.version"));
 		} else {
 			Validator.checkString(path, Validator.MAX_PATH,
-					"jre.path", Messages.getString("Jre.embedded.path"));
+					"jre.path", Messages.getString("Jre.bundled.path"));
 		}
 		if (!Validator.isEmpty(maxVersion)) {
 			Validator.checkFalse(Validator.isEmpty(minVersion),
