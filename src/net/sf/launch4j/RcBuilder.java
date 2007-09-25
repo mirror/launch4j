@@ -91,6 +91,10 @@ public class RcBuilder {
 	public static final int SUPPORT_URL = 22;
 	public static final int MUTEX_NAME = 23;
 	public static final int INSTANCE_WINDOW_TITLE = 24;
+	public static final int INITIAL_HEAP_SIZE = 25;
+	public static final int INITIAL_HEAP_PERCENT = 26;
+	public static final int MAX_HEAP_SIZE = 27;
+	public static final int MAX_HEAP_PERCENT = 28;
 	
 	public static final int STARTUP_ERR = 101;
 	public static final int BUNDLED_JRE_ERR = 102;
@@ -189,18 +193,12 @@ public class RcBuilder {
 		addText(JAVA_MIN_VER, jre.getMinVersion());
 		addText(JAVA_MAX_VER, jre.getMaxVersion());
 		addText(JDK_PREFERENCE, String.valueOf(jre.getJdkPreferenceIndex()));
+		addInteger(INITIAL_HEAP_SIZE, jre.getInitialHeapSize());
+		addInteger(INITIAL_HEAP_PERCENT, jre.getInitialHeapPercent());
+		addInteger(MAX_HEAP_SIZE, jre.getMaxHeapSize());
+		addInteger(MAX_HEAP_PERCENT, jre.getMaxHeapPercent());
+
 		StringBuffer options = new StringBuffer();
-		if (jre.getInitialHeapSize() != null) {
-			options.append("-Xms");
-			options.append(jre.getInitialHeapSize());
-			options.append('m');
-		}
-		if (jre.getMaxHeapSize() != null) {
-			addSpace(options);
-			options.append("-Xmx");
-			options.append(jre.getMaxHeapSize());
-			options.append('m');
-		}
 		if (jre.getOptions() != null && !jre.getOptions().isEmpty()) {
 			addSpace(options);
 			append(options, jre.getOptions(), " ");
@@ -255,6 +253,12 @@ public class RcBuilder {
 	private void addTrue(int id, boolean value) {
 		if (value) {
 			addText(id, "true");
+		}
+	}
+
+	private void addInteger(int id, Integer value) {
+		if (value != null) {
+			addText(id, value.toString());
 		}
 	}
 

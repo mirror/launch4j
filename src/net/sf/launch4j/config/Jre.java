@@ -75,7 +75,9 @@ public class Jre implements IValidatable {
 	private String maxVersion;
 	private String jdkPreference;
 	private Integer initialHeapSize;
+	private Integer initialHeapPercent;
 	private Integer maxHeapSize;
+	private Integer maxHeapPercent;
 	private List options;
 
 	public void checkInvariants() {
@@ -101,6 +103,17 @@ public class Jre implements IValidatable {
 		Validator.checkTrue(maxHeapSize == null || (maxHeapSize.intValue()
 				>= ((initialHeapSize != null) ? initialHeapSize.intValue() : 1)),
 				"jre.maxHeapSize", Messages.getString("Jre.max.heap"));
+		if (initialHeapPercent != null) {
+			Validator.checkRange(initialHeapPercent.intValue(), 1, 100,
+					"jre.initialHeapPercent",
+					Messages.getString("Jre.initial.heap.percent"));
+		}
+		if (maxHeapPercent != null) {
+			Validator.checkRange(maxHeapPercent.intValue(),
+					initialHeapPercent != null ? initialHeapPercent.intValue() : 1, 100,
+					"jre.maxHeapPercent",
+					Messages.getString("Jre.max.heap.percent"));
+		}
 		Validator.checkIn(getJdkPreference(), JDK_PREFERENCE_NAMES,
 				"jre.jdkPreference", Messages.getString("Jre.jdkPreference.invalid"));
 		Validator.checkOptStrings(options,
@@ -195,6 +208,22 @@ public class Jre implements IValidatable {
 		this.maxHeapSize = getInteger(maxHeapSize);
 	}
 	
+	public Integer getInitialHeapPercent() {
+    	return initialHeapPercent;
+    }
+
+	public void setInitialHeapPercent(Integer initialHeapPercent) {
+    	this.initialHeapPercent = getInteger(initialHeapPercent);
+    }
+
+	public Integer getMaxHeapPercent() {
+    	return maxHeapPercent;
+    }
+
+	public void setMaxHeapPercent(Integer maxHeapPercent) {
+    	this.maxHeapPercent = getInteger(maxHeapPercent);
+    }
+
 	/** Convert 0 to null */
 	private Integer getInteger(Integer i) {
 		return i != null && i.intValue() == 0 ? null : i;

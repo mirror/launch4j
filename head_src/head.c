@@ -339,8 +339,7 @@ void appendLauncher(const BOOL setProcName, char* exePath,
 	appendJavaw(cmd);
 }
 
-void appendAppClasspath(char* dst, const char* src,
-		const char* classpath) {
+void appendAppClasspath(char* dst, const char* src, const char* classpath) {
 	strcat(dst, src);
 	if (*classpath) {
 		strcat(dst, ";");
@@ -396,6 +395,32 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
         }
 	}
 	return TRUE;
+}
+
+void appendHeapSizes(const HMODULE hLibrary, char *dst) {
+	MEMORYSTATUS m;
+	memset(&m, 0, sizeof(m));
+	GlobalMemoryStatus(&m);
+
+	appendHeapSize(hLibrary, dst, INITIAL_HEAP_SIZE, INITIAL_HEAP_PERCENT,
+			m.dwAvailPhys, "-Xms");
+	appendHeapSize(hLibrary, dst, MAX_HEAP_SIZE, MAX_HEAP_PERCENT,
+			m.dwAvailPhys, "-Xmx");
+}
+
+void appendHeapSize(const HMODULE hLibrary, char *dst,
+		const int absID, const int percentID,
+		const DWORD freeMemory, const char *option) {
+
+	int abs = loadInt(hLibrary, absID);
+	int percent = loadInt(hLibrary, percentID);
+	int free = (long long) freeMemory * percent / (100 * 1048576);	// 100% * 1 MB
+	int size = free > abs ? free : abs;
+	if (size > 0) {
+		strcat(dst, option);
+		_itoa(size, dst + strlen(dst), 10);							// 10 -- radix
+		strcat(dst, "m ");
+	}	
 }
 
 int prepare(HMODULE hLibrary, const char *lpCmdLine) {
@@ -512,6 +537,9 @@ int prepare(HMODULE hLibrary, const char *lpCmdLine) {
 
 	appendLauncher(setProcName, exePath, pathLen, cmd);
 
+	// Heap sizes
+	appendHeapSizes(hLibrary, args);
+	
     // JVM options
 	if (loadString(hLibrary, JVM_OPTIONS, tmp)) {
 		strcat(tmp, " ");

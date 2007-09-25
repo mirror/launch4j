@@ -59,6 +59,10 @@
 #define SUPPORT_URL					22
 #define MUTEX_NAME					23
 #define INSTANCE_WINDOW_TITLE		24
+#define INITIAL_HEAP_SIZE			25
+#define INITIAL_HEAP_PERCENT		26
+#define MAX_HEAP_SIZE				27
+#define MAX_HEAP_PERCENT			28
 
 #define STARTUP_ERR					101
 #define BUNDLED_JRE_ERR				102

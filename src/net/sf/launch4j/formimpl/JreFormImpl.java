@@ -65,7 +65,9 @@ public class JreFormImpl extends JreForm {
 				.add("jre.jdkPreferenceIndex", _jdkPreferenceCombo,
 						Jre.DEFAULT_JDK_PREFERENCE_INDEX)
 				.add("jre.initialHeapSize", _initialHeapSizeField)
+				.add("jre.initialHeapPercent", _initialHeapPercentField)
 				.add("jre.maxHeapSize", _maxHeapSizeField)
+				.add("jre.maxHeapPercent", _maxHeapPercentField)
 				.add("jre.options", _jvmOptionsTextArea);
 
 		_varCombo.setModel(new DefaultComboBoxModel(new String[] {
