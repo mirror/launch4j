@@ -121,12 +121,12 @@ public abstract class JreForm extends JPanel
       CellConstraints cc = new CellConstraints();
       jpanel1.setLayout(formlayout1);
 
-      _jrePathLabel.setIcon(loadImage("images\\asterix-o.gif"));
+      _jrePathLabel.setIcon(loadImage("images/asterix-o.gif"));
       _jrePathLabel.setName("jrePathLabel");
       _jrePathLabel.setText(Messages.getString("jrePath"));
       jpanel1.add(_jrePathLabel,cc.xy(2,2));
 
-      _jreMinLabel.setIcon(loadImage("images\\asterix-o.gif"));
+      _jreMinLabel.setIcon(loadImage("images/asterix-o.gif"));
       _jreMinLabel.setName("jreMinLabel");
       _jreMinLabel.setText(Messages.getString("jreMin"));
       jpanel1.add(_jreMinLabel,cc.xy(2,4));
@@ -212,21 +212,21 @@ public abstract class JreForm extends JPanel
       jpanel1.add(_varCombo,cc.xy(3,1));
 
       _propertyButton.setActionCommand("Add");
-      _propertyButton.setIcon(loadImage("images\\edit_add16.png"));
+      _propertyButton.setIcon(loadImage("images/edit_add16.png"));
       _propertyButton.setName("propertyButton");
       _propertyButton.setText(Messages.getString("property"));
       _propertyButton.setToolTipText(Messages.getString("propertyTip"));
       jpanel1.add(_propertyButton,cc.xy(5,1));
 
       _optionButton.setActionCommand("Add");
-      _optionButton.setIcon(loadImage("images\\edit_add16.png"));
+      _optionButton.setIcon(loadImage("images/edit_add16.png"));
       _optionButton.setName("optionButton");
       _optionButton.setText(Messages.getString("option"));
       _optionButton.setToolTipText(Messages.getString("optionTip"));
       jpanel1.add(_optionButton,cc.xy(7,1));
 
       _envPropertyButton.setActionCommand("Add");
-      _envPropertyButton.setIcon(loadImage("images\\edit_add16.png"));
+      _envPropertyButton.setIcon(loadImage("images/edit_add16.png"));
       _envPropertyButton.setName("envPropertyButton");
       _envPropertyButton.setText(Messages.getString("property"));
       _envPropertyButton.setToolTipText(Messages.getString("propertyTip"));
@@ -237,12 +237,12 @@ public abstract class JreForm extends JPanel
       jpanel1.add(jlabel1,cc.xy(1,1));
 
       JLabel jlabel2 = new JLabel();
-      jlabel2.setIcon(loadImage("images\\asterix.gif"));
+      jlabel2.setIcon(loadImage("images/asterix.gif"));
       jlabel2.setText(Messages.getString("envVar"));
       jpanel1.add(jlabel2,cc.xy(1,3));
 
       _envOptionButton.setActionCommand("Add");
-      _envOptionButton.setIcon(loadImage("images\\edit_add16.png"));
+      _envOptionButton.setIcon(loadImage("images/edit_add16.png"));
       _envOptionButton.setName("envOptionButton");
       _envOptionButton.setText(Messages.getString("option"));
       _envOptionButton.setToolTipText(Messages.getString("optionTip"));
