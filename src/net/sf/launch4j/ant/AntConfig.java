@@ -43,6 +43,7 @@ import java.util.List;
 import org.apache.tools.ant.BuildException;
 
 import net.sf.launch4j.config.Config;
+import net.sf.launch4j.config.Msg;
 import net.sf.launch4j.config.SingleInstance;
 import net.sf.launch4j.config.Splash;
 import net.sf.launch4j.config.VersionInfo;
@@ -96,6 +97,11 @@ public class AntConfig extends Config {
 	public void addVersionInfo(VersionInfo versionInfo) {
 		checkNull(getVersionInfo(), "versionInfo");
 		setVersionInfo(versionInfo);
+	}
+	
+	public void addMessages(Msg messages) {
+		checkNull(getMessages(), "messages");
+		setMessages(messages);
 	}
 
 	// __________________________________________________________________________________
