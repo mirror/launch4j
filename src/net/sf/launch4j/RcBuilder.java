@@ -60,6 +60,9 @@ public class RcBuilder {
 	public static final int SUBLANG_DEFAULT	= 1;
 	public static final int SUBLANG_SYS_DEFAULT	= 2;
 
+	// MANIFEST
+	public static final int MANIFEST = 1;
+
 	// ICON
 	public static final int APP_ICON = 1;
 
@@ -120,6 +123,7 @@ public class RcBuilder {
 		_sb.append('\n');
 		addVersionInfo(c.getVersionInfo());
 		addJre(c.getJre());
+		addManifest(MANIFEST, c.getManifest());
 		addIcon(APP_ICON, c.getIcon());
 		addText(ERR_TITLE, c.getErrTitle());
 		addText(DOWNLOAD_URL, c.getDownloadUrl());
@@ -274,6 +278,17 @@ public class RcBuilder {
 		_sb.append(path.replaceAll("\\\\", "\\\\\\\\")
 				.replaceAll("/", "\\\\\\\\"));
 		_sb.append("\\0\" END\n");
+	}
+
+	private void addManifest(int id, File manifest) {
+		if (manifest == null || manifest.getPath().equals("")) {
+			return;
+		}
+		_sb.append(id);
+		_sb.append(" 24 \"");
+		_sb.append(getPath(Util.getAbsoluteFile(
+				ConfigPersister.getInstance().getConfigPath(), manifest)));
+		_sb.append("\"\n");
 	}
 
 	private void addIcon(int id, File icon) {

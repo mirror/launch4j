@@ -92,6 +92,7 @@ public class Config implements IValidatable {
 	private String supportUrl;
 	private boolean customProcName;
 	private boolean stayAlive;
+	private File manifest;
 	private File icon;
 	private List variables;
 	private SingleInstance singleInstance;
@@ -123,6 +124,7 @@ public class Config implements IValidatable {
 					|| chdir.toLowerCase().equals("false"),
 					"chdir", Messages.getString("Config.chdir.path"));
 		}
+		Validator.checkOptFile(manifest, "manifest", Messages.getString("Config.manifest"));
 		Validator.checkOptFile(icon, "icon", Messages.getString("Config.icon"));
 		Validator.checkOptString(cmdLine, Validator.MAX_BIG_STR, "jarArgs",
 				Messages.getString("Config.jar.arguments"));
@@ -234,6 +236,15 @@ public class Config implements IValidatable {
 	public void setLibs(List libs) {
 		this.libs = libs;
 	}
+
+	/** Wrapper's manifest for User Account Control. */ 
+	public File getManifest() {
+    	return manifest;
+    }
+
+	public void setManifest(File manifest) {
+    	this.manifest = manifest;
+    }
 
 	/** ICO file. */
 	public File getIcon() {
