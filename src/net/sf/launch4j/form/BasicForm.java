@@ -131,11 +131,11 @@ public abstract class BasicForm extends JPanel
       CellConstraints cc = new CellConstraints();
       jpanel1.setLayout(formlayout1);
 
-      _outfileButton.setIcon(loadImage("images\\open16.png"));
+      _outfileButton.setIcon(loadImage("images/open16.png"));
       _outfileButton.setName("outfileButton");
       jpanel1.add(_outfileButton,cc.xy(12,2));
 
-      _outfileLabel.setIcon(loadImage("images\\asterix.gif"));
+      _outfileLabel.setIcon(loadImage("images/asterix.gif"));
       _outfileLabel.setName("outfileLabel");
       _outfileLabel.setText(Messages.getString("outfile"));
       jpanel1.add(_outfileLabel,cc.xy(2,2));
@@ -144,16 +144,16 @@ public abstract class BasicForm extends JPanel
       _iconLabel.setText(Messages.getString("icon"));
       jpanel1.add(_iconLabel,cc.xy(2,10));
 
-      _jarLabel.setIcon(loadImage("images\\asterix.gif"));
+      _jarLabel.setIcon(loadImage("images/asterix.gif"));
       _jarLabel.setName("jarLabel");
       _jarLabel.setText(Messages.getString("jar"));
       jpanel1.add(_jarLabel,cc.xy(2,4));
 
-      _jarButton.setIcon(loadImage("images\\open16.png"));
+      _jarButton.setIcon(loadImage("images/open16.png"));
       _jarButton.setName("jarButton");
       jpanel1.add(_jarButton,cc.xy(12,4));
 
-      _iconButton.setIcon(loadImage("images\\open16.png"));
+      _iconButton.setIcon(loadImage("images/open16.png"));
       _iconButton.setName("iconButton");
       jpanel1.add(_iconButton,cc.xy(12,10));
 
@@ -239,7 +239,7 @@ public abstract class BasicForm extends JPanel
       _errorTitleField.setToolTipText(Messages.getString("errorTitleTip"));
       jpanel1.add(_errorTitleField,cc.xywh(4,24,7,1));
 
-      _downloadUrlLabel.setIcon(loadImage("images\\asterix.gif"));
+      _downloadUrlLabel.setIcon(loadImage("images/asterix.gif"));
       _downloadUrlLabel.setName("downloadUrlLabel");
       _downloadUrlLabel.setText(Messages.getString("downloadUrl"));
       jpanel1.add(_downloadUrlLabel,cc.xy(2,26));
@@ -262,7 +262,7 @@ public abstract class BasicForm extends JPanel
       _manifestField.setToolTipText(Messages.getString("manifestTip"));
       jpanel1.add(_manifestField,cc.xywh(4,8,7,1));
 
-      _manifestButton.setIcon(loadImage("images\\open16.png"));
+      _manifestButton.setIcon(loadImage("images/open16.png"));
       _manifestButton.setName("manifestButton");
       jpanel1.add(_manifestButton,cc.xy(12,8));
 
