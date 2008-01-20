@@ -106,11 +106,13 @@ public class Util {
 		}
 	}
 
-	public static void exec(String cmd, Log log) throws ExecException {
+	public static void exec(String[] cmd, Log log) throws ExecException {
 		BufferedReader is = null;
 		try {
 			if (WINDOWS_OS) {
-				cmd = cmd.replaceAll("/", "\\\\");
+				for (int i = 0; i < cmd.length; i++) {
+					cmd[i] = cmd[i].replaceAll("/", "\\\\");
+				}
 			}
 			Process p = Runtime.getRuntime().exec(cmd);
 			is = new BufferedReader(new InputStreamReader(p.getErrorStream()));

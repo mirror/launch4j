@@ -331,11 +331,11 @@ public class MainFrame extends JFrame {
 						String path = _outfile.getPath();
 						if (Util.WINDOWS_OS) {
 							log.append(Messages.getString("MainFrame.executing") + path);
-							Util.exec(path, log);
+							Util.exec(new String[] { path }, log);
 						} else {
 							log.append(Messages.getString("MainFrame.jar.integrity.test")
 									+ path);
-							Util.exec("java -jar " + path, log);
+							Util.exec(new String[] { "java", "-jar", path }, log);
 						}
 						return null;
 					}

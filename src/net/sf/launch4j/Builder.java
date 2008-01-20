@@ -40,8 +40,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import net.sf.launch4j.binding.InvariantViolationException;
 import net.sf.launch4j.config.Config;
@@ -150,14 +152,12 @@ public class Builder {
 }
 
 class Cmd {
-	private final StringBuffer _sb = new StringBuffer();
+	private final List _cmd = new ArrayList();
 	private final File _basedir;
 	private final File _bindir;
-	private final boolean _quote;
 
 	public Cmd(File basedir) {
 		_basedir = basedir;
-		_quote = basedir.getPath().indexOf(' ') != -1;
 		String path = System.getProperty("launch4j.bindir");
 		if (path == null) {
 			_bindir = new File(basedir, "bin");
@@ -168,48 +168,28 @@ class Cmd {
 	}
 
 	public Cmd add(String s) {
-		space();
-		_sb.append(s);
+		StringTokenizer st = new StringTokenizer(s);
+		while (st.hasMoreTokens()) {
+			_cmd.add(st.nextToken());
+		}
 		return this;
 	}
 
 	public Cmd addAbsFile(File file) {
-		space();
-		boolean quote = file.getPath().indexOf(' ') != -1;
-		if (quote) {
-			_sb.append('"');
-		}
-		_sb.append(file.getPath());
-		if (quote) {
-			_sb.append('"');
-		}
+		_cmd.add(file.getPath());
 		return this;
 	}
 
 	public Cmd addFile(String pathname) {
-		space();
-		if (_quote) {
-			_sb.append('"');
-		}
-		_sb.append(new File(_basedir, pathname).getPath());
-		if (_quote) {
-			_sb.append('"');
-		}
+		_cmd.add(new File(_basedir, pathname).getPath());
 		return this;
 	}
 
 	public Cmd addExe(String pathname) {
-		space();
-		if (_quote) {
-			_sb.append('"');
-		}
 		if (Util.WINDOWS_OS) {
 			pathname += ".exe";
 		}
-		_sb.append(new File(_bindir, pathname).getPath());
-		if (_quote) {
-			_sb.append('"');
-		}
+		_cmd.add(new File(_bindir, pathname).getPath());
 		return this;
 	}
 
@@ -220,17 +200,8 @@ class Cmd {
 		return this;
 	}
 
-	private void space() {
-		if (_sb.length() > 0) {
-			_sb.append(' ');
-		}
-	}
-	
-	public String toString() {
-		return _sb.toString();
-	}
-
 	public void exec(Log log) throws ExecException {
-		Util.exec(_sb.toString(), log);
+		String[] cmd = (String[]) _cmd.toArray(new String[_cmd.size()]);
+		Util.exec(cmd, log);
 	}
 }
