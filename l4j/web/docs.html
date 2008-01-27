@@ -55,6 +55,10 @@ may be absolute paths or relative to the configuration file path.
     <strong>&lt;cp&gt;</strong><span class="codeword">classpath</span><strong>&lt;/cp&gt;</strong>
     ...
   &lt;/classPath&gt;
+  &lt;singleInstance&gt;
+    <strong>&lt;mutexName&gt;</strong><span class="codeword">text</span><strong>&lt;/mutexName&gt;</strong>
+    &lt;windowTitle&gt;<span class="codeword">text</span>&lt;/windowTitle&gt;
+  &lt;/singleInstance&gt; 
   <strong>&lt;jre&gt;</strong>
     &lt;!-- Specify one of the following or both --&gt;
     <strong>&lt;path&gt;</strong><span class="codeword">path</span><strong>&lt;/path&gt;</strong>
@@ -213,6 +217,20 @@ may be absolute paths or relative to the configuration file path.
 	<dd>Optional, custom headers only. Ordered list of libraries used by header.</dd>
 </dl>
 <dl>
+	<dt>&lt;singleInstance&gt;</dt>
+	<dd>Optional, allow to run only a single instance of the application.</dd>
+</dl>
+<blockquote>
+	<dl>
+		<dt>&lt;mutexName&gt;</dt>
+		<dd>Unique mutex name that will identify the application.</dd>
+		<dt>&lt;windowTitle&gt;</dt>
+		<dd>Optional, recognized by GUI header only. Title or title part of a window
+			to bring up instead of running a new instance.
+		</dd>
+	</dl>
+</blockquote>
+<dl>
 	<dt>&lt;jre&gt;</dt>
 	<dd>Required element that groups JRE settings.</dd>
 </dl>
@@ -250,33 +268,52 @@ may be absolute paths or relative to the configuration file path.
 		<dt>&lt;jdkPreference&gt;</dt>
 		<dd>Optional, defaults to preferJre; Allows you to specify a preference
 			for a public JRE or a private JDK runtime. Valid values are:
-			<dl>
-				<dt>jreOnly</dt>
-				<dd>Always use a public JRE (equivalent to the
-					old option dontUsePrivateJres=true)</dd>
-				<dt>preferJre</dt>
-				<dd>Prefer a public JRE, but use a JDK private
-					runtime if it is newer than the public
-					JRE (equivalent to the old option
-					dontUsePrivateJres=false)</dd>
-				<dt>preferJdk</dt>
-				<dd>Prefer a JDK private runtime, but use a
-					public JRE if it is newer than the
-					JDK</dd>
-				<dt>jdkOnly</dt>
-				<dd>Always use a private JDK runtime (fails
-					if there is no JDK installed)</dd>
-			</dl>
 		</dd>
 	</dl>
+	<blockquote>
+		<dl>
+			<dt>jreOnly</dt>
+			<dd>Always use a public JRE (equivalent to the
+				old option dontUsePrivateJres=true)</dd>
+			<dt>preferJre</dt>
+			<dd>Prefer a public JRE, but use a JDK private
+				runtime if it is newer than the public
+				JRE (equivalent to the old option
+				dontUsePrivateJres=false)</dd>
+			<dt>preferJdk</dt>
+			<dd>Prefer a JDK private runtime, but use a
+				public JRE if it is newer than the
+				JDK</dd>
+			<dt>jdkOnly</dt>
+			<dd>Always use a private JDK runtime (fails
+				if there is no JDK installed)</dd>
+		</dl>
+	</blockquote>
 	<dl>
-		<dt>&lt;initialHeapSize&gt;</dt>
-		<dd>Optional, initial heap size in MB.</dd>
+		<dt>HeapSize, HeapPercent</dt>
+		<dd>If size and percent are specified, then the setting which yields
+			more memory will be chosen at runtime. In other words, setting both values
+			means: percent of free memory no less than size in MB.
+		</dd>
 	</dl>
-	<dl>
-		<dt>&lt;maxHeapSize&gt;</dt>
-		<dd>Optional, max heap size in MB.</dd>
-	</dl>
+	<blockquote>
+		<dl>
+			<dt>&lt;initialHeapSize&gt;</dt>
+			<dd>Optional, initial heap size in MB.</dd>
+		</dl>
+		<dl>
+			<dt>&lt;initialHeapPercent&gt;</dt>
+			<dd>Optional, initial heap size in % of free memory.</dd>
+		</dl>
+		<dl>
+			<dt>&lt;maxHeapSize&gt;</dt>
+			<dd>Optional, max heap size in MB.</dd>
+		</dl>
+		<dl>
+			<dt>&lt;maxHeapPercent&gt;</dt>
+			<dd>Optional, max heap size in % of free memory.</dd>
+		</dl>	
+	</blockquote>
 	<dl>
 		<dt>&lt;opt&gt;</dt>
 		<dd>Optional, accepts everything you would normally pass to
