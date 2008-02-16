@@ -2,7 +2,7 @@
 	Launch4j (http://launch4j.sourceforge.net/)
 	Cross-platform Java application wrapper for creating Windows native executables.
 
-	Copyright (c) 2004, 2007 Grzegorz Kowal,
+	Copyright (c) 2004, 2008 Grzegorz Kowal,
 							 Ian Roberts (jdk preference patch)
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -61,6 +61,9 @@
 #define LAUNCH4J_TMP_DIR "\\launch4j-tmp\\"
 #define MANIFEST ".manifest"
 
+#define KEY_WOW64_32KEY 0x0200
+#define KEY_WOW64_64KEY 0x0100
+
 #define HKEY_STR "HKEY"
 #define HKEY_CLASSES_ROOT_STR "HKEY_CLASSES_ROOT"
 #define HKEY_CURRENT_USER_STR "HKEY_CURRENT_USER"
@@ -75,6 +78,8 @@
 
 #define TRUE_STR "true"
 #define FALSE_STR "false"
+
+typedef void (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
 void msgBox(const char* text);
 void signalError();

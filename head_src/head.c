@@ -2,7 +2,7 @@
 	Launch4j (http://launch4j.sourceforge.net/)
 	Cross-platform Java application wrapper for creating Windows native executables.
 
-	Copyright (c) 2004, 2007 Grzegorz Kowal,
+	Copyright (c) 2004, 2008 Grzegorz Kowal,
 							 Ian Roberts (jdk preference patch)
 							 Sylvain Mina (single instance patch)
 
@@ -34,11 +34,13 @@
 
 BOOL debug = FALSE;
 BOOL console = FALSE;
+BOOL wow64 = FALSE;
 int foundJava = NO_JAVA_FOUND;
 
 struct _stat statBuf;
 PROCESS_INFORMATION pi;
 DWORD priority;
+DWORD regWow64Option = 0;
 
 char mutexName[STR] = {0};
 
@@ -54,6 +56,16 @@ char oldPwd[_MAX_PATH] = {0};
 char workingDir[_MAX_PATH] = {0};
 char cmd[_MAX_PATH] = {0};
 char args[MAX_ARGS] = {0};
+
+void setWow64Flag()
+{
+	LPFN_ISWOW64PROCESS fnIsWow64Process = (LPFN_ISWOW64PROCESS)GetProcAddress(
+			GetModuleHandle(TEXT("kernel32")), "IsWow64Process");
+
+	if (fnIsWow64Process != NULL) {
+		fnIsWow64Process(GetCurrentProcess(), &wow64);
+	}
+}
 
 void setConsoleFlag() {
      console = TRUE;
@@ -154,11 +166,16 @@ BOOL regQueryValue(const char* regPath, unsigned char* buffer,
 	HKEY hKey;
 	unsigned long datatype;
 	BOOL result = FALSE;
-	if (RegOpenKeyEx(hRootKey,
-			TEXT(key),
-			0,
-	        KEY_QUERY_VALUE,
-			&hKey) == ERROR_SUCCESS) {
+	if ((wow64 && RegOpenKeyEx(hRootKey,
+								TEXT(key),
+								0,
+	        					KEY_WOW64_64KEY | KEY_QUERY_VALUE,
+								&hKey) == ERROR_SUCCESS)
+			|| RegOpenKeyEx(hRootKey,
+								TEXT(key),
+								0,
+	        					KEY_QUERY_VALUE,
+								&hKey) == ERROR_SUCCESS) {
 		result = RegQueryValueEx(hKey, value, NULL, &datatype, buffer, &bufferLength)
 				== ERROR_SUCCESS;
 		RegCloseKey(hKey);
@@ -193,6 +210,19 @@ void regSearch(const HKEY hKey, const char* keyName, const int searchType) {
 
 void regSearchForJre(const char* keyName, const int searchType) {
 	HKEY hKey;
+	if (wow64 && RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+			TEXT(keyName),
+			0,
+            KEY_WOW64_64KEY | KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS,
+			&hKey) == ERROR_SUCCESS) {
+		regSearch(hKey, keyName, searchType);
+		RegCloseKey(hKey);
+		if (foundJava != NO_JAVA_FOUND)
+		{
+			regWow64Option = KEY_WOW64_64KEY;
+			return;
+		}
+	}
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
 			TEXT(keyName),
 			0,
@@ -212,8 +242,7 @@ BOOL findJavaHome(char* path, const int jdkPreference) {
 		if (jdkPreference != JDK_ONLY) {
 			regSearchForJre(jre, FOUND_JRE);
 		}
-	}
-	else { // jdkPreference == JRE_ONLY or PREFER_JRE
+	} else { // jdkPreference == JRE_ONLY or PREFER_JRE
 		regSearchForJre(jre, FOUND_JRE);
 		if (jdkPreference != JRE_ONLY) {
 			regSearchForJre(sdk, FOUND_SDK);
@@ -233,7 +262,7 @@ BOOL findJavaHome(char* path, const int jdkPreference) {
 		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
 				TEXT(keyBuffer),
 				0,
-	            KEY_QUERY_VALUE,
+	            regWow64Option | KEY_QUERY_VALUE,
 				&hKey) == ERROR_SUCCESS) {
 			unsigned char buffer[BIG_STR] = {0};
 			if (RegQueryValueEx(hKey, "JavaHome", NULL, &datatype, buffer, &bufferlength)
@@ -426,6 +455,7 @@ void appendHeapSize(const HMODULE hLibrary, char *dst,
 int prepare(HMODULE hLibrary, const char *lpCmdLine) {
     char tmp[MAX_ARGS] = {0};
     debug = strstr(lpCmdLine, "--l4j-debug") != NULL;
+    setWow64Flag();
 
 	// Open executable
 	char exePath[_MAX_PATH] = {0};
