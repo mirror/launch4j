@@ -98,11 +98,15 @@ public class Jre implements IValidatable {
 			Validator.checkTrue(minVersion.compareTo(maxVersion) < 0,
 					"jre.maxVersion", Messages.getString("Jre.max.greater.than.min"));
 		}
+		Validator.checkTrue(initialHeapSize == null || maxHeapSize != null,
+				"jre.maxHeapSize", Messages.getString("Jre.initial.and.max.heap"));
 		Validator.checkTrue(initialHeapSize == null || initialHeapSize.intValue() > 0,
 				"jre.initialHeapSize", Messages.getString("Jre.initial.heap"));
 		Validator.checkTrue(maxHeapSize == null || (maxHeapSize.intValue()
 				>= ((initialHeapSize != null) ? initialHeapSize.intValue() : 1)),
 				"jre.maxHeapSize", Messages.getString("Jre.max.heap"));
+		Validator.checkTrue(initialHeapPercent == null || maxHeapPercent != null,
+				"jre.maxHeapPercent", Messages.getString("Jre.initial.and.max.heap"));
 		if (initialHeapPercent != null) {
 			Validator.checkRange(initialHeapPercent.intValue(), 1, 100,
 					"jre.initialHeapPercent",
