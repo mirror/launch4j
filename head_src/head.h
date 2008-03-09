@@ -86,8 +86,12 @@ void signalError();
 BOOL loadString(const HMODULE hLibrary, const int resID, char* buffer);
 BOOL loadBool(const HMODULE hLibrary, const int resID);
 int loadInt(const HMODULE hLibrary, const int resID);
-BOOL regQueryValue(const char* regPath, unsigned char* buffer, unsigned long bufferLength);
+BOOL regQueryValue(const char* regPath, unsigned char* buffer,
+		unsigned long bufferLength);
 void regSearch(const HKEY hKey, const char* keyName, const int searchType);
+void regSearchWow(const char* keyName, const int searchType);
+void regSearchJreSdk(const char* jreKeyName, const char* sdkKeyName,
+		const int jdkPreference);
 BOOL findJavaHome(char* path, const int jdkPreference);
 int getExePath(char* exePath);
 void catJavaw(char* jrePath);

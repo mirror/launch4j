@@ -51,6 +51,7 @@ char errMsg[BIG_STR] = {0};
 char javaMinVer[STR] = {0};
 char javaMaxVer[STR] = {0};
 char foundJavaVer[STR] = {0};
+char foundJavaKey[_MAX_PATH] = {0};
 
 char oldPwd[_MAX_PATH] = {0};
 char workingDir[_MAX_PATH] = {0};
@@ -202,13 +203,16 @@ void regSearch(const HKEY hKey, const char* keyName, const int searchType) {
 				&& (!*javaMaxVer || strcmp(buffer, javaMaxVer) <= 0)
 				&& strcmp(buffer, foundJavaVer) > 0) {
 			strcpy(foundJavaVer, buffer);
+			strcpy(foundJavaKey, keyName);
+			strcat(foundJavaKey, "\\");
+			strcat(foundJavaKey, buffer);	
 			foundJava = searchType;
 		}
 		size = BIG_STR;
 	}
 }
 
-void regSearchForJre(const char* keyName, const int searchType) {
+void regSearchWow(const char* keyName, const int searchType) {
 	HKEY hKey;
 	if (wow64 && RegOpenKeyEx(HKEY_LOCAL_MACHINE,
 			TEXT(keyName),
@@ -233,40 +237,42 @@ void regSearchForJre(const char* keyName, const int searchType) {
 	}
 }
 
-BOOL findJavaHome(char* path, const int jdkPreference) {
-	HKEY hKey;
-	const char jre[] = "SOFTWARE\\JavaSoft\\Java Runtime Environment";
-	const char sdk[] = "SOFTWARE\\JavaSoft\\Java Development Kit";
+void regSearchJreSdk(const char* jreKeyName, const char* sdkKeyName,
+		const int jdkPreference) {
 	if (jdkPreference == JDK_ONLY || jdkPreference == PREFER_JDK) {
-		regSearchForJre(sdk, FOUND_SDK);
+		regSearchWow(sdkKeyName, FOUND_SDK);
 		if (jdkPreference != JDK_ONLY) {
-			regSearchForJre(jre, FOUND_JRE);
+			regSearchWow(jreKeyName, FOUND_JRE);
 		}
 	} else { // jdkPreference == JRE_ONLY or PREFER_JRE
-		regSearchForJre(jre, FOUND_JRE);
+		regSearchWow(jreKeyName, FOUND_JRE);
 		if (jdkPreference != JRE_ONLY) {
-			regSearchForJre(sdk, FOUND_SDK);
+			regSearchWow(sdkKeyName, FOUND_SDK);
 		}
 	}
+}
+
+BOOL findJavaHome(char* path, const int jdkPreference) {
+	regSearchJreSdk("SOFTWARE\\JavaSoft\\Java Runtime Environment",
+					"SOFTWARE\\JavaSoft\\Java Development Kit",
+					jdkPreference);
+	if (foundJava == NO_JAVA_FOUND) {
+		regSearchJreSdk("SOFTWARE\\IBM\\Java2 Runtime Environment",
+						"SOFTWARE\\IBM\\Java Development Kit",
+						jdkPreference);
+	}
 	if (foundJava != NO_JAVA_FOUND) {
-		char keyBuffer[BIG_STR];
-		unsigned long datatype;
-		unsigned long bufferlength = BIG_STR;
-		if (foundJava == FOUND_JRE)	{
-			strcpy(keyBuffer, jre);
-		} else {
-			strcpy(keyBuffer, sdk);
-		}
-		strcat(keyBuffer, "\\");
-		strcat(keyBuffer, foundJavaVer);
+		HKEY hKey;
 		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-				TEXT(keyBuffer),
+				TEXT(foundJavaKey),
 				0,
 	            regWow64Option | KEY_QUERY_VALUE,
 				&hKey) == ERROR_SUCCESS) {
 			unsigned char buffer[BIG_STR] = {0};
-			if (RegQueryValueEx(hKey, "JavaHome", NULL, &datatype, buffer, &bufferlength)
-					== ERROR_SUCCESS) {
+			unsigned long bufferlength = BIG_STR;
+			unsigned long datatype;
+			if (RegQueryValueEx(hKey, "JavaHome", NULL, &datatype, buffer,
+					&bufferlength) == ERROR_SUCCESS) {
 				int i = 0;
 				do {
 					path[i] = buffer[i];
