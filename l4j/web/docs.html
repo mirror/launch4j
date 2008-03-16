@@ -61,7 +61,7 @@ may be absolute paths or relative to the configuration file path.
   &lt;/singleInstance&gt; 
   <strong>&lt;jre&gt;</strong>
     &lt;!-- Specify one of the following or both --&gt;
-    <strong>&lt;path&gt;</strong><span class="codeword">path</span><strong>&lt;/path&gt;</strong>
+    <strong>&lt;path&gt;</strong><span class="codeword">bundled JRE path</span><strong>&lt;/path&gt;</strong>
     <strong>&lt;minVersion&gt;</strong><span class="codeword">x.x.x[_xx]</span><strong>&lt;/minVersion&gt;</strong>
     &lt;maxVersion&gt;<span class="codeword">x.x.x[_xx]</span>&lt;/maxVersion&gt;
     &lt;jdkPreference&gt;<span class="codeword">jreOnly|<u>preferJre</u>|preferJdk|jdkOnly</span>&lt;/jdkPreference&gt;
@@ -238,13 +238,15 @@ may be absolute paths or relative to the configuration file path.
     <dl>
     	<dt>&lt;path&gt;, &lt;minVersion&gt;, &lt;maxVersion&gt;</dt>
         <dd>The <em>&lt;path&gt;</em> property is used
-    		to specify the absolute or relative path (to the executable) of an bundled JRE, it
+    		to specify the absolute or relative path (to the executable) of a bundled JRE, it
     		does not rely on the current directory or <em>&lt;chdir&gt;</em>.
     		Note that this path is not checked until the actual application execution.
     		If you'd like the wrapper to search for a JRE (public or SDK private)
     		use the <em>&lt;minVersion&gt;</em> property, you may also specify
     		the <em>&lt;maxVersion&gt;</em> to prevent it from using higher Java versions.
     		Launch4j will always use the highest version available (in the min/max range of course).
+    		If a Sun's JRE is not available or does not satisfy the search criteria,
+    		the search will be repeated on IBM runtimes.
     		You can also combine these properties to change the startup process...
     	</dd>
 	</dl>
