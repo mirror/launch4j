@@ -363,7 +363,7 @@ public class Config implements IValidatable {
 	}
 	
 	public String getDownloadUrl() {
-		return downloadUrl;
+		return downloadUrl == null ? DOWNLOAD_URL : downloadUrl;
 	}
 
 	public void setDownloadUrl(String downloadUrl) {
