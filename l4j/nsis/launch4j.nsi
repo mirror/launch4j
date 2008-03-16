@@ -107,6 +107,7 @@ Section "Main" SEC_MAIN
 SectionEnd
 
 Section -AdditionalIcons
+  SetShellVarContext all
   SetOutPath "$INSTDIR"
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
