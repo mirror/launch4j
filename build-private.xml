@@ -161,6 +161,7 @@
 			<filelist dir="${web.src}" files="header.html, links.html, footer.html" />
 		</concat>
 
+		<!-- *** outdated ***
 		<concat destfile="${build.web}/index_es.html">
 			<filelist dir="${web.src}" files="header_es.html, index_es.html, footer_es.html" />
 		</concat>
@@ -173,6 +174,7 @@
 		<concat destfile="${build.web}/links_es.html">
 			<filelist dir="${web.src}" files="header_es.html, links_es.html, footer_es.html" />
 		</concat>
+		-->
 
 		<replace dir="${build.web}">
 			<include name="**/*.html"/>
