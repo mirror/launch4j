@@ -83,9 +83,9 @@ typedef void (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
 void msgBox(const char* text);
 void signalError();
-BOOL loadString(const HMODULE hLibrary, const int resID, char* buffer);
-BOOL loadBool(const HMODULE hLibrary, const int resID);
-int loadInt(const HMODULE hLibrary, const int resID);
+BOOL loadString(const int resID, char* buffer);
+BOOL loadBool(const int resID);
+int loadInt(const int resID);
 BOOL regQueryValue(const char* regPath, unsigned char* buffer,
 		unsigned long bufferLength);
 void regSearch(const HKEY hKey, const char* keyName, const int searchType);
@@ -98,11 +98,10 @@ void catJavaw(char* jrePath);
 void appendAppClasspath(char* dst, const char* src, const char* classpath);
 BOOL isJrePathOk(const char* path);
 BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathLen);
-void appendHeapSizes(const HMODULE hLibrary, char *dst);
-void appendHeapSize(const HMODULE hLibrary, char *dst,
-		const int absID, const int percentID,
+void appendHeapSizes(char *dst);
+void appendHeapSize(char *dst, const int absID, const int percentID,
 		const DWORD freeMemory, const char *option);
-int prepare(HMODULE hLibrary, const char *lpCmdLine);
+int prepare(const char *lpCmdLine);
 void closeHandles();
 BOOL appendToPathVar(const char* path);
 DWORD execute(const BOOL wait);
