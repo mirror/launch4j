@@ -60,7 +60,7 @@ public class ConsoleApp {
 		try {
 			BufferedReader is = new BufferedReader(new InputStreamReader(System.in));
 			String line;
-			while ((line = is.readLine()) != null) {
+			while ((line = is.readLine()) != null && !line.equalsIgnoreCase("quit")) {
 				System.out.print("You wrote: " + line + "\n\n>");
 			}
 			is.close();
