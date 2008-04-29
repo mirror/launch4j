@@ -48,6 +48,7 @@ int main(int argc, char* argv[])
 		char errMsg[BIG_STR] = {0};
 		loadString(INSTANCE_ALREADY_EXISTS_MSG, errMsg);
 		msgBox(errMsg);
+		closeLogFile();
 		return 2;
 	}
 	if (result != TRUE) {

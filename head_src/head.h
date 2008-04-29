@@ -79,8 +79,12 @@
 #define TRUE_STR "true"
 #define FALSE_STR "false"
 
+#define debug(args...) if (hLog != NULL) fprintf(hLog, ## args); 
+
 typedef void (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
+FILE* openLogFile(const char* exePath, const int pathLen);
+void closeLogFile();
 void msgBox(const char* text);
 void signalError();
 BOOL loadString(const int resID, char* buffer);

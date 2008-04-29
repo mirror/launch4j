@@ -32,6 +32,7 @@
 #include "../head.h"
 #include "guihead.h"
 
+extern FILE* hLog;
 extern PROCESS_INFORMATION pi;
 
 HWND hWnd;
@@ -51,6 +52,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		HWND handle = getInstanceWindow();
 		ShowWindow(handle, SW_SHOW);
 		SetForegroundWindow(handle);
+		closeLogFile();
 		return 2;
 	}
 	if (result != TRUE) {
@@ -97,6 +99,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 			UpdateWindow (hWnd);
 		}
 		if (!SetTimer (hWnd, ID_TIMER, 1000 /* 1s */, TimerProc)) {
+			signalError();
 			return 1;
 		}
 	}
@@ -105,14 +108,17 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		return 1;
 	}
 	if (!(splash || stayAlive)) {
+		debug("Exit code:\t0\n");
 		closeHandles();
 		return 0;
 	}
+
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0)) {
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+	debug("Exit code:\t%d\n", dwExitCode);
 	closeHandles();
 	return dwExitCode;
 }
@@ -174,7 +180,6 @@ VOID CALLBACK TimerProc(
 	if (dwExitCode != STILL_ACTIVE
 			|| !(splash || stayAlive)) {
 		KillTimer(hWnd, ID_TIMER);
-		PostQuitMessage(0);	
-		return;
+		PostQuitMessage(0);
 	}
 }
