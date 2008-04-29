@@ -188,12 +188,12 @@ BOOL regQueryValue(const char* regPath, unsigned char* buffer,
 	if ((wow64 && RegOpenKeyEx(hRootKey,
 								key,
 								0,
-	        					KEY_WOW64_64KEY | KEY_QUERY_VALUE,
+	        					KEY_READ | KEY_WOW64_64KEY,
 								&hKey) == ERROR_SUCCESS)
 			|| RegOpenKeyEx(hRootKey,
 								key,
 								0,
-	        					KEY_QUERY_VALUE,
+	        					KEY_READ,
 								&hKey) == ERROR_SUCCESS) {
 		result = RegQueryValueEx(hKey, value, NULL, &datatype, buffer, &bufferLength)
 				== ERROR_SUCCESS;
@@ -240,7 +240,7 @@ void regSearchWow(const char* keyName, const int searchType) {
 	if (wow64 && RegOpenKeyEx(HKEY_LOCAL_MACHINE,
 			keyName,
 			0,
-            KEY_WOW64_64KEY | KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS,
+            KEY_READ | KEY_WOW64_64KEY,
 			&hKey) == ERROR_SUCCESS) {
 		
 		regSearch(hKey, keyName, searchType);
@@ -256,7 +256,7 @@ void regSearchWow(const char* keyName, const int searchType) {
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
 			keyName,
 			0,
-            KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS,
+            KEY_READ,
 			&hKey) == ERROR_SUCCESS) {
 		regSearch(hKey, keyName, searchType);
 		RegCloseKey(hKey);
@@ -292,7 +292,7 @@ BOOL findJavaHome(char* path, const int jdkPreference) {
 		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
 				foundJavaKey,
 				0,
-	            regWow64Option | KEY_QUERY_VALUE,
+	            KEY_READ | regWow64Option,
 				&hKey) == ERROR_SUCCESS) {
 			unsigned char buffer[BIG_STR] = {0};
 			unsigned long bufferlength = BIG_STR;
