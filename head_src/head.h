@@ -61,7 +61,6 @@
 #define LAUNCH4J_TMP_DIR "\\launch4j-tmp\\"
 #define MANIFEST ".manifest"
 
-#define KEY_WOW64_32KEY 0x0200
 #define KEY_WOW64_64KEY 0x0100
 
 #define HKEY_STR "HKEY"
@@ -98,7 +97,8 @@ void regSearchJreSdk(const char* jreKeyName, const char* sdkKeyName,
 		const int jdkPreference);
 BOOL findJavaHome(char* path, const int jdkPreference);
 int getExePath(char* exePath);
-void catJavaw(char* jrePath);
+void appendPath(char* basepath, const char* path);
+void appendJavaw(char* jrePath);
 void appendAppClasspath(char* dst, const char* src, const char* classpath);
 BOOL isJrePathOk(const char* path);
 BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathLen);

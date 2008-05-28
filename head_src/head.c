@@ -41,7 +41,6 @@ int foundJava = NO_JAVA_FOUND;
 struct _stat statBuf;
 PROCESS_INFORMATION pi;
 DWORD priority;
-DWORD regWow64Option = 0;
 
 char mutexName[STR] = {0};
 
@@ -223,8 +222,7 @@ void regSearch(const HKEY hKey, const char* keyName, const int searchType) {
 				&& strcmp(buffer, foundJavaVer) > 0) {
 			strcpy(foundJavaVer, buffer);
 			strcpy(foundJavaKey, keyName);
-			strcat(foundJavaKey, "\\");
-			strcat(foundJavaKey, buffer);	
+			appendPath(foundJavaKey, buffer);	
 			foundJava = searchType;
 			debug("Match:\t\t%s\\%s\n", keyName, buffer);
 		} else {
@@ -243,11 +241,10 @@ void regSearchWow(const char* keyName, const int searchType) {
             KEY_READ | KEY_WOW64_64KEY,
 			&hKey) == ERROR_SUCCESS) {
 		
-		regSearch(hKey, keyName, searchType);
+		regSearch(hKey, keyName, searchType | KEY_WOW64_64KEY);
 		RegCloseKey(hKey);
-		if (foundJava != NO_JAVA_FOUND)
+		if ((foundJava & KEY_WOW64_64KEY) != NO_JAVA_FOUND)
 		{
-			regWow64Option = KEY_WOW64_64KEY;
 			debug("Using 64-bit runtime.\n");
 			return;
 		}
@@ -292,7 +289,7 @@ BOOL findJavaHome(char* path, const int jdkPreference) {
 		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
 				foundJavaKey,
 				0,
-	            KEY_READ | regWow64Option,
+	            KEY_READ | (foundJava & KEY_WOW64_64KEY),
 				&hKey) == ERROR_SUCCESS) {
 			unsigned char buffer[BIG_STR] = {0};
 			unsigned long bufferlength = BIG_STR;
@@ -303,8 +300,8 @@ BOOL findJavaHome(char* path, const int jdkPreference) {
 				do {
 					path[i] = buffer[i];
 				} while (path[i++] != 0);
-				if (foundJava == FOUND_SDK) {
-					strcat(path, "\\jre");
+				if (foundJava & FOUND_SDK) {
+					appendPath(path, "jre");
 				}
 				RegCloseKey(hKey);
 				return TRUE;
@@ -325,11 +322,18 @@ int getExePath(char* exePath) {
 	return strrchr(exePath, '\\') - exePath;
 }
 
+void appendPath(char* basepath, const char* path) {
+	if (basepath[strlen(basepath) - 1] != '\\') {
+		strcat(basepath, "\\");
+	}
+	strcat(basepath, path);
+}
+
 void appendJavaw(char* jrePath) {
     if (console) {
-	    strcat(jrePath, "\\bin\\java.exe");
+	    appendPath(jrePath, "bin\\java.exe");
     } else {
-        strcat(jrePath, "\\bin\\javaw.exe");
+        appendPath(jrePath, "bin\\javaw.exe");
     }
 }
 
@@ -345,7 +349,7 @@ void appendLauncher(const BOOL setProcName, char* exePath,
 			// Remove temp launchers and manifests
 			struct _finddata_t c_file;
 			long hFile;
-			strcat(tmpspec, "\\*.exe");
+			appendPath(tmpspec, "*.exe");
 			strcpy(tmpfile, cmd);
 			strcat(tmpfile, LAUNCH4J_TMP_DIR);
 			char* filename = tmpfile + strlen(tmpfile);
@@ -546,8 +550,7 @@ int prepare(const char *lpCmdLine) {
 	GetCurrentDirectory(_MAX_PATH, oldPwd);
 	if (loadString(CHDIR, tmp_path)) {
 		strncpy(workingDir, exePath, pathLen);
-		strcat(workingDir, "\\");
-		strcat(workingDir, tmp_path);
+		appendPath(workingDir, tmp_path);
 		_chdir(workingDir);
 		debug("Working dir:\t%s\n", workingDir);
 	}
@@ -563,8 +566,7 @@ int prepare(const char *lpCmdLine) {
 		} else {
 			// Relative
 			strncpy(cmd, exePath, pathLen);
-			strcat(cmd, "\\");
-			strcat(cmd, jrePath);
+			appendPath(cmd, jrePath);
 		}
     }
 	if (!isJrePathOk(cmd)) {
@@ -723,8 +725,7 @@ int prepare(const char *lpCmdLine) {
     } else {
        	strcat(args, "-jar \"");
         strncat(args, exePath, pathLen);
-        strcat(args, "\\");
-        strcat(args, jar);
+        appendPath(args, jar);
        	strcat(args, "\"");
     }
 
