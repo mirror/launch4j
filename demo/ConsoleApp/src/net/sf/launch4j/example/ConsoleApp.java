@@ -64,6 +64,7 @@ public class ConsoleApp {
 				System.out.print("You wrote: " + line + "\n\n>");
 			}
 			is.close();
+			System.exit(123);
 		} catch (IOException e) {
 			System.err.print(e);
 		}
