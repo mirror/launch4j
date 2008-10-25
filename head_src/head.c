@@ -446,7 +446,7 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
             *varName = 0;
             strncat(varName, start + 1, end - start - 1);
             // Remember value start for logging
-            char *varValue = dst + strlen(dst);
+            char *currentVarValue = dst + strlen(dst);
             if (strcmp(varName, "EXEDIR") == 0) {
                 strncat(dst, exePath, pathLen);
             } else if (strcmp(varName, "EXEFILE") == 0) {
@@ -460,7 +460,7 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
             } else if (GetEnvironmentVariable(varName, varValue, MAX_VAR_SIZE) > 0) {
                 strcat(dst, varValue);
             }
-            debug("Substitute:\t%s = %s\n", varName, varValue);
+            debug("Substitute:\t%s = %s\n", varName, currentVarValue);
             src = end + 1;
         } else {
             // Copy remaining content
