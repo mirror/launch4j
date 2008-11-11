@@ -485,12 +485,19 @@ void appendHeapSizes(char *dst) {
 void appendHeapSize(char *dst, const int absID, const int percentID,
 		const DWORD freeMemory, const char *option) {
 	
-	const int mb = 1048576;		// 1 MB
+	const int mb = 1048576;			// 1 MB
+	const int mbLimit32 = 1500;  	// Max heap size in MB on 32-bit JREs
 	int abs = loadInt(absID);
 	int percent = loadInt(percentID);
 	int free = (long long) freeMemory * percent / (100 * mb);	// 100% * 1 MB
 	int size = free > abs ? free : abs;
 	if (size > 0) {
+		if (!(foundJava & KEY_WOW64_64KEY) && size > mbLimit32) {
+			debug("Heap limit:\tReduced %d MB heap size to 32-bit maximum %d MB\n",
+					size, mbLimit32);
+			size = mbLimit32;
+		}
+
 		debug("Heap %s:\t%d MB / %d%%, Free: %d MB, Heap size: %d MB\n",
 				option, abs, percent, freeMemory / mb, size);
 		strcat(dst, option);
