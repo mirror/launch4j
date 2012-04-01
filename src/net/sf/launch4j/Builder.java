@@ -3,6 +3,7 @@
 	Cross-platform Java application wrapper for creating Windows native executables.
 
 	Copyright (c) 2004, 2007 Grzegorz Kowal
+	Copyright (c) 2012 Andreas Ziermann
 
 	All rights reserved.
 
@@ -40,6 +41,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -78,14 +80,17 @@ public class Builder {
 		}
 		File rc = null;
 		File ro = null;
+		File stub = null;
 		File outfile = null;
 		FileInputStream is = null;
 		FileOutputStream os = null;
+		FileChannel outChannel = null;
+		FileChannel inChannel = null;
+
 		final RcBuilder rcb = new RcBuilder();
 		try {
 			rc = rcb.build(c);
 			ro = Util.createTempFile("o");
-			outfile = ConfigPersister.getInstance().getOutputFile();
 
 			Cmd resCmd = new Cmd(_basedir);
 			resCmd.addExe("windres")
@@ -96,32 +101,47 @@ public class Builder {
 			_log.append(Messages.getString("Builder.compiling.resources"));
 			resCmd.exec(_log);
 
+			// AZ: The output file of 'ld' is not on all systems ready to append
+			// another file. On Vista64 there is still an active lock.
+			// Create a stub first and append the jar file later on.
+			stub = Util.createTempFile("stub");
 			Cmd ldCmd = new Cmd(_basedir);
 			ldCmd.addExe("ld")
 					.add("-mi386pe")
 					.add("--oformat pei-i386")
 					.add((c.getHeaderType().equals(Config.GUI_HEADER))
-							? "--subsystem windows" : "--subsystem console")
-					.add("-s")		// strip symbols
+							? "--subsystem windows"
+							: "--subsystem console")
+					.add("-s")	// strip symbols
 					.addFiles(c.getHeaderObjects())
 					.addAbsFile(ro)
 					.addFiles(c.getLibs())
 					.add("-o")
-					.addAbsFile(outfile);
+					.addAbsFile(stub);
 			_log.append(Messages.getString("Builder.linking"));
 			ldCmd.exec(_log);
 
+			// copy stub to destination directory
+			outfile = ConfigPersister.getInstance().getOutputFile();
+			os = new FileOutputStream(outfile);
+			is = new FileInputStream(stub);
+			outChannel = os.getChannel();
+			inChannel = is.getChannel();
+			long stubLength = inChannel.size();
+			inChannel.transferTo(0, stubLength, outChannel);
+			inChannel.close();
+
 			if (!c.isDontWrapJar()) {
 				_log.append(Messages.getString("Builder.wrapping"));
-				int len;
-				byte[] buffer = new byte[1024];
-				is = new FileInputStream(Util.getAbsoluteFile(
-						ConfigPersister.getInstance().getConfigPath(),	c.getJar()));
-				os = new FileOutputStream(outfile, true);
-				while ((len = is.read(buffer)) > 0) {
-					os.write(buffer, 0, len);
-				}
+				is = new FileInputStream(Util.getAbsoluteFile(ConfigPersister
+						.getInstance().getConfigPath(), c.getJar()));
+				inChannel = is.getChannel();
+				// outChannel is still open for writing, jar file will be appended
+				inChannel.transferTo(0, inChannel.size(), outChannel);
+				inChannel.close();
 			}
+			outChannel.close();
+
 			_log.append(Messages.getString("Builder.success") + outfile.getPath());
 			return outfile;
 		} catch (IOException e) {
@@ -130,7 +150,7 @@ public class Builder {
 			throw new BuilderException(e);
 		} catch (ExecException e) {
 			Util.delete(outfile);
-			String msg = e.getMessage(); 
+			String msg = e.getMessage();
 			if (msg != null && msg.indexOf("windres") != -1) {
 				if (e.getErrLine() != -1) {
 					_log.append(Messages.getString("Builder.line.has.errors",
@@ -143,6 +163,8 @@ public class Builder {
 			}
 			throw new BuilderException(e);
 		} finally {
+			Util.close(inChannel);
+			Util.close(outChannel);
 			Util.close(is);
 			Util.close(os);
 			Util.delete(rc);
