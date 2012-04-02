@@ -64,10 +64,22 @@
 		<chmod file="launch4j" perm="+x" />
 	</target>
 	
-	<target name="binutils-macosx">
+	<target name="binutils-macosx-ppc">
 		<antcall target="clean-binutils" />
 		<copy todir="${bin}">
-			<fileset dir="${bin}/bin-macosx">
+			<fileset dir="${bin}/bin-macosx-ppc">
+				<include name="*" />
+			</fileset>
+		</copy>
+		<chmod file="${bin}/windres" perm="+x" />
+		<chmod file="${bin}/ld" perm="+x" />
+		<chmod file="launch4j" perm="+x" />
+	</target>
+	
+	<target name="binutils-macosx-x86">
+		<antcall target="clean-binutils" />
+		<copy todir="${bin}">
+			<fileset dir="${bin}/bin-macosx-x86">
 				<include name="*" />
 			</fileset>
 		</copy>
@@ -127,13 +139,23 @@
 		</exec>
 	</target>
 
-	<target name="dist.macosx" depends="jar, webdocs" description="generate the Mac OS X distribution">
-		<antcall target="binutils-macosx" />
+	<target name="dist.macosx-ppc" depends="jar, webdocs" description="generate the Mac OS X PPC distribution">
+		<antcall target="binutils-macosx-ppc" />
 		<!-- changes executables to default mode!
 				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
 				compression="gzip" excludes="**/build/** **/CVS/** **/*.exe"/> -->
 		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-macosx.tgz ./launch4j" />
+			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-macosx-ppc.tgz ./launch4j" />
+		</exec>
+	</target>
+	
+	<target name="dist.macosx-x86" depends="jar, webdocs" description="generate the Mac OS X x86 distribution">
+		<antcall target="binutils-macosx-x86" />
+		<!-- changes executables to default mode!
+				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
+				compression="gzip" excludes="**/build/** **/CVS/** **/*.exe"/> -->
+		<exec executable="tar" failonerror="true">
+			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-macosx-x86.tgz ./launch4j" />
 		</exec>
 	</target>
 
@@ -189,7 +211,7 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="demo, webdocs, dist.win32, dist.macosx, dist.linux, dist.solaris-sparc, clean" description="generate all distributions" />
+	<target name="dist" depends="demo, webdocs, dist.win32, dist.macosx-ppc, dist.macosx-x86, dist.linux, dist.solaris-sparc, clean" description="generate all distributions" />
 
 	<target name="clean-binutils">
 		<delete>
