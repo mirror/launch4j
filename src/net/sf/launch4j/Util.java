@@ -3,8 +3,6 @@
 	Cross-platform Java application wrapper for creating Windows native executables.
 
 	Copyright (c) 2004, 2007 Grzegorz Kowal
-	Copyright (c) 2012 Andreas Ziermann
-	
 
 	All rights reserved.
 
@@ -46,7 +44,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.channels.FileChannel;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,12 +69,10 @@ public class Util {
 	}
 
 	/**
-	 * Returns the base directory of a jar file or null if the class is a
-	 * standalone file.
-	 * 
+	 * Returns the base directory of a jar file or null if the class is a standalone file. 
 	 * @return System specific path
 	 * 
-	 *         Based on a patch submitted by Josh Elsasser
+	 * Based on a patch submitted by Josh Elsasser
 	 */
 	public static File getJarBasedir() {
 		String url = Util.class.getClassLoader()
@@ -88,7 +83,7 @@ public class Util {
 			String jar = url.substring(5, url.lastIndexOf('!'));
 			int x = jar.lastIndexOf('/');
 			if (x == -1) {
-				x = jar.lastIndexOf('\\');
+				x = jar.lastIndexOf('\\');	
 			}
 			String basedir = jar.substring(0, x + 1);
 			return new File(basedir);
@@ -160,7 +155,7 @@ public class Util {
 			throw new ExecException(e);
 		}
 	}
-
+	
 	private static void AppendCommandLine(StringBuffer sb, String[] cmd) {
 		sb.append(": ");
 		for (int i = 0; i < cmd.length; i++) {
@@ -213,15 +208,5 @@ public class Util {
 
 	public static boolean delete(File f) {
 		return (f != null) ? f.delete() : false;
-	}
-
-	public static void close(FileChannel channel) {
-		if (channel != null) {
-			try {
-				channel.close();
-			} catch (IOException e) {
-				System.err.println(e); // XXX log
-			}
-		}
 	}
 }
