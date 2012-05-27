@@ -96,6 +96,10 @@
 			</fileset>
 		</copy>
 	</target>
+	
+	<target name="remove-sign4j">
+		<delete file="sign4j/sign4j.exe" />
+	</target>
 
 	<target name="jar" depends="compile" description="create jar">
 		<fileset dir="${lib}" id="lib.dist.fileset">
@@ -119,7 +123,7 @@
 		<ant dir="./demo/SimpleApp" inheritAll="false" />
 	</target>
 
-	<target name="dist.linux" depends="jar, webdocs" description="generate the Linux distribution">
+	<target name="dist.linux" depends="remove-sign4j, jar, webdocs" description="generate the Linux distribution">
 		<antcall target="binutils-linux" />
 		<!-- changes executables to default mode!
 				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
@@ -129,7 +133,7 @@
 		</exec>
 	</target>
 
-	<target name="dist.solaris-sparc" depends="jar, webdocs" description="generate the Linux distribution">
+	<target name="dist.solaris-sparc" depends="remove-sign4j, jar, webdocs" description="generate the Linux distribution">
 		<antcall target="binutils-solaris-sparc" />
 		<!-- changes executables to default mode!
 				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
@@ -139,7 +143,7 @@
 		</exec>
 	</target>
 
-	<target name="dist.macosx-ppc" depends="jar, webdocs" description="generate the Mac OS X PPC distribution">
+	<target name="dist.macosx-ppc" depends="remove-sign4j, jar, webdocs" description="generate the Mac OS X PPC distribution">
 		<antcall target="binutils-macosx-ppc" />
 		<!-- changes executables to default mode!
 				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
@@ -149,7 +153,7 @@
 		</exec>
 	</target>
 	
-	<target name="dist.macosx-x86" depends="jar, webdocs" description="generate the Mac OS X x86 distribution">
+	<target name="dist.macosx-x86" depends="remove-sign4j, jar, webdocs" description="generate the Mac OS X x86 distribution">
 		<antcall target="binutils-macosx-x86" />
 		<!-- changes executables to default mode!
 				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
