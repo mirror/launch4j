@@ -100,6 +100,9 @@ public class Builder {
 			ldCmd.addExe("ld")
 					.add("-mi386pe")
 					.add("--oformat pei-i386")
+					.add("--dynamicbase")
+					.add("--nxcompat")
+					.add("--no-seh")
 					.add((c.getHeaderType().equals(Config.GUI_HEADER))
 							? "--subsystem windows" : "--subsystem console")
 					.add("-s")		// strip symbols

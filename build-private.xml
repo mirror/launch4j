@@ -27,7 +27,7 @@
 	</target>
 
 	<target name="compile" depends="init" description="compile the source">
-		<javac srcdir="${src}" destdir="${build}" classpathref="dist.classpath" source="1.4" debug="on" />
+		<javac srcdir="${src}" destdir="${build}" classpathref="dist.classpath" source="1.4" debug="on" includeantruntime="false" />
 		<copy todir="${build}/images">
 			<fileset dir="${src}/images">
 				<include name="**/*" />
@@ -44,54 +44,6 @@
 		<antcall target="clean-binutils" />
 		<copy todir="${bin}">
 			<fileset dir="${bin}/bin-linux">
-				<include name="*" />
-			</fileset>
-		</copy>
-		<chmod file="${bin}/windres" perm="+x" />
-		<chmod file="${bin}/ld" perm="+x" />
-		<chmod file="launch4j" perm="+x" />
-	</target>
-
-	<target name="binutils-solaris-sparc">
-		<antcall target="clean-binutils" />
-		<copy todir="${bin}">
-			<fileset dir="${bin}/bin-solaris-sparc">
-				<include name="*" />
-			</fileset>
-		</copy>
-		<chmod file="${bin}/windres" perm="+x" />
-		<chmod file="${bin}/ld" perm="+x" />
-		<chmod file="launch4j" perm="+x" />
-	</target>
-	
-	<target name="binutils-macosx-ppc">
-		<antcall target="clean-binutils" />
-		<copy todir="${bin}">
-			<fileset dir="${bin}/bin-macosx-ppc">
-				<include name="*" />
-			</fileset>
-		</copy>
-		<chmod file="${bin}/windres" perm="+x" />
-		<chmod file="${bin}/ld" perm="+x" />
-		<chmod file="launch4j" perm="+x" />
-	</target>
-	
-	<target name="binutils-macosx-x86">
-		<antcall target="clean-binutils" />
-		<copy todir="${bin}">
-			<fileset dir="${bin}/bin-macosx-x86">
-				<include name="*" />
-			</fileset>
-		</copy>
-		<chmod file="${bin}/windres" perm="+x" />
-		<chmod file="${bin}/ld" perm="+x" />
-		<chmod file="launch4j" perm="+x" />
-	</target>
-
-	<target name="binutils-macosx-x86-10.8">
-		<antcall target="clean-binutils" />
-		<copy todir="${bin}">
-			<fileset dir="${bin}/bin-macosx-x86-10.8">
 				<include name="*" />
 			</fileset>
 		</copy>
@@ -137,51 +89,8 @@
 
 	<target name="dist.linux" depends="remove-sign4j, jar, webdocs" description="generate the Linux distribution">
 		<antcall target="binutils-linux" />
-		<!-- changes executables to default mode!
-				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
-				compression="gzip" excludes="**/build/** **/CVS/** **/*.exe"/> -->
 		<exec executable="tar" failonerror="true">
 			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-linux.tgz ./launch4j" />
-		</exec>
-	</target>
-
-	<target name="dist.solaris-sparc" depends="remove-sign4j, jar, webdocs" description="generate the Linux distribution">
-		<antcall target="binutils-solaris-sparc" />
-		<!-- changes executables to default mode!
-				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
-				compression="gzip" excludes="**/build/** **/CVS/** **/*.exe"/> -->
-		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-solaris-sparc.tgz ./launch4j" />
-		</exec>
-	</target>
-
-	<target name="dist.macosx-ppc" depends="remove-sign4j, jar, webdocs" description="generate the PPC Mac OS X distribution">
-		<antcall target="binutils-macosx-ppc" />
-		<!-- changes executables to default mode!
-				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
-				compression="gzip" excludes="**/build/** **/CVS/** **/*.exe"/> -->
-		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-macosx-ppc.tgz ./launch4j" />
-		</exec>
-	</target>
-	
-	<target name="dist.macosx-x86" depends="remove-sign4j, jar, webdocs" description="generate the x86 Mac OS X distribution">
-		<antcall target="binutils-macosx-x86" />
-		<!-- changes executables to default mode!
-				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
-				compression="gzip" excludes="**/build/** **/CVS/** **/*.exe"/> -->
-		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-macosx-x86.tgz ./launch4j" />
-		</exec>
-	</target>
-	
-	<target name="dist.macosx-x86-10.8" depends="remove-sign4j, jar, webdocs" description="generate the x86 Mac OS X 10.8 distribution">
-		<antcall target="binutils-macosx-x86-10.8" />
-		<!-- changes executables to default mode!
-				<tar tarfile="${dist}/${ant.project.name}-${version}-linux.tgz" basedir="."
-				compression="gzip" excludes="**/build/** **/CVS/** **/*.exe"/> -->
-		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-macosx-x86-10.8.tgz ./launch4j" />
 		</exec>
 	</target>
 
@@ -209,21 +118,6 @@
 			<filelist dir="${web.src}" files="header.html, links.html, footer.html" />
 		</concat>
 
-		<!-- *** outdated ***
-		<concat destfile="${build.web}/index_es.html">
-			<filelist dir="${web.src}" files="header_es.html, index_es.html, footer_es.html" />
-		</concat>
-		<concat destfile="${build.web}/changelog_es.html">
-			<filelist dir="${web.src}" files="header_es.html, changelog_es.html, footer_es.html" />
-		</concat>
-		<concat destfile="${build.web}/docs_es.html">
-			<filelist dir="${web.src}" files="header_es.html, docs_es.html, footer_es.html" />
-		</concat>
-		<concat destfile="${build.web}/links_es.html">
-			<filelist dir="${web.src}" files="header_es.html, links_es.html, footer_es.html" />
-		</concat>
-		-->
-
 		<replace dir="${build.web}">
 			<include name="**/*.html"/>
 			<replacefilter token="$$version" value="${version}"/>
@@ -237,7 +131,7 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="demo, webdocs, dist.win32, dist.macosx-ppc, dist.macosx-x86, dist.macosx-x86-10.8, dist.linux, dist.solaris-sparc, clean"
+	<target name="dist" depends="demo, webdocs, dist.win32, dist.linux, clean"
 		description="generate all distributions" />
 
 	<target name="clean-binutils">
