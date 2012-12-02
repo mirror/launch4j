@@ -149,10 +149,12 @@ public class RcBuilder {
 
 		// MAIN_CLASS / JAR
 		addTrue(WRAPPER, !c.isDontWrapJar());
+
 		if (c.getClassPath() != null) {
 			addText(MAIN_CLASS, c.getClassPath().getMainClass());
 			addWindowsPath(CLASSPATH, c.getClassPath().getPathsString());
 		}
+
 		if (c.isDontWrapJar() && c.getJar() != null) {
 			addWindowsPath(JAR, c.getJar().getPath());
 		}
@@ -168,6 +170,7 @@ public class RcBuilder {
 		if (v == null) {
 			return;
 		}
+
 		_sb.append("1 VERSIONINFO\n");
 		_sb.append("FILEVERSION ");
 		_sb.append(v.getFileVersion().replaceAll("\\.", ", "));
@@ -181,6 +184,7 @@ public class RcBuilder {
 				" {\n" +
 				"  BLOCK \"040904E4\"\n" +	// English
 				"  {\n");
+
 		addVerBlockValue("CompanyName", v.getCompanyName());
 		addVerBlockValue("FileDescription", v.getFileDescription());
 		addVerBlockValue("FileVersion", v.getTxtFileVersion());
@@ -203,10 +207,12 @@ public class RcBuilder {
 		addInteger(MAX_HEAP_PERCENT, jre.getMaxHeapPercent());
 
 		StringBuffer options = new StringBuffer();
+
 		if (jre.getOptions() != null && !jre.getOptions().isEmpty()) {
 			addSpace(options);
 			append(options, jre.getOptions(), " ");
 		}
+
 		addText(JVM_OPTIONS, options.toString());
 	}
 	
@@ -214,6 +220,7 @@ public class RcBuilder {
 		if (splash == null) {
 			return;
 		}
+
 		addTrue(SHOW_SPLASH, true);
 		addTrue(SPLASH_WAITS_FOR_WINDOW, splash.getWaitForWindow());
 		addText(SPLASH_TIMEOUT, String.valueOf(splash.getTimeout()));
@@ -223,21 +230,25 @@ public class RcBuilder {
 	
 	private void addMessages(Config c) {
 		Msg msg = c.getMessages();
+
 		if (msg == null) {
 			msg = new Msg();
 		}
+
 		addText(STARTUP_ERR, msg.getStartupErr());
 		addText(BUNDLED_JRE_ERR, msg.getBundledJreErr());
 		addText(JRE_VERSION_ERR, msg.getJreVersionErr());
 		addText(LAUNCHER_ERR, msg.getLauncherErr());
+
 		if (c.getSingleInstance() != null) {
 			addText(INSTANCE_ALREADY_EXISTS_MSG, msg.getInstanceAlreadyExistsMsg());
 		}
 	}
 
-	private void append(StringBuffer sb, List list, String separator) {
+	private void append(StringBuffer sb, List<String> list, String separator) {
 		for (int i = 0; i < list.size(); i++) {
 			sb.append(list.get(i));
+
 			if (i < list.size() - 1) {
 				sb.append(separator);
 			}
@@ -248,6 +259,7 @@ public class RcBuilder {
 		if (text == null || text.equals("")) {
 			return;
 		}
+
 		_sb.append(id);
 		_sb.append(" RCDATA BEGIN \"");
 		_sb.append(escape(text));
@@ -273,6 +285,7 @@ public class RcBuilder {
 		if (path == null || path.equals("")) {
 			return;
 		}
+
 		_sb.append(id);
 		_sb.append(" RCDATA BEGIN \"");
 		_sb.append(path.replaceAll("\\\\", "\\\\\\\\")
@@ -284,6 +297,7 @@ public class RcBuilder {
 		if (manifest == null || manifest.getPath().equals("")) {
 			return;
 		}
+
 		_sb.append(id);
 		_sb.append(" 24 \"");
 		_sb.append(getPath(Util.getAbsoluteFile(
@@ -295,6 +309,7 @@ public class RcBuilder {
 		if (icon == null || icon.getPath().equals("")) {
 			return;
 		}
+
 		_sb.append(id);
 		_sb.append(" ICON DISCARDABLE \"");
 		_sb.append(getPath(Util.getAbsoluteFile(
@@ -306,6 +321,7 @@ public class RcBuilder {
 		if (bitmap == null) {
 			return;
 		}
+
 		_sb.append(id);
 		_sb.append(" BITMAP \"");
 		_sb.append(getPath(Util.getAbsoluteFile(
@@ -319,6 +335,7 @@ public class RcBuilder {
 	
 	private void addSpace(StringBuffer sb) {
 		int len = sb.length();
+
 		if (len-- > 0 && sb.charAt(len) != ' ') {
 			sb.append(' ');
 		}
@@ -328,9 +345,11 @@ public class RcBuilder {
 		_sb.append("   VALUE \"");
 		_sb.append(key);
 		_sb.append("\", \"");
+
 		if (value != null) {
 			_sb.append(escape(value));
 		}
+
 		_sb.append("\"\n");
 	}
 

@@ -37,7 +37,6 @@
 package net.sf.launch4j.ant;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -46,14 +45,17 @@ import java.util.List;
 public class StringWrapper {
 	private String text;
 
-	public static List unwrap(List wrappers) {
+	public static List<String> unwrap(List<StringWrapper> wrappers) {
 		if (wrappers.isEmpty()) {
 			return null;
 		}
-		List strings = new ArrayList(wrappers.size());
-		for (Iterator iter = wrappers.iterator(); iter.hasNext();) {
-			strings.add(iter.next().toString());
+
+		List<String> strings = new ArrayList<String>(wrappers.size());
+
+		for (StringWrapper w : wrappers) {
+			strings.add(w.toString());
 		}
+
 		return strings;
 	}
 

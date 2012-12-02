@@ -37,7 +37,6 @@
 package net.sf.launch4j;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Properties;
 
 import net.sf.launch4j.config.ConfigPersister;
@@ -52,11 +51,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
-			Properties props = new Properties();
-			InputStream in = Main.class.getClassLoader()
-					.getResourceAsStream("launch4j.properties");
-			props.load(in);
-			in.close();
+			Properties props = Util.getProperties();
 			setDescription(props);
 
 			if (args.length == 0) {

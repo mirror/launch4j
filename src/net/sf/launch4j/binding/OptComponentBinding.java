@@ -50,23 +50,26 @@ import org.apache.commons.beanutils.PropertyUtils;
 public class OptComponentBinding implements Binding, ActionListener {
 	private final Bindings _bindings;
 	private final String _property;
-	private final Class _clazz;
+	private final Class<? extends IValidatable> _clazz;
 	private final JToggleButton _button;
 	private final boolean _enabledByDefault;
 
-	public OptComponentBinding(Bindings bindings, String property, Class clazz,
+	public OptComponentBinding(Bindings bindings, String property, Class<? extends IValidatable> clazz,
 								JToggleButton button, boolean enabledByDefault) {
 		if (property == null || clazz == null || button == null) {
 			throw new NullPointerException();
 		}
+
 		if (property.equals("")) {
 			throw new IllegalArgumentException();
 		}
+
 		if (!Arrays.asList(clazz.getInterfaces()).contains(IValidatable.class)) {
 			throw new IllegalArgumentException(
 					Messages.getString("OptComponentBinding.must.implement")
 					+ IValidatable.class);
 		}
+
 		_bindings = bindings;
 		_property = property;
 		_clazz = clazz;

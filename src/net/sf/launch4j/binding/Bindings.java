@@ -39,7 +39,6 @@ package net.sf.launch4j.binding;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.JComboBox;
@@ -58,8 +57,8 @@ import org.apache.commons.beanutils.PropertyUtils;
  * @author Copyright (C) 2005 Grzegorz Kowal
  */
 public class Bindings implements PropertyChangeListener {
-	private final Map _bindings = new HashMap();
-	private final Map _optComponents = new HashMap();
+	private final Map<String, Binding> _bindings = new HashMap<String, Binding>();
+	private final Map<String, Binding> _optComponents = new HashMap<String, Binding>();
 	private boolean _modified = false;
 
 	/**
@@ -82,27 +81,27 @@ public class Bindings implements PropertyChangeListener {
 	}
 
 	public Binding getBinding(String property) {
-		return (Binding) _bindings.get(property);
+		return _bindings.get(property);
 	}
 
 	private void registerPropertyChangeListener(JComponent c) {
 		c.getAccessibleContext().addPropertyChangeListener(this);
 	}
 
-	private void registerPropertyChangeListener(JComponent[] cs) {
-		for (int i = 0; i < cs.length; i++) {
-			cs[i].getAccessibleContext().addPropertyChangeListener(this);
+	private void registerPropertyChangeListener(JComponent[] components) {
+		for (JComponent c : components) {
+			c.getAccessibleContext().addPropertyChangeListener(this);
 		}
 	}
 
 	private boolean isPropertyNull(IValidatable bean, Binding b) {
 		try {
-			for (Iterator iter = _optComponents.keySet().iterator(); iter.hasNext();) {
-				String property = (String) iter.next();
+			for (String property : _optComponents.keySet()) {
 				if (b.getProperty().startsWith(property)) {
 					return PropertyUtils.getProperty(bean, property) == null;
 				}
 			}
+
 			return false;
 		} catch (Exception e) {
 			throw new BindingException(e);
@@ -113,8 +112,7 @@ public class Bindings implements PropertyChangeListener {
 	 * Enables or disables all components bound to properties that begin with given prefix.
 	 */
 	public void setComponentsEnabled(String prefix, boolean enabled) {
-		for (Iterator iter = _bindings.values().iterator(); iter.hasNext();) {
-			Binding b = (Binding) iter.next();
+		for (Binding b : _bindings.values()) {
 			if (b.getProperty().startsWith(prefix)) {
 				b.setEnabled(enabled);
 			}
@@ -126,12 +124,14 @@ public class Bindings implements PropertyChangeListener {
 	 * Clears the _modified flag.
 	 */
 	public void clear(IValidatable bean) {
-		for (Iterator iter = _optComponents.values().iterator(); iter.hasNext();) {
-			((Binding) iter.next()).clear(bean);
+		for (Binding b : _optComponents.values()) {
+			b.clear(bean);
 		}
-		for (Iterator iter = _bindings.values().iterator(); iter.hasNext();) {
-			((Binding) iter.next()).clear(bean);
+
+		for (Binding b : _bindings.values()) {
+			b.clear(bean);
 		}
+
 		_modified = false;
 	}
 
@@ -140,17 +140,18 @@ public class Bindings implements PropertyChangeListener {
 	 * Clears the _modified flag.
 	 */
 	public void put(IValidatable bean) {
-		for (Iterator iter = _optComponents.values().iterator(); iter.hasNext();) {
-			((Binding) iter.next()).put(bean);
+		for (Binding b : _optComponents.values()) {
+			b.put(bean);
 		}
-		for (Iterator iter = _bindings.values().iterator(); iter.hasNext();) {
-			Binding b = (Binding) iter.next();
+
+		for (Binding b : _bindings.values()) {
 			if (isPropertyNull(bean, b)) {
 				b.clear(null);
 			} else {
 				b.put(bean);
 			}
 		}
+
 		_modified = false;
 	}
 
@@ -162,24 +163,27 @@ public class Bindings implements PropertyChangeListener {
 	 */
 	public void get(IValidatable bean) {
 		try {
-			for (Iterator iter = _optComponents.values().iterator(); iter.hasNext();) {
-				((Binding) iter.next()).get(bean);
+			for (Binding b : _optComponents.values()) {
+				b.get(bean);
 			}
-			for (Iterator iter = _bindings.values().iterator(); iter.hasNext();) {
-				Binding b = (Binding) iter.next();
+
+			for (Binding b : _bindings.values()) {
 				if (!isPropertyNull(bean, b)) {
 					b.get(bean);
 				}
 			}
+
 			bean.checkInvariants();
-			for (Iterator iter = _optComponents.keySet().iterator(); iter.hasNext();) {
-				String property = (String) iter.next();
+			
+			for (String property : _optComponents.keySet()) {
 				IValidatable component = (IValidatable) PropertyUtils.getProperty(bean,
 						property);
+
 				if (component != null) {
 					component.checkInvariants();
 				}
 			}
+
 			_modified = false;	// XXX
 		} catch (InvariantViolationException e) {
 			e.setBinding(getBinding(e.getProperty()));
@@ -193,6 +197,7 @@ public class Bindings implements PropertyChangeListener {
 		if (_bindings.containsKey(b.getProperty())) {
 			throw new BindingException(Messages.getString("Bindings.duplicate.binding"));
 		}
+
 		_bindings.put(b.getProperty(), b);
 		return this;
 	}
@@ -200,12 +205,14 @@ public class Bindings implements PropertyChangeListener {
 	/**
 	 * Add an optional (nullable) Java Bean component of type clazz.
 	 */
-	public Bindings addOptComponent(String property, Class clazz, JToggleButton c,
+	public Bindings addOptComponent(String property, Class<? extends IValidatable> clazz, JToggleButton c,
 			boolean enabledByDefault) {
 		Binding b = new OptComponentBinding(this, property, clazz, c, enabledByDefault);
+
 		if (_optComponents.containsKey(property)) {
 			throw new BindingException(Messages.getString("Bindings.duplicate.binding"));
 		}
+
 		_optComponents.put(property, b);
 		return this;
 	}
@@ -213,7 +220,7 @@ public class Bindings implements PropertyChangeListener {
 	/**
 	 * Add an optional (nullable) Java Bean component of type clazz.
 	 */
-	public Bindings addOptComponent(String property, Class clazz, JToggleButton c) {
+	public Bindings addOptComponent(String property, Class<? extends IValidatable> clazz, JToggleButton c) {
 		return addOptComponent(property, clazz, c, false);
 	}
 

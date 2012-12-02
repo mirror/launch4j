@@ -78,7 +78,7 @@ public class Jre implements IValidatable {
 	private Integer initialHeapPercent;
 	private Integer maxHeapSize;
 	private Integer maxHeapPercent;
-	private List options;
+	private List<String> options;
 
 	public void checkInvariants() {
 		Validator.checkOptString(minVersion, 10, VERSION_PATTERN,
@@ -139,11 +139,11 @@ public class Jre implements IValidatable {
 	}
 
 	/** JVM options */
-	public List getOptions() {
+	public List<String> getOptions() {
 		return options;
 	}
 
-	public void setOptions(List options) {
+	public void setOptions(List<String> options) {
 		this.options = options;
 	}
 

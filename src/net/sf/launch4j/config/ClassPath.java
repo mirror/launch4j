@@ -46,7 +46,7 @@ import net.sf.launch4j.binding.Validator;
  */
 public class ClassPath implements IValidatable {
 	private String mainClass;
-	private List paths;
+	private List<String> paths;
 
 	public void checkInvariants() {
 		Validator.checkString(mainClass, Validator.MAX_PATH, "mainClass",
@@ -66,22 +66,25 @@ public class ClassPath implements IValidatable {
 		this.mainClass = mainClass;
 	}
 
-	public List getPaths() {
+	public List<String> getPaths() {
 		return paths;
 	}
 
-	public void setPaths(List paths) {
+	public void setPaths(List<String> paths) {
 		this.paths = paths;
 	}
 
 	public String getPathsString() {
 		StringBuffer sb = new StringBuffer();
+
 		for (int i = 0; i < paths.size(); i++) {
 			sb.append(paths.get(i));
+
 			if (i < paths.size() - 1) {
 				sb.append(';');
 			}
 		}
+
 		return sb.toString();
 	}
 }

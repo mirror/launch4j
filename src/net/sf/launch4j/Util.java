@@ -44,6 +44,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,8 +56,18 @@ import java.util.regex.Pattern;
 public class Util {
 	public static final boolean WINDOWS_OS = System.getProperty("os.name")
 			.toLowerCase().startsWith("windows");
+	
+	private static final String Launch4jProperties = "launch4j.properties";
 
 	private Util() {}
+	
+	public static Properties getProperties() throws IOException {
+		Properties props = new Properties();
+		InputStream in = Main.class.getClassLoader().getResourceAsStream(Launch4jProperties);
+		props.load(in);
+		in.close();
+		return props;
+	}
 
 	public static File createTempFile(String suffix) throws IOException {
 		String tmpdir = System.getProperty("launch4j.tmpdir");
@@ -68,27 +81,29 @@ public class Util {
 		}
 	}
 
-	/**
-	 * Returns the base directory of a jar file or null if the class is a standalone file. 
-	 * @return System specific path
-	 * 
-	 * Based on a patch submitted by Josh Elsasser
-	 */
 	public static File getJarBasedir() {
-		String url = Util.class.getClassLoader()
-				.getResource(Util.class.getName().replace('.', '/') + ".class")
-				.getFile()
-				.replaceAll("%20", " ");
-		if (url.startsWith("file:")) {
-			String jar = url.substring(5, url.lastIndexOf('!'));
-			int x = jar.lastIndexOf('/');
-			if (x == -1) {
-				x = jar.lastIndexOf('\\');	
+		try {
+			URI uri = new URI(Util.class.getClassLoader()
+					.getResource(Launch4jProperties)
+					.getFile());
+		
+			String path = uri.getPath();
+	
+			if (path.startsWith("file:")) {
+				String jarPath = path.substring(5, path.lastIndexOf('!'));
+				int x = jarPath.lastIndexOf('/');
+	
+				if (x == -1) {
+					x = jarPath.lastIndexOf('\\');	
+				}
+				
+				String basedir = jarPath.substring(0, x + 1);
+				return new File(basedir);
+			} else {
+				return new File(".");
 			}
-			String basedir = jar.substring(0, x + 1);
-			return new File(basedir);
-		} else {
-			return new File(".");
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

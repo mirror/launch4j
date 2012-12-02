@@ -41,17 +41,17 @@ import java.util.List;
 
 public class LdDefaults {
 
-	public static final List GUI_HEADER_OBJECTS = Arrays.asList(new String[] {
+	public static final List<String> GUI_HEADER_OBJECTS = Arrays.asList(new String[] {
 			"w32api/crt2.o",
 			"head/guihead.o",
 			"head/head.o" });
 
-	public static final List CONSOLE_HEADER_OBJECTS = Arrays.asList(new String[] {
+	public static final List<String> CONSOLE_HEADER_OBJECTS = Arrays.asList(new String[] {
 			"w32api/crt2.o",
 			"head/consolehead.o",
 			"head/head.o"});
 
-	public static final List LIBS = Arrays.asList(new String[] {
+	public static final List<String> LIBS = Arrays.asList(new String[] {
 			"w32api/libmingw32.a",
 			"w32api/libgcc.a",
 			"w32api/libmsvcrt.a",

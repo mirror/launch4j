@@ -45,7 +45,7 @@ import net.sf.launch4j.config.Jre;
  * @author Copyright (C) 2006 Grzegorz Kowal
  */
 public class AntJre extends Jre {
-	private final List wrappedOptions = new ArrayList();
+	private final List<StringWrapper> wrappedOptions = new ArrayList<StringWrapper>();
 
 	public void addOpt(StringWrapper opt) {
 		wrappedOptions.add(opt);

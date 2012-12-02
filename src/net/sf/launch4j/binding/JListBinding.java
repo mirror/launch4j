@@ -38,7 +38,6 @@ package net.sf.launch4j.binding;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -77,12 +76,14 @@ public class JListBinding implements Binding {
 	public void put(IValidatable bean) {
 		try {
 			DefaultListModel model = new DefaultListModel();
-			List list = (List) PropertyUtils.getProperty(bean, _property);
+			List<?> list = (List<?>) PropertyUtils.getProperty(bean, _property);
+
 			if (list != null) {
-				for (Iterator iter = list.iterator(); iter.hasNext();) {
-					model.addElement(iter.next());
+				for (Object o : list) {
+					model.addElement(o);
 				}
 			}
+
 			_list.setModel(model);
 		} catch (Exception e) {
 			throw new BindingException(e);
@@ -93,10 +94,12 @@ public class JListBinding implements Binding {
 		try {
 			DefaultListModel model = (DefaultListModel) _list.getModel();
 			final int size = model.getSize();
-			List list = new ArrayList(size);
+			List<Object> list = new ArrayList<Object>(size);
+
 			for (int i = 0; i < size; i++) {
 				list.add(model.get(i));
 			}
+
 			PropertyUtils.setProperty(bean, _property, list);
 		} catch (Exception e) {
 			throw new BindingException(e);

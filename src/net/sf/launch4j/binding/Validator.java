@@ -38,9 +38,6 @@ package net.sf.launch4j.binding;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import net.sf.launch4j.Util;
@@ -84,16 +81,18 @@ public class Validator {
 		}
 	}
 
-	public static void checkOptStrings(List strings, int maxLength, int totalMaxLength,
+	public static void checkOptStrings(List<String> strings, int maxLength, int totalMaxLength,
 			String property, String name) {
 		if (strings == null) {
 			return;
 		}
+
 		int totalLength = 0;
-		for (Iterator iter = strings.iterator(); iter.hasNext();) {
-			String s = (String) iter.next();
+
+		for (String s : strings) {
 			checkString(s, maxLength, property, name);
 			totalLength += s.length();
+
 			if (totalLength > totalMaxLength) {
 				signalLengthViolation(property, name, totalMaxLength);
 			}
@@ -103,27 +102,32 @@ public class Validator {
 	public static void checkString(String s, int maxLength, String pattern,
 			String property, String name) {
 		checkString(s, maxLength, property, name);
+
 		if (!s.matches(pattern)) {
 			signalViolation(property,
 					Messages.getString("Validator.invalid.data", name));
 		}
 	}
 
-	public static void checkOptStrings(List strings, int maxLength, int totalMaxLength,
+	public static void checkOptStrings(List<String> strings, int maxLength, int totalMaxLength,
 			String pattern, String property, String name, String msg) {
 		if (strings == null) {
 			return;
 		}
+
 		int totalLength = 0;
-		for (Iterator iter = strings.iterator(); iter.hasNext();) {
-			String s = (String) iter.next();
+
+		for (String s : strings) {
 			checkString(s, maxLength, property, name);
+
 			if (!s.matches(pattern)) {
 				signalViolation(property, msg != null
 						? msg 
 						: Messages.getString("Validator.invalid.data", name));
 			}
+			
 			totalLength += s.length();
+			
 			if (totalLength > totalMaxLength) {
 				signalLengthViolation(property, name, totalMaxLength);
 			}
@@ -135,6 +139,7 @@ public class Validator {
 		if (s == null || s.length() == 0) {
 			return;
 		}
+
 		if (s.length() > maxLength) {
 			signalLengthViolation(property, name, maxLength);
 		}
@@ -145,9 +150,11 @@ public class Validator {
 		if (s == null || s.length() == 0) {
 			return;
 		}
+
 		if (s.length() > maxLength) {
 			signalLengthViolation(property, name, maxLength);
 		}
+
 		if (!s.matches(pattern)) {
 			signalViolation(property,
 					Messages.getString("Validator.invalid.data", name));
@@ -185,7 +192,9 @@ public class Validator {
 			signalViolation(property,
 					Messages.getString("Validator.empty.field", name));
 		}
-		List list = Arrays.asList(strings);
+
+		List<String> list = Arrays.asList(strings);
+
 		if (!list.contains(s)) {
 			signalViolation(property,
 					Messages.getString("Validator.invalid.option", name, list.toString())); 
@@ -204,22 +213,6 @@ public class Validator {
 		}
 	}
 	
-	public static void checkElementsNotNullUnique(Collection c, String property,
-			String msg) {
-		if (c.contains(null)
-				|| new HashSet(c).size() != c.size()) {
-			signalViolation(property,
-					Messages.getString("Validator.already.exists", msg)); 
-		}
-	}
-
-	public static void checkElementsUnique(Collection c, String property, String msg) {
-		if (new HashSet(c).size() != c.size()) {
-			signalViolation(property,
-					Messages.getString("Validator.already.exists", msg));
-		}
-	}
-
 	public static void checkFile(File f, String property, String fileDescription) {
 		File cfgPath = ConfigPersister.getInstance().getConfigPath();
 		if (f == null

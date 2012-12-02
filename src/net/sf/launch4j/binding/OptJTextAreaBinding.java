@@ -88,8 +88,9 @@ public class OptJTextAreaBinding implements Binding, ActionListener {
 					_stateProperty));
 			_button.setSelected(selected);
 			_textArea.setEnabled(selected);
-			List list = (List) PropertyUtils.getProperty(bean, _property);
+			List<?> list = (List<?>) PropertyUtils.getProperty(bean, _property);
 			StringBuffer sb = new StringBuffer();
+
 			if (list != null) {
 				for (int i = 0; i < list.size(); i++) {
 					sb.append(list.get(i));
@@ -98,6 +99,7 @@ public class OptJTextAreaBinding implements Binding, ActionListener {
 					}
 				}
 			}
+
 			_textArea.setText(sb.toString());
 		} catch (Exception e) {
 			throw new BindingException(e);
@@ -107,12 +109,15 @@ public class OptJTextAreaBinding implements Binding, ActionListener {
 	public void get(IValidatable bean) {
 		try {
 			String text = _textArea.getText();
+
 			if (_button.isSelected() && !text.equals("")) {
 				String[] items = text.split("\n");
-				List list = new ArrayList();
-				for (int i = 0; i < items.length; i++) {
-					list.add(items[i]);
+				List<Object> list = new ArrayList<Object>();
+
+				for (String s : items) {
+					list.add(s);
 				}
+
 				PropertyUtils.setProperty(bean, _property, list);
 			} else {
 				PropertyUtils.setProperty(bean, _property, null);

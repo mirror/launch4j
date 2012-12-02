@@ -78,8 +78,8 @@ public class Config implements IValidatable {
 
 	private boolean dontWrapJar;
 	private String headerType = GUI_HEADER;
-	private List headerObjects;
-	private List libs;
+	private List<String> headerObjects;
+	private List<String> libs;
 	private File jar;
 	private File outfile;
 
@@ -94,7 +94,7 @@ public class Config implements IValidatable {
 	private boolean stayAlive;
 	private File manifest;
 	private File icon;
-	private List variables;
+	private List<String> variables;
 	private SingleInstance singleInstance;
 	private ClassPath classPath;
 	private Jre jre;
@@ -214,14 +214,14 @@ public class Config implements IValidatable {
 		return headerObjects != null && !headerObjects.isEmpty();
 	}
 
-	public List getHeaderObjects() {
+	public List<String> getHeaderObjects() {
 		return isCustomHeaderObjects() ? headerObjects
 				: getHeaderType().equals(GUI_HEADER)
 						? LdDefaults.GUI_HEADER_OBJECTS
 						: LdDefaults.CONSOLE_HEADER_OBJECTS;
 	}
 
-	public void setHeaderObjects(List headerObjects) {
+	public void setHeaderObjects(List<String> headerObjects) {
 		this.headerObjects = headerObjects;
 	}
 
@@ -229,11 +229,11 @@ public class Config implements IValidatable {
 		return libs != null && !libs.isEmpty();
 	}
 
-	public List getLibs() {
+	public List<String> getLibs() {
 		return isCustomLibs() ? libs : LdDefaults.LIBS;
 	}
 
-	public void setLibs(List libs) {
+	public void setLibs(List<String> libs) {
 		this.libs = libs;
 	}
 
@@ -264,11 +264,11 @@ public class Config implements IValidatable {
 		this.jar = jar;
 	}
 
-	public List getVariables() {
+	public List<String> getVariables() {
 		return variables;
 	}
 
-	public void setVariables(List variables) {
+	public void setVariables(List<String> variables) {
 		this.variables = variables;
 	}
 

@@ -121,6 +121,7 @@ public class ConfigPersister {
 			char[] buf = new char[(int) f.length()];
 			r.read(buf);
 	    	r.close();
+
 	    	// Convert 2.x config to 3.x
 	    	String s = String.valueOf(buf)
 	    			.replaceAll("<headerType>0<", "<headerType>gui<")
@@ -135,6 +136,7 @@ public class ConfigPersister {
 	    					"<jdkPreference>" + Jre.JDK_PREFERENCE_JRE_ONLY + "</jdkPreference>")
 	    			.replaceAll("<initialHeapSize>0</initialHeapSize>", "")
 	    			.replaceAll("<maxHeapSize>0</maxHeapSize>", "");
+
 	    	_config = (Config) _xstream.fromXML(s);
 	    	setConfigPath(f);
 		} catch (Exception e) {
@@ -159,12 +161,15 @@ public class ConfigPersister {
 			_config.getJre().setPath(props.getProperty(Jre.PATH));
 			_config.getJre().setMinVersion(props.getProperty(Jre.MIN_VERSION));
 			_config.getJre().setMaxVersion(props.getProperty(Jre.MAX_VERSION));
+
 			String args = props.getProperty(Jre.ARGS);
+
 			if (args != null) {
-				List jreOptions = new ArrayList();
+				List<String> jreOptions = new ArrayList<String>();
 				jreOptions.add(args);
 				_config.getJre().setOptions(jreOptions);
 			}
+
 			_config.setCmdLine(props.getProperty(Config.JAR_ARGS));
 			_config.setChdir("true".equals(props.getProperty(Config.CHDIR))
 					? "." : null);
@@ -173,7 +178,9 @@ public class ConfigPersister {
 			_config.setStayAlive("true".equals(props.getProperty(Config.STAY_ALIVE)));
 			_config.setErrTitle(props.getProperty(Config.ERR_TITLE));
 			_config.setIcon(props.getFile(Config.ICON));
+
 			File splashFile = props.getFile(Splash.SPLASH_FILE);
+
 			if (splashFile != null) {
 				_config.setSplash(new Splash());
 				_config.getSplash().setFile(splashFile);
@@ -228,16 +235,21 @@ public class ConfigPersister {
 		 */
 		public String getProperty(String key) {
 			String p = _properties.getProperty(key);
+
 			if (p == null) {
 				return null;
 			}
+
 			int x = p.indexOf('#');
+			
 			if (x == -1) {
 				return p;
 			}
+			
 			do {
 				x--;
 			} while (x > 0 && (p.charAt(x) == ' ' || p.charAt(x) == '\t'));
+			
 			return (x == 0) ? "" : p.substring(0, x + 1);
 		}
 

@@ -41,7 +41,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -155,13 +154,14 @@ public class Builder {
 }
 
 class Cmd {
-	private final List _cmd = new ArrayList();
+	private final List<String> _cmd = new ArrayList<String>();
 	private final File _basedir;
 	private final File _bindir;
 
 	public Cmd(File basedir) {
 		_basedir = basedir;
 		String path = System.getProperty("launch4j.bindir");
+
 		if (path == null) {
 			_bindir = new File(basedir, "bin");
 		} else {
@@ -172,9 +172,11 @@ class Cmd {
 
 	public Cmd add(String s) {
 		StringTokenizer st = new StringTokenizer(s);
+
 		while (st.hasMoreTokens()) {
 			_cmd.add(st.nextToken());
 		}
+
 		return this;
 	}
 
@@ -192,14 +194,16 @@ class Cmd {
 		if (Util.WINDOWS_OS) {
 			pathname += ".exe";
 		}
+
 		_cmd.add(new File(_bindir, pathname).getPath());
 		return this;
 	}
 
-	public Cmd addFiles(List files) {
-		for (Iterator iter = files.iterator(); iter.hasNext();) {
-			addFile((String) iter.next());
+	public Cmd addFiles(List<String> files) {
+		for (String f : files) {
+			addFile(f);
 		}
+
 		return this;
 	}
 

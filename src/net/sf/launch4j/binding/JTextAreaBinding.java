@@ -74,8 +74,9 @@ public class JTextAreaBinding implements Binding {
 
 	public void put(IValidatable bean) {
 		try {
-			List list = (List) PropertyUtils.getProperty(bean, _property);
+			List<?> list = (List<?>) PropertyUtils.getProperty(bean, _property);
 			StringBuffer sb = new StringBuffer();
+
 			if (list != null) {
 				for (int i = 0; i < list.size(); i++) {
 					sb.append(list.get(i));
@@ -84,6 +85,7 @@ public class JTextAreaBinding implements Binding {
 					}
 				}
 			}
+
 			_textArea.setText(sb.toString());
 		} catch (Exception e) {
 			throw new BindingException(e);
@@ -93,12 +95,15 @@ public class JTextAreaBinding implements Binding {
 	public void get(IValidatable bean) {
 		try {
 			String text = _textArea.getText();
+
 			if (!text.equals("")) {
 				String[] items = text.split("\n");
-				List list = new ArrayList();
+				List<Object> list = new ArrayList<Object>();
+
 				for (int i = 0; i < items.length; i++) {
 					list.add(items[i]);
 				}
+
 				PropertyUtils.setProperty(bean, _property, list);
 			} else {
 				PropertyUtils.setProperty(bean, _property, null);

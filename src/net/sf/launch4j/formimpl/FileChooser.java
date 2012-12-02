@@ -48,11 +48,12 @@ public class FileChooser extends JFileChooser {
 	private final Preferences _prefs;
 	private final String _key;
 
-	public FileChooser(Class clazz) {
+	public FileChooser(Class<?> clazz) {
 		_prefs = Preferences.userNodeForPackage(clazz);
 		_key = "currentDir-"
 			+ clazz.getName().substring(clazz.getName().lastIndexOf('.') + 1);
 		String path = _prefs.get(_key, null);
+
 		if (path != null) {
 			setCurrentDirectory(new File(path));
 		}

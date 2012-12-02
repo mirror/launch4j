@@ -52,9 +52,9 @@ import net.sf.launch4j.config.VersionInfo;
  * @author Copyright (C) 2005 Grzegorz Kowal
  */
 public class AntConfig extends Config {
-	private final List wrappedHeaderObjects = new ArrayList();
-	private final List wrappedLibs = new ArrayList();
-	private final List wrappedVariables = new ArrayList();
+	private final List<StringWrapper> wrappedHeaderObjects = new ArrayList<StringWrapper>();
+	private final List<StringWrapper> wrappedLibs = new ArrayList<StringWrapper>();
+	private final List<StringWrapper> wrappedVariables = new ArrayList<StringWrapper>();
 
 	public void setJarPath(String path) {
 		setJar(new File(path));
@@ -110,9 +110,11 @@ public class AntConfig extends Config {
 		setHeaderObjects(StringWrapper.unwrap(wrappedHeaderObjects));
 		setLibs(StringWrapper.unwrap(wrappedLibs));
 		setVariables(StringWrapper.unwrap(wrappedVariables));
+
 		if (getClassPath() != null) {
 			((AntClassPath) getClassPath()).unwrap();
 		}
+
 		if (getJre() != null) {
 			((AntJre) getJre()).unwrap();
 		}
