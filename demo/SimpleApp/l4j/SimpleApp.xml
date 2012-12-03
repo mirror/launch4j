@@ -7,7 +7,7 @@
   <customProcName>true</customProcName>
   <icon>SimpleApp.ico</icon>
   <jre>
-    <minVersion>1.4.0</minVersion>
+    <minVersion>1.6.0</minVersion>
   </jre>
   <splash>
     <file>splash.bmp</file>
