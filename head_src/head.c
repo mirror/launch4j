@@ -337,77 +337,6 @@ void appendJavaw(char* jrePath) {
     }
 }
 
-void appendLauncher(const BOOL setProcName, char* exePath,
-		const int pathLen, char* cmd) {
-	if (setProcName) {
-		char tmpspec[_MAX_PATH];
-		char tmpfile[_MAX_PATH];
-		strcpy(tmpspec, cmd);
-		strcat(tmpspec, LAUNCH4J_TMP_DIR);
-		tmpspec[strlen(tmpspec) - 1] = 0;
-		if (_stat(tmpspec, &statBuf) == 0) {
-			// Remove temp launchers and manifests
-			struct _finddata_t c_file;
-			long hFile;
-			appendPath(tmpspec, "*.exe");
-			strcpy(tmpfile, cmd);
-			strcat(tmpfile, LAUNCH4J_TMP_DIR);
-			char* filename = tmpfile + strlen(tmpfile);
-			if ((hFile = _findfirst(tmpspec, &c_file)) != -1L) {
-				do {
-					strcpy(filename, c_file.name);
-					debug("Unlink:\t\t%s\n", tmpfile);
-					_unlink(tmpfile);
-					strcat(tmpfile, MANIFEST);
-					debug("Unlink:\t\t%s\n", tmpfile);
-					_unlink(tmpfile);
-				} while (_findnext(hFile, &c_file) == 0);
-			}
-			_findclose(hFile);
-		} else {
-			if (_mkdir(tmpspec) != 0) {
-				debug("Mkdir failed:\t%s\n", tmpspec);
-				appendJavaw(cmd);
-				return;
-			}
-		}
-		char javaw[_MAX_PATH];
-		strcpy(javaw, cmd);
-		appendJavaw(javaw);
-		strcpy(tmpfile, cmd);
-		strcat(tmpfile, LAUNCH4J_TMP_DIR);
-		char* tmpfilename = tmpfile + strlen(tmpfile);
-		char* exeFilePart = exePath + pathLen + 1;
-
-		// Copy manifest
-		char manifest[_MAX_PATH] = {0};
-		strcpy(manifest, exePath);
-		strcat(manifest, MANIFEST);
-		if (_stat(manifest, &statBuf) == 0) {
-			strcat(tmpfile, exeFilePart);
-			strcat(tmpfile, MANIFEST);
-			debug("Copy:\t\t%s -> %s\n", manifest, tmpfile);
-			CopyFile(manifest, tmpfile, FALSE);
-		}
-
-		// Copy launcher
-		strcpy(tmpfilename, exeFilePart);
-		debug("Copy:\t\t%s -> %s\n", javaw, tmpfile);
-		if (CopyFile(javaw, tmpfile, FALSE)) {
-			strcpy(cmd, tmpfile);
-			return;
-		} else if (_stat(javaw, &statBuf) == 0) {
-			long fs = statBuf.st_size;
-			if (_stat(tmpfile, &statBuf) == 0 && fs == statBuf.st_size) {
-				debug("Reusing:\t\t%s\n", tmpfile);
-				strcpy(cmd, tmpfile);
-				return;
-			}
-		}
-	}
-	appendJavaw(cmd);
-}
-
 void appendAppClasspath(char* dst, const char* src, const char* classpath) {
 	strcat(dst, src);
 	if (*classpath) {
@@ -625,12 +554,8 @@ int prepare(const char *lpCmdLine) {
 	// Process priority
 	priority = loadInt(PRIORITY_CLASS);
 
-	// Custom process name
-	const BOOL setProcName = loadBool(SET_PROC_NAME)
-			&& strstr(lpCmdLine, "--l4j-default-proc") == NULL;
-	const BOOL wrapper = loadBool(WRAPPER);
-
-	appendLauncher(setProcName, exePath, pathLen, cmd);
+	// Launcher
+	appendJavaw(cmd);
 
 	// Heap sizes
 	appendHeapSizes(args);
@@ -681,7 +606,10 @@ int prepare(const char *lpCmdLine) {
 	// MainClass + Classpath or Jar
 	char mainClass[STR] = {0};
 	char jar[_MAX_PATH] = {0};
+
+	const BOOL wrapper = loadBool(WRAPPER);
 	loadString(JAR, jar);
+
 	if (loadString(MAIN_CLASS, mainClass)) {
 		if (!loadString(CLASSPATH, tmp)) {
 			return FALSE;

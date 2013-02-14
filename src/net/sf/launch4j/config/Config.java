@@ -55,7 +55,6 @@ public class Config implements IValidatable {
 	public static final String ERR_TITLE = "errTitle";
 	public static final String JAR_ARGS = "jarArgs";
 	public static final String CHDIR = "chdir";
-	public static final String CUSTOM_PROC_NAME = "customProcName";
 	public static final String STAY_ALIVE = "stayAlive";
 	public static final String ICON = "icon";
 
@@ -90,9 +89,7 @@ public class Config implements IValidatable {
 	private String priority;
 	private String downloadUrl;
 	private String supportUrl;
-	private boolean customProcName;
 	private boolean stayAlive;
-	private File manifest;
 	private File icon;
 	private List<String> variables;
 	private SingleInstance singleInstance;
@@ -124,7 +121,6 @@ public class Config implements IValidatable {
 					|| chdir.toLowerCase().equals("false"),
 					"chdir", Messages.getString("Config.chdir.path"));
 		}
-		Validator.checkOptFile(manifest, "manifest", Messages.getString("Config.manifest"));
 		Validator.checkOptFile(icon, "icon", Messages.getString("Config.icon"));
 		Validator.checkOptString(cmdLine, Validator.MAX_BIG_STR, "jarArgs",
 				Messages.getString("Config.jar.arguments"));
@@ -237,15 +233,6 @@ public class Config implements IValidatable {
 		this.libs = libs;
 	}
 
-	/** Wrapper's manifest for User Account Control. */ 
-	public File getManifest() {
-    	return manifest;
-    }
-
-	public void setManifest(File manifest) {
-    	this.manifest = manifest;
-    }
-
 	/** ICO file. */
 	public File getIcon() {
 		return icon;
@@ -296,15 +283,6 @@ public class Config implements IValidatable {
 
 	public void setOutfile(File outfile) {
 		this.outfile = outfile;
-	}
-
-	/** Custom process name as the output EXE file name. */
-	public boolean isCustomProcName() {
-		return customProcName;
-	}
-
-	public void setCustomProcName(boolean customProcName) {
-		this.customProcName = customProcName;
 	}
 
 	/** Splash screen configuration. */

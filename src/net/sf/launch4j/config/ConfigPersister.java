@@ -135,7 +135,9 @@ public class ConfigPersister {
 	    			.replaceAll("<dontUsePrivateJres>true</dontUsePrivateJres>",
 	    					"<jdkPreference>" + Jre.JDK_PREFERENCE_JRE_ONLY + "</jdkPreference>")
 	    			.replaceAll("<initialHeapSize>0</initialHeapSize>", "")
-	    			.replaceAll("<maxHeapSize>0</maxHeapSize>", "");
+	    			.replaceAll("<maxHeapSize>0</maxHeapSize>", "")
+	    			.replaceAll("<customProcName>.*</customProcName>", "")
+	    			.replaceAll("<manifest>.*</manifest>", "");
 
 	    	_config = (Config) _xstream.fromXML(s);
 	    	setConfigPath(f);
@@ -173,8 +175,6 @@ public class ConfigPersister {
 			_config.setCmdLine(props.getProperty(Config.JAR_ARGS));
 			_config.setChdir("true".equals(props.getProperty(Config.CHDIR))
 					? "." : null);
-			_config.setCustomProcName("true".equals(
-					props.getProperty("setProcName")));				// 1.x
 			_config.setStayAlive("true".equals(props.getProperty(Config.STAY_ALIVE)));
 			_config.setErrTitle(props.getProperty(Config.ERR_TITLE));
 			_config.setIcon(props.getFile(Config.ICON));

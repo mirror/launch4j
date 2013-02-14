@@ -60,9 +60,6 @@ public class RcBuilder {
 	public static final int SUBLANG_DEFAULT	= 1;
 	public static final int SUBLANG_SYS_DEFAULT	= 2;
 
-	// MANIFEST
-	public static final int MANIFEST = 1;
-
 	// ICON
 	public static final int APP_ICON = 1;
 
@@ -78,7 +75,6 @@ public class RcBuilder {
 	public static final int SPLASH_TIMEOUT = 6;
 	public static final int SPLASH_TIMEOUT_ERR = 7;
 	public static final int CHDIR = 8;
-	public static final int SET_PROC_NAME = 9;
 	public static final int ERR_TITLE = 10;
 	public static final int GUI_HEADER_STAYS_ALIVE = 11;
 	public static final int JVM_OPTIONS = 12;
@@ -123,7 +119,6 @@ public class RcBuilder {
 		_sb.append('\n');
 		addVersionInfo(c.getVersionInfo());
 		addJre(c.getJre());
-		addManifest(MANIFEST, c.getManifest());
 		addIcon(APP_ICON, c.getIcon());
 		addText(ERR_TITLE, c.getErrTitle());
 		addText(DOWNLOAD_URL, c.getDownloadUrl());
@@ -131,7 +126,6 @@ public class RcBuilder {
 		addText(CMD_LINE, c.getCmdLine());
 		addWindowsPath(CHDIR, c.getChdir());
 		addText(PRIORITY_CLASS, String.valueOf(c.getPriorityClass()));
-		addTrue(SET_PROC_NAME, c.isCustomProcName());
 		addTrue(GUI_HEADER_STAYS_ALIVE, c.isStayAlive());
 		addSplash(c.getSplash());
 		addMessages(c);
@@ -291,18 +285,6 @@ public class RcBuilder {
 		_sb.append(path.replaceAll("\\\\", "\\\\\\\\")
 				.replaceAll("/", "\\\\\\\\"));
 		_sb.append("\\0\" END\n");
-	}
-
-	private void addManifest(int id, File manifest) {
-		if (manifest == null || manifest.getPath().equals("")) {
-			return;
-		}
-
-		_sb.append(id);
-		_sb.append(" 24 \"");
-		_sb.append(getPath(Util.getAbsoluteFile(
-				ConfigPersister.getInstance().getConfigPath(), manifest)));
-		_sb.append("\"\n");
 	}
 
 	private void addIcon(int id, File icon) {

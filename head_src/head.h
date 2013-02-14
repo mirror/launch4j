@@ -58,9 +58,6 @@
 #define PREFER_JDK 2
 #define JDK_ONLY 3
 
-#define LAUNCH4J_TMP_DIR "\\launch4j-tmp\\"
-#define MANIFEST ".manifest"
-
 #define KEY_WOW64_64KEY 0x0100
 
 #define HKEY_STR "HKEY"
