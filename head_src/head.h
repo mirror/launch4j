@@ -31,6 +31,7 @@
 #ifndef _LAUNCH4J_HEAD__INCLUDED_
 #define _LAUNCH4J_HEAD__INCLUDED_
 
+#define _WIN32_WINNT 0x0501
 #define WIN32_LEAN_AND_MEAN		// VC - Exclude rarely-used stuff from Windows headers
 
 // Windows Header Files:
@@ -100,8 +101,8 @@ void appendAppClasspath(char* dst, const char* src, const char* classpath);
 BOOL isJrePathOk(const char* path);
 BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathLen);
 void appendHeapSizes(char *dst);
-void appendHeapSize(char *dst, const int absID, const int percentID,
-		const DWORD freeMemory, const char *option);
+void appendHeapSize(char *dst, const int megabytesID, const int percentID,
+		const DWORDLONG freeMemory, const char *option);
 int prepare(const char *lpCmdLine);
 void closeHandles();
 BOOL appendToPathVar(const char* path);

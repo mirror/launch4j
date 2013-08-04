@@ -401,36 +401,37 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
 }
 
 void appendHeapSizes(char *dst) {
-	MEMORYSTATUS m;
-	memset(&m, 0, sizeof(m));
-	GlobalMemoryStatus(&m);
+	MEMORYSTATUSEX statex;
+	statex.dwLength = sizeof(statex);
+	GlobalMemoryStatusEx(&statex);
 
 	appendHeapSize(dst, INITIAL_HEAP_SIZE, INITIAL_HEAP_PERCENT,
-			m.dwAvailPhys, "-Xms");
+			statex.ullAvailPhys, "-Xms");
 	appendHeapSize(dst, MAX_HEAP_SIZE, MAX_HEAP_PERCENT,
-			m.dwAvailPhys, "-Xmx");
+			statex.ullAvailPhys, "-Xmx");
 }
 
-void appendHeapSize(char *dst, const int absID, const int percentID,
-		const DWORD freeMemory, const char *option) {
+void appendHeapSize(char *dst, const int megabytesID, const int percentID,
+		const DWORDLONG freeMemory, const char *option) {
 	
 	const int mb = 1048576;			// 1 MB
 	const int mbLimit32 = 1500;  	// Max heap size in MB on 32-bit JREs
-	int abs = loadInt(absID);
-	int percent = loadInt(percentID);
-	int free = (long long) freeMemory * percent / (100 * mb);	// 100% * 1 MB
-	int size = free > abs ? free : abs;
-	if (size > 0) {
-		if (!(foundJava & KEY_WOW64_64KEY) && size > mbLimit32) {
+	const int megabytes = loadInt(megabytesID);
+	const int percent = loadInt(percentID);
+	const int freeMb = freeMemory * percent / (100 * mb);	// 100% * 1 MB
+    int heapSizeMb = freeMb > megabytes ? freeMb : megabytes;
+
+	if (heapSizeMb > 0) {
+		if (!(foundJava & KEY_WOW64_64KEY) && heapSizeMb > mbLimit32) {
 			debug("Heap limit:\tReduced %d MB heap size to 32-bit maximum %d MB\n",
-					size, mbLimit32);
-			size = mbLimit32;
+					heapSizeMb, mbLimit32);
+			heapSizeMb = mbLimit32;
 		}
 
 		debug("Heap %s:\t%d MB / %d%%, Free: %d MB, Heap size: %d MB\n",
-				option, abs, percent, freeMemory / mb, size);
+				option, megabytes, percent, freeMemory / mb, heapSizeMb);
 		strcat(dst, option);
-		_itoa(size, dst + strlen(dst), 10);						// 10 -- radix
+		_itoa(heapSizeMb, dst + strlen(dst), 10);						// 10 -- radix
 		strcat(dst, "m ");
 	}
 }
