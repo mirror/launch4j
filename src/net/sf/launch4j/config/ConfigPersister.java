@@ -136,8 +136,7 @@ public class ConfigPersister {
 	    					"<jdkPreference>" + Jre.JDK_PREFERENCE_JRE_ONLY + "</jdkPreference>")
 	    			.replaceAll("<initialHeapSize>0</initialHeapSize>", "")
 	    			.replaceAll("<maxHeapSize>0</maxHeapSize>", "")
-	    			.replaceAll("<customProcName>.*</customProcName>", "")
-	    			.replaceAll("<manifest>.*</manifest>", "");
+	    			.replaceAll("<customProcName>.*</customProcName>", "");
 
 	    	_config = (Config) _xstream.fromXML(s);
 	    	setConfigPath(f);

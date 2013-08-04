@@ -55,6 +55,7 @@ public class BasicFormImpl extends BasicForm {
 		bindings.add("outfile", _outfileField)
 				.add("dontWrapJar", _dontWrapJarCheck)
 				.add("jar", _jarField)
+				.add("manifest", _manifestField)
 				.add("icon", _iconField)
 				.add("cmdLine", _cmdLineField)
 				.add("errTitle", _errorTitleField)
@@ -71,7 +72,11 @@ public class BasicFormImpl extends BasicForm {
 		_outfileButton.addActionListener(new BrowseActionListener(true, fc,
 				new FileChooserFilter("Windows executables (.exe)", ".exe"),
 				_outfileField));
-
+		_jarButton.addActionListener(new BrowseActionListener(false, fc,
+				new FileChooserFilter("Jar files", ".jar"), _jarField));
+		_manifestButton.addActionListener(new BrowseActionListener(false, fc,
+				new FileChooserFilter("Manifest files (.manifest)", ".manifest"),
+				_manifestField));
 		_iconButton.addActionListener(new BrowseActionListener(false, fc,
 				new FileChooserFilter("Icon files (.ico)", ".ico"), _iconField));
 	}
