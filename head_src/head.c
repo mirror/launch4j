@@ -415,7 +415,7 @@ void appendHeapSize(char *dst, const int megabytesID, const int percentID,
 		const DWORDLONG availableMemory, const char *option) {
 	
 	const int mb = 1048576;			// 1 MB
-	const int mbLimit32 = 1500;  	// Max heap size in MB on 32-bit JREs
+	const int mbLimit32 = 1024;  	// Max heap size in MB on 32-bit JREs
 	const int megabytes = loadInt(megabytesID);
 	const int percent = loadInt(percentID);
 	const int availableMb = availableMemory * percent / (100 * mb);	// 100% * 1 MB
