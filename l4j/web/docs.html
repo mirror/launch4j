@@ -65,7 +65,7 @@ may be absolute paths or relative to the configuration file path.
     <strong>&lt;minVersion&gt;</strong><span class="codeword">x.x.x[_xx]</span><strong>&lt;/minVersion&gt;</strong>
     &lt;maxVersion&gt;<span class="codeword">x.x.x[_xx]</span>&lt;/maxVersion&gt;
     &lt;jdkPreference&gt;<span class="codeword">jreOnly|<u>preferJre</u>|preferJdk|jdkOnly</span>&lt;/jdkPreference&gt;
-    &lt;!-- Heap sizes in MB and % of free memory --&gt;
+    &lt;!-- Heap sizes in MB and % of available memory --&gt;
     &lt;initialHeapSize&gt;<span class="codeword">MB</span>&lt;/initialHeapSize&gt;
     &lt;initialHeapPercent&gt;<span class="codeword">%</span>&lt;/initialHeapPercent&gt;
     &lt;maxHeapSize&gt;<span class="codeword">MB</span>&lt;/maxHeapSize&gt;
@@ -295,7 +295,7 @@ may be absolute paths or relative to the configuration file path.
 		<dt>HeapSize, HeapPercent</dt>
 		<dd>If size and percent are specified, then the setting which yields
 			more memory will be chosen at runtime. In other words, setting both values
-			means: percent of free memory no less than size in MB.
+			means: percent of available memory no less than size in MB.
 		</dd>
 	</dl>
 	<blockquote>
@@ -305,7 +305,7 @@ may be absolute paths or relative to the configuration file path.
 		</dl>
 		<dl>
 			<dt>&lt;initialHeapPercent&gt;</dt>
-			<dd>Optional, initial heap size in % of free memory.</dd>
+			<dd>Optional, initial heap size in % of available memory.</dd>
 		</dl>
 		<dl>
 			<dt>&lt;maxHeapSize&gt;</dt>
@@ -313,7 +313,7 @@ may be absolute paths or relative to the configuration file path.
 		</dl>
 		<dl>
 			<dt>&lt;maxHeapPercent&gt;</dt>
-			<dd>Optional, max heap size in % of free memory.</dd>
+			<dd>Optional, max heap size in % of available memory.</dd>
 		</dl>	
 	</blockquote>
 	<dl>

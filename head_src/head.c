@@ -412,14 +412,14 @@ void appendHeapSizes(char *dst) {
 }
 
 void appendHeapSize(char *dst, const int megabytesID, const int percentID,
-		const DWORDLONG freeMemory, const char *option) {
+		const DWORDLONG availableMemory, const char *option) {
 	
 	const int mb = 1048576;			// 1 MB
 	const int mbLimit32 = 1500;  	// Max heap size in MB on 32-bit JREs
 	const int megabytes = loadInt(megabytesID);
 	const int percent = loadInt(percentID);
-	const int freeMb = freeMemory * percent / (100 * mb);	// 100% * 1 MB
-    int heapSizeMb = freeMb > megabytes ? freeMb : megabytes;
+	const int availableMb = availableMemory * percent / (100 * mb);	// 100% * 1 MB
+    int heapSizeMb = availableMb > megabytes ? availableMb : megabytes;
 
 	if (heapSizeMb > 0) {
 		if (!(foundJava & KEY_WOW64_64KEY) && heapSizeMb > mbLimit32) {
@@ -428,10 +428,10 @@ void appendHeapSize(char *dst, const int megabytesID, const int percentID,
 			heapSizeMb = mbLimit32;
 		}
 
-		debug("Heap %s:\t%d MB / %d%%, Free: %d MB, Heap size: %d MB\n",
-				option, megabytes, percent, freeMemory / mb, heapSizeMb);
+		debug("Heap %s:\t%d MB / %d%%, Available: %d MB, Heap size: %d MB\n",
+				option, megabytes, percent, availableMemory / mb, heapSizeMb);
 		strcat(dst, option);
-		_itoa(heapSizeMb, dst + strlen(dst), 10);						// 10 -- radix
+		_itoa(heapSizeMb, dst + strlen(dst), 10);				// 10 -- radix
 		strcat(dst, "m ");
 	}
 }

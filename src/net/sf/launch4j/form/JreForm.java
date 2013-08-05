@@ -188,11 +188,11 @@ public abstract class JreForm extends JPanel
       jpanel1.add(_jdkPreferenceCombo,cc.xywh(8,4,3,1));
 
       JLabel jlabel3 = new JLabel();
-      jlabel3.setText(Messages.getString("freeMemory"));
+      jlabel3.setText(Messages.getString("availableMemory"));
       jpanel1.add(jlabel3,cc.xy(10,8));
 
       JLabel jlabel4 = new JLabel();
-      jlabel4.setText(Messages.getString("freeMemory"));
+      jlabel4.setText(Messages.getString("availableMemory"));
       jpanel1.add(jlabel4,cc.xy(10,10));
 
       addFillComponents(jpanel1,new int[]{ 1,2,3,4,5,6,7,8,9,10,11 },new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
