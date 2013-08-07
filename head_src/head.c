@@ -222,9 +222,9 @@ void regSearch(const HKEY hKey, const char* keyName, const int searchType) {
 				&& strcmp(buffer, foundJavaVer) > 0) {
 			strcpy(foundJavaVer, buffer);
 			strcpy(foundJavaKey, keyName);
-			appendPath(foundJavaKey, buffer);	
+			appendPath(foundJavaKey, buffer);
 			foundJava = searchType;
-			debug("Match:\t\t%s\\%s\n", keyName, buffer);
+			debug("Match:\t\t%s\n", foundJavaKey);
 		} else {
 			debug("Ignore:\t\t%s\\%s\n", keyName, buffer);
 		}
