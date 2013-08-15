@@ -192,13 +192,12 @@ public class MainFrame extends JFrame {
 				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
 	}
 
-	private boolean isModified() {
+	private boolean canDiscardChanges() {
 		return (!_configForm.isModified())
 				|| confirm(Messages.getString("MainFrame.discard.changes"));
 	}
 
 	private boolean save() {
-		// XXX
 		try {
 			_configForm.get(ConfigPersister.getInstance().getConfig());
 			if (_fileChooser.showSaveDialog(MainFrame.this) == JOptionPane.YES_OPTION) {
@@ -247,7 +246,7 @@ public class MainFrame extends JFrame {
 		}
 
 		public void windowClosing(WindowEvent e) {
-			if (isModified()) {
+			if (canDiscardChanges()) {
 				System.exit(0);
 			}
 		}
@@ -255,19 +254,19 @@ public class MainFrame extends JFrame {
 
 	private class NewActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			if (isModified()) {
+			if (canDiscardChanges()) {
 				clearConfig();
+				_saved = false;
+				showConfigName(null);
+				setRunEnabled(false);
 			}
-			_saved = false;
-			showConfigName(null);
-			setRunEnabled(false);
 		}
 	}
 
 	private class OpenActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			try {
-				if (isModified() && _fileChooser.showOpenDialog(MainFrame.this)
+				if (canDiscardChanges() && _fileChooser.showOpenDialog(MainFrame.this)
 									== JOptionPane.YES_OPTION) {
 					final File f = _fileChooser.getSelectedFile(); 
 					if (f.getPath().endsWith(".xml")) {

@@ -68,7 +68,8 @@ public class Bindings implements PropertyChangeListener {
 		String prop = evt.getPropertyName();
 		if ("AccessibleValue".equals(prop)
 				|| "AccessibleText".equals(prop)
-				|| "AccessibleVisibleData".equals(prop)) {
+				|| ("AccessibleVisibleData".equals(prop)
+						&& evt.getSource().getClass().getName().contains("JList"))) {
 			_modified = true;
 		}
 	}
