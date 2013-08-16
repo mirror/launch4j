@@ -41,7 +41,6 @@ may be absolute paths or relative to the configuration file path.
   &lt;cmdLine&gt;<span class="codeword">text</span>&lt;/cmdLine&gt;
   &lt;chdir&gt;<span class="codeword">path</span>&lt;/chdir&gt;
   &lt;priority&gt;<span class="codeword"><u>normal</u>|idle|high</span>&lt;/priority&gt;
-  &lt;customProcName&gt;<span class="codeword">true|<u>false</u></span>&lt;/customProcName&gt;
   &lt;stayAlive&gt;<span class="codeword">true|false</span>&lt;/stayAlive&gt;
   &lt;icon&gt;<span class="codeword">file</span>&lt;/icon&gt;
   &lt;obj&gt;<span class="codeword">header object file</span>&lt;/obj&gt;
@@ -62,6 +61,7 @@ may be absolute paths or relative to the configuration file path.
   <strong>&lt;jre&gt;</strong>
     &lt;!-- Specify one of the following or both --&gt;
     <strong>&lt;path&gt;</strong><span class="codeword">bundled JRE path</span><strong>&lt;/path&gt;</strong>
+    &lt;bundledJre64Bit&gt;<span class="codeword">true|<u>false</u></span>&lt;/bundledJre64Bit&gt;
     <strong>&lt;minVersion&gt;</strong><span class="codeword">x.x.x[_xx]</span><strong>&lt;/minVersion&gt;</strong>
     &lt;maxVersion&gt;<span class="codeword">x.x.x[_xx]</span>&lt;/maxVersion&gt;
     &lt;jdkPreference&gt;<span class="codeword">jreOnly|<u>preferJre</u>|preferJdk|jdkOnly</span>&lt;/jdkPreference&gt;
@@ -264,6 +264,17 @@ may be absolute paths or relative to the configuration file path.
         	</dd>
         </dl>
 	</blockquote>
+</blockquote>
+<blockquote>
+	<dl>
+		<dt>&lt;bundledJre64Bit&gt;</dt>
+		<dd>Optional, defaults to false which limits the calculated heap size to the 32-bit maximum.
+			Set to true in order to use the available memory without this limit. This option works 
+			in combination with the HeapSize and HeapPercent options only if the found JRE is a bundled one.
+			In the standard JRE search based on registry the wrapper detects the type of JRE itself
+			and uses the 32-bit heap limit when needed. 
+		</dd>
+	</dl>
 </blockquote>
 <blockquote>
 	<dl>

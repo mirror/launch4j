@@ -428,8 +428,8 @@ void appendHeapSize(char *dst, const int megabytesID, const int percentID,
 			heapSizeMb = mbLimit32;
 		}
 
-		debug("Heap %s:\t%d MB / %d%%, Available: %d MB, Heap size: %d MB\n",
-				option, megabytes, percent, availableMemory / mb, heapSizeMb);
+		debug("Heap %s:\tRequested %d MB / %d%%, Available: %d MB, Heap size: %d MB\n",
+				option, megabytes, percent, (int)(availableMemory / mb), heapSizeMb);
 		strcat(dst, option);
 		_itoa(heapSizeMb, dst + strlen(dst), 10);				// 10 -- radix
 		strcat(dst, "m ");
@@ -505,8 +505,15 @@ int prepare(const char *lpCmdLine) {
 			strncpy(cmd, exePath, pathLen);
 			appendPath(cmd, jrePath);
 		}
+
+		if (isJrePathOk(cmd)) {
+			foundJava = (wow64 && loadBool(BUNDLED_JRE_64_BIT))
+				? FOUND_BUNDLED | KEY_WOW64_64KEY
+				: FOUND_BUNDLED;
+		}
     }
-	if (!isJrePathOk(cmd)) {
+    
+	if (foundJava == NO_JAVA_FOUND) {
 		if (!loadString(JAVA_MIN_VER, javaMinVer)) {
 			loadString(BUNDLED_JRE_ERR, errMsg);
 			return FALSE;

@@ -60,6 +60,7 @@ public class JreFormImpl extends JreForm {
 				Messages.getString("jdkPreference.prefer.jdk"),
 				Messages.getString("jdkPreference.jdk.only")}));
 		bindings.add("jre.path", _jrePathField)
+				.add("jre.bundledJre64Bit", _bundledJre64BitCheck)
 				.add("jre.minVersion", _jreMinField)
 				.add("jre.maxVersion", _jreMaxField)
 				.add("jre.jdkPreferenceIndex", _jdkPreferenceCombo,

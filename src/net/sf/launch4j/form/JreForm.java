@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -38,6 +39,7 @@ public abstract class JreForm extends JPanel
    protected final JTextField _maxHeapPercentField = new JTextField();
    protected final JTextField _initialHeapPercentField = new JTextField();
    protected final JComboBox _jdkPreferenceCombo = new JComboBox();
+   protected final JCheckBox _bundledJre64BitCheck = new JCheckBox();
 
    /**
     * Default constructor
@@ -117,7 +119,7 @@ public abstract class JreForm extends JPanel
    public JPanel createPanel()
    {
       JPanel jpanel1 = new JPanel();
-      FormLayout formlayout1 = new FormLayout("FILL:7DLU:NONE,RIGHT:MAX(65DLU;DEFAULT):NONE,FILL:3DLU:NONE,FILL:60DLU:NONE,FILL:3DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:60DLU:NONE,FILL:3DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:7DLU:NONE","CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,FILL:50DLU:GROW(1.0),CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE");
+      FormLayout formlayout1 = new FormLayout("FILL:7DLU:NONE,RIGHT:MAX(65DLU;DEFAULT):NONE,FILL:3DLU:NONE,FILL:60DLU:NONE,FILL:3DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:60DLU:NONE,FILL:3DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:3DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE","CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,FILL:50DLU:GROW(1.0),CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE");
       CellConstraints cc = new CellConstraints();
       jpanel1.setLayout(formlayout1);
 
@@ -153,7 +155,7 @@ public abstract class JreForm extends JPanel
       jscrollpane1.setViewportView(_jvmOptionsTextArea);
       jscrollpane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
       jscrollpane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      jpanel1.add(jscrollpane1,cc.xywh(4,12,7,1));
+      jpanel1.add(jscrollpane1,cc.xywh(4,12,9,1));
 
       _initialHeapSizeLabel.setName("initialHeapSizeLabel");
       _initialHeapSizeLabel.setText(Messages.getString("initialHeapSize"));
@@ -177,7 +179,7 @@ public abstract class JreForm extends JPanel
       _maxHeapSizeField.setName("maxHeapSizeField");
       jpanel1.add(_maxHeapSizeField,cc.xy(4,10));
 
-      jpanel1.add(createPanel1(),cc.xywh(2,14,9,1));
+      jpanel1.add(createPanel1(),cc.xywh(2,14,11,1));
       _maxHeapPercentField.setName("maxHeapPercentField");
       jpanel1.add(_maxHeapPercentField,cc.xy(8,10));
 
@@ -185,7 +187,7 @@ public abstract class JreForm extends JPanel
       jpanel1.add(_initialHeapPercentField,cc.xy(8,8));
 
       _jdkPreferenceCombo.setName("jdkPreferenceCombo");
-      jpanel1.add(_jdkPreferenceCombo,cc.xywh(8,4,3,1));
+      jpanel1.add(_jdkPreferenceCombo,cc.xywh(8,4,5,1));
 
       JLabel jlabel3 = new JLabel();
       jlabel3.setText(Messages.getString("availableMemory"));
@@ -195,7 +197,13 @@ public abstract class JreForm extends JPanel
       jlabel4.setText(Messages.getString("availableMemory"));
       jpanel1.add(jlabel4,cc.xy(10,10));
 
-      addFillComponents(jpanel1,new int[]{ 1,2,3,4,5,6,7,8,9,10,11 },new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
+      _bundledJre64BitCheck.setActionCommand(Messages.getString("bundledJre64Bit"));
+      _bundledJre64BitCheck.setName("bundledJre64BitCheck");
+      _bundledJre64BitCheck.setText(Messages.getString("bundledJre64Bit"));
+      _bundledJre64BitCheck.setToolTipText(Messages.getString("bundledJre64BitTip"));
+      jpanel1.add(_bundledJre64BitCheck,cc.xy(12,2));
+
+      addFillComponents(jpanel1,new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13 },new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
       return jpanel1;
    }
 
@@ -210,21 +218,21 @@ public abstract class JreForm extends JPanel
       jpanel1.add(_varCombo,cc.xy(3,1));
 
       _propertyButton.setActionCommand("Add");
-      _propertyButton.setIcon(loadImage("images/edit_add16.png"));
+      _propertyButton.setIcon(loadImage("images\\edit_add16.png"));
       _propertyButton.setName("propertyButton");
       _propertyButton.setText(Messages.getString("property"));
       _propertyButton.setToolTipText(Messages.getString("propertyTip"));
       jpanel1.add(_propertyButton,cc.xy(5,1));
 
       _optionButton.setActionCommand("Add");
-      _optionButton.setIcon(loadImage("images/edit_add16.png"));
+      _optionButton.setIcon(loadImage("images\\edit_add16.png"));
       _optionButton.setName("optionButton");
       _optionButton.setText(Messages.getString("option"));
       _optionButton.setToolTipText(Messages.getString("optionTip"));
       jpanel1.add(_optionButton,cc.xy(7,1));
 
       _envPropertyButton.setActionCommand("Add");
-      _envPropertyButton.setIcon(loadImage("images/edit_add16.png"));
+      _envPropertyButton.setIcon(loadImage("images\\edit_add16.png"));
       _envPropertyButton.setName("envPropertyButton");
       _envPropertyButton.setText(Messages.getString("property"));
       _envPropertyButton.setToolTipText(Messages.getString("propertyTip"));
@@ -235,12 +243,12 @@ public abstract class JreForm extends JPanel
       jpanel1.add(jlabel1,cc.xy(1,1));
 
       JLabel jlabel2 = new JLabel();
-      jlabel2.setIcon(loadImage("images/asterix.gif"));
+      jlabel2.setIcon(loadImage("images\\asterix.gif"));
       jlabel2.setText(Messages.getString("envVar"));
       jpanel1.add(jlabel2,cc.xy(1,3));
 
       _envOptionButton.setActionCommand("Add");
-      _envOptionButton.setIcon(loadImage("images/edit_add16.png"));
+      _envOptionButton.setIcon(loadImage("images\\edit_add16.png"));
       _envOptionButton.setName("envOptionButton");
       _envOptionButton.setText(Messages.getString("option"));
       _envOptionButton.setToolTipText(Messages.getString("optionTip"));

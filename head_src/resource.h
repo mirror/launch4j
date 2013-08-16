@@ -63,6 +63,7 @@
 #define INITIAL_HEAP_PERCENT		26
 #define MAX_HEAP_SIZE				27
 #define MAX_HEAP_PERCENT			28
+#define BUNDLED_JRE_64_BIT			29
 
 #define STARTUP_ERR					101
 #define BUNDLED_JRE_ERR				102

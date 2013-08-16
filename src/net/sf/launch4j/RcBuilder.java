@@ -97,7 +97,8 @@ public class RcBuilder {
 	public static final int INITIAL_HEAP_PERCENT = 26;
 	public static final int MAX_HEAP_SIZE = 27;
 	public static final int MAX_HEAP_PERCENT = 28;
-	
+	public static final int BUNDLED_JRE_64_BIT = 29;
+
 	public static final int STARTUP_ERR = 101;
 	public static final int BUNDLED_JRE_ERR = 102;
 	public static final int JRE_VERSION_ERR = 103;
@@ -196,6 +197,7 @@ public class RcBuilder {
 
 	private void addJre(Jre jre) {
 		addWindowsPath(JRE_PATH, jre.getPath());
+		addTrue(BUNDLED_JRE_64_BIT, jre.getBundledJre64Bit());
 		addText(JAVA_MIN_VER, jre.getMinVersion());
 		addText(JAVA_MAX_VER, jre.getMaxVersion());
 		addText(JDK_PREFERENCE, String.valueOf(jre.getJdkPreferenceIndex()));
