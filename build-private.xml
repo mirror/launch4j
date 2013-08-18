@@ -114,21 +114,21 @@
 	<target name="dist.linux" depends="remove-sign4j, jar, webdocs" description="generate the Linux distribution">
 		<antcall target="binutils-linux" />
 		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-linux.tgz ./launch4j" />
+			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml --owner=0 --group=0 -f ${dist}/${ant.project.name}-${version}-linux.tgz ./launch4j" />
 		</exec>
 	</target>
 
 	<target name="dist.macosx-x86" depends="remove-sign4j, jar, webdocs" description="generate the x86 Mac OS X distribution">
 		<antcall target="binutils-macosx-x86" />
 		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-macosx-x86.tgz ./launch4j" />
+			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml --owner=0 --group=0 -f ${dist}/${ant.project.name}-${version}-macosx-x86.tgz ./launch4j" />
 		</exec>
 	</target>
 	
 	<target name="dist.macosx-x86-10.8" depends="remove-sign4j, jar, webdocs" description="generate the x86 Mac OS X 10.8 distribution">
 		<antcall target="binutils-macosx-x86-10.8" />
 		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml -f ${dist}/${ant.project.name}-${version}-macosx-x86-10.8.tgz ./launch4j" />
+			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml --owner=0 --group=0 -f ${dist}/${ant.project.name}-${version}-macosx-x86-10.8.tgz ./launch4j" />
 		</exec>
 	</target>
 
