@@ -5,7 +5,6 @@
   <outfile>../launch4j.exe</outfile>
   <errTitle>launch4j</errTitle>
   <chdir>.</chdir>
-  <customProcName>true</customProcName>
   <stayAlive>false</stayAlive>
   <jre>
     <minVersion>1.6.0</minVersion>

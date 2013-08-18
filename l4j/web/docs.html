@@ -186,18 +186,6 @@ may be absolute paths or relative to the configuration file path.
 	</dd>
 </dl>
 <dl>
-	<dt>&lt;customProcName&gt;</dt>
-	<dd>Optional, defaults to false.
-		Set the process name as the executable filename and use Xp style manifests
-		(if any).
-		Creates a temporary file in launch4j-tmp directory inside the used JRE.
-		These files are deleted by any launch4j wrapped application, which sets
-		the process name and uses the same JRE. The removal takes place
-		when the application <strong>starts</strong>,
-		so at least one copy of this file will always be present.
-	</dd>
-</dl>
-<dl>
 	<dt>&lt;stayAlive&gt;</dt>
 	<dd>Optional, defaults to false in GUI header, always true in console header.
 		When enabled the launcher waits for the Java application

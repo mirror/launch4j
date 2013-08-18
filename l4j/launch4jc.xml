@@ -4,7 +4,6 @@
   <jar>launch4j.jar</jar>
   <outfile>../launch4jc.exe</outfile>
   <errTitle>launch4j</errTitle>
-  <customProcName>true</customProcName>
   <stayAlive>false</stayAlive>
   <jre>
     <minVersion>1.6.0</minVersion>

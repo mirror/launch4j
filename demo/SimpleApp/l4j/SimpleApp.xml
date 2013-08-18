@@ -4,7 +4,6 @@
   <outfile>../SimpleApp.exe</outfile>
   <errTitle>SimpleApp</errTitle>
   <chdir>.</chdir>
-  <customProcName>true</customProcName>
   <icon>SimpleApp.ico</icon>
   <jre>
     <minVersion>1.6.0</minVersion>
