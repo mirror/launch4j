@@ -86,20 +86,16 @@ public class Util {
 			URI uri = new URI(Util.class.getClassLoader()
 					.getResource(Launch4jProperties)
 					.getFile());
-		
+
 			String path = uri.getPath();
-	
-			if (path.startsWith("file:")) {
-				String jarPath = path.substring(5, path.lastIndexOf('!'));
-				int x = jarPath.lastIndexOf('/');
-	
-				if (x == -1) {
-					x = jarPath.lastIndexOf('\\');	
-				}
-				
-				String basedir = jarPath.substring(0, x + 1);
+
+			if (path.startsWith("/") && path.contains("!")) {
+				// jar file
+				String jarPath = path.substring(0, path.lastIndexOf('!'));
+				String basedir = jarPath.substring(0, jarPath.lastIndexOf('/') + 1);
 				return new File(basedir);
 			} else {
+				// class files - launch4j development
 				return new File(".");
 			}
 		} catch (URISyntaxException e) {
