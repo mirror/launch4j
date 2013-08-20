@@ -137,9 +137,6 @@ public class Util {
 					errLine = Integer.valueOf(
 							line.substring(matcher.start() + 1, matcher.end() - 1))
 							.intValue();
-					if (line.matches("(?i).*unrecognized escape sequence")) {
-						log.append(Messages.getString("Util.use.double.backslash"));
-					}
 					break;
 				}
 			}
