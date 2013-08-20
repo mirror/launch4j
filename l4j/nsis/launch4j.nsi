@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Launch4j"
-!define PRODUCT_VERSION "3.0.3"
+!define PRODUCT_VERSION "3.1.0-beta2"
 !define PRODUCT_PUBLISHER "Grzegorz Kowal"
 !define PRODUCT_WEB_SITE "http://launch4j.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\launch4j.exe"
