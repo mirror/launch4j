@@ -354,6 +354,7 @@ public class RcBuilder {
 	}
 
 	private String escape(String text) {
-		return text.replaceAll("\"", "\"\"");
+		return text.replaceAll("\"", "\"\"")
+				.replaceAll("\n", "\\\\r\\\\n");
 	}
 }
