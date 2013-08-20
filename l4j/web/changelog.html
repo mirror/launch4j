@@ -1,8 +1,19 @@
 <h2>Changelog</h2>
 
-<h4>Changes in version 3.1.0-beta2 (14-02-2013)</h4>
+<h4>Changes in version 3.1.0-beta2 (20-08-2013)</h4>
 <ul class="changes">
 	<li>Removed the custom process name feature which was not compatible with newer Windows versions.</li>
+	<li>#121 Fixed heap calculation on systems with more than 4GB of memory.</li>
+	<li>#115 Added 64-bit bundled JRE option to control when the 32-bit maximum heap is applied.</li>
+	<li>Reduced the 32-bit max heap size to the safer 1GB.</li>
+	<li>Changes in --l4j-debug for better readability.</li>
+	<li>Fixed Can discard changes popup which appeared even if no changes were made.</li>
+	<li>Corrected permissions, owner and group in tgz packages.</li>
+	<li>#117 Fixed launch4j home dir search in case of jar and class files.</li>
+	<li>#111 Support paths with spaces in Linux systems.</li>
+	<li>#91 Linux launch4j starting script no longer changes the current directory.</li>
+	<li>#77 Allow line feeds in custom messages.</li>
+	<li>#57 Escape backslashes.</li>
 </ul>
 
 <h4>Changes in version 3.1.0-beta1 (02-12-2012)</h4>
