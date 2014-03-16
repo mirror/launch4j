@@ -2,7 +2,7 @@
 	Launch4j (http://launch4j.sourceforge.net/)
 	Cross-platform Java application wrapper for creating Windows native executables.
 
-	Copyright (c) 2004, 2008 Grzegorz Kowal,
+	Copyright (c) 2004, 2014 Grzegorz Kowal,
 							 Ian Roberts (jdk preference patch)
 							 Sylvain Mina (single instance patch)
 
@@ -34,6 +34,7 @@
 
 HMODULE hModule;
 FILE* hLog;
+BOOL debugAll = FALSE;
 BOOL console = FALSE;
 BOOL wow64 = FALSE;
 int foundJava = NO_JAVA_FOUND;
@@ -95,6 +96,8 @@ void msgBox(const char* text) {
 
 void signalError() {
 	DWORD err = GetLastError();
+	debug("Error msg:\t%s\n", errMsg);
+
 	if (err) {
 		LPVOID lpMsgBuf;
 		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER
@@ -106,18 +109,19 @@ void signalError() {
 			    (LPTSTR) &lpMsgBuf,
 			    0,
 			    NULL);
-		debug("Error:\t\t%s\n", (LPCTSTR) lpMsgBuf);
+		debug(ERROR_FORMAT, (LPCTSTR) lpMsgBuf);
 		strcat(errMsg, "\n\n");
 		strcat(errMsg, (LPCTSTR) lpMsgBuf);
-		msgBox(errMsg);
 		LocalFree(lpMsgBuf);
-	} else {
-		msgBox(errMsg);
 	}
+	
+	msgBox(errMsg);
+
 	if (*errUrl) {
 		debug("Open URL:\t%s\n", errUrl);
 		ShellExecute(NULL, "open", errUrl, NULL, NULL, SW_SHOWNORMAL);
 	}
+
 	closeLogFile();
 }
 
@@ -137,12 +141,15 @@ BOOL loadString(const int resID, char* buffer) {
 				do {
 					buffer[x] = (char) lpBuffer[x];
 				} while (buffer[x++] != 0);
-				// debug("Resource %d:\t%s\n", resID, buffer);
+				if (debugAll) {
+					debug("Resource %d:\t%s\n", resID, buffer);
+				}
 				return TRUE;
 			}
 		}    
 	} else {
 		SetLastError(0);
+		buffer[0] = 0;
 	}
 	return FALSE;
 }
@@ -337,11 +344,9 @@ void appendJavaw(char* jrePath) {
     }
 }
 
-void appendAppClasspath(char* dst, const char* src, const char* classpath) {
+void appendAppClasspath(char* dst, const char* src) {
 	strcat(dst, src);
-	if (*classpath) {
-		strcat(dst, ";");
-	}
+	strcat(dst, ";");
 }
 
 BOOL isJrePathOk(const char* path) {
@@ -456,6 +461,7 @@ int prepare(const char *lpCmdLine) {
 		if (hLog == NULL) {
 			return FALSE;
 		}
+		debugAll = strstr(lpCmdLine, "--l4j-debug-all") != NULL;
 		debug("\n\nCmdLine:\t%s %s\n", exePath, lpCmdLine);
 	}
 
@@ -465,6 +471,7 @@ int prepare(const char *lpCmdLine) {
 	loadString(SUPPORT_URL, errUrl);
 	loadString(ERR_TITLE, errTitle);
 	if (!loadString(STARTUP_ERR, errMsg)) {
+		debug(ERROR_FORMAT, "Startup error message not defined.");
 		return FALSE;			
 	}
 
@@ -477,7 +484,7 @@ int prepare(const char *lpCmdLine) {
 		security.lpSecurityDescriptor = NULL;
 		CreateMutexA(&security, FALSE, mutexName);
 		if (GetLastError() == ERROR_ALREADY_EXISTS) {
-			debug("Instance already exists.");
+			debug(ERROR_FORMAT, "Instance already exists.");
 			return ERROR_ALREADY_EXISTS;
 		}
 	}
@@ -541,6 +548,7 @@ int prepare(const char *lpCmdLine) {
 	strcpy(jreBinPath, cmd);
 	strcat(jreBinPath, "\\bin");
 	if (!appendToPathVar(jreBinPath)) {
+		debug(ERROR_FORMAT, "appendToPathVar failed.");
 		return FALSE;
 	}
 
@@ -583,6 +591,7 @@ int prepare(const char *lpCmdLine) {
 	strcat(tmp_path, "l4j.ini");
 	long hFile;
 	if ((hFile = _open(tmp_path, _O_RDONLY)) != -1) {
+		debug("Loading:\t%s\n", tmp_path);
 		const int jvmOptLen = strlen(tmp);
 		char* src = tmp + jvmOptLen;
 		char* dst = src;
@@ -620,15 +629,15 @@ int prepare(const char *lpCmdLine) {
 
 	if (loadString(MAIN_CLASS, mainClass)) {
 		if (!loadString(CLASSPATH, tmp)) {
-			return FALSE;
+			debug("Info:\t\tClasspath not defined.\n");
 		}
 		char exp[MAX_ARGS] = {0};
 		expandVars(exp, tmp, exePath, pathLen);
 		strcat(args, "-classpath \"");
 		if (wrapper) {
-			appendAppClasspath(args, exePath, exp);
+			appendAppClasspath(args, exePath);
 		} else if (*jar) {
-			appendAppClasspath(args, jar, exp);
+			appendAppClasspath(args, jar);
 		}
 
 		// Deal with wildcards or >> strcat(args, exp); <<
@@ -645,15 +654,13 @@ int prepare(const char *lpCmdLine) {
 				if ((hFile = _findfirst(cp, &c_file)) != -1L) {
 					do {
 						strcpy(filename, c_file.name);
-						strcat(args, tmp_path);
-						strcat(args, ";");
+						appendAppClasspath(args, tmp_path);
 						debug("      \"      :\t%s\n", tmp_path);
 					} while (_findnext(hFile, &c_file) == 0);
 				}
 				_findclose(hFile);
 			} else {
-				strcat(args, cp);
-				strcat(args, ";");
+				appendAppClasspath(args, cp);
 			}
 			cp = strtok(NULL, ";");
 		} 
