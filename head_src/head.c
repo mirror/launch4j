@@ -441,6 +441,49 @@ void appendHeapSize(char *dst, const int megabytesID, const int percentID,
 	}
 }
 
+void setJvmOptions(char *jvmOptions, const char *exePath) {
+	if (loadString(JVM_OPTIONS, jvmOptions)) {
+		strcat(jvmOptions, " ");
+	}
+
+	/*
+	 * Load additional JVM options from .l4j.ini file
+	 * Options are separated by spaces or CRLF
+	 * # starts an inline comment
+	 */
+	char iniFilePath[_MAX_PATH] = {0};
+	strncpy(iniFilePath, exePath, strlen(exePath) - 3);
+	strcat(iniFilePath, "l4j.ini");
+	long hFile;
+
+	if ((hFile = _open(iniFilePath, _O_RDONLY)) != -1) {
+		debug("Loading:\t%s\n", iniFilePath);
+		const int jvmOptLen = strlen(jvmOptions);
+		char* src = jvmOptions + jvmOptLen;
+		char* dst = src;
+		const int len = _read(hFile, src, MAX_ARGS - jvmOptLen - BIG_STR);
+		BOOL copy = TRUE;
+		int i;
+		for (i = 0; i < len; i++, src++) {
+			if (*src == '#') {
+				copy = FALSE;
+			} else if (*src == 13 || *src == 10) {
+				copy = TRUE;
+				if (dst > jvmOptions && *(dst - 1) != ' ') {
+					*dst++ = ' ';
+				}
+			} else if (copy) {
+				*dst++ = *src;
+			}
+		}
+		*dst = 0;
+		if (len > 0 && *(dst - 1) != ' ') {
+			strcat(jvmOptions, " ");
+		}
+		_close(hFile);
+	}	
+}
+
 int prepare(const char *lpCmdLine) {
 	char tmp[MAX_ARGS] = {0};
 	hModule = GetModuleHandle(NULL);
@@ -575,50 +618,13 @@ int prepare(const char *lpCmdLine) {
 
 	// Heap sizes
 	appendHeapSizes(args);
-	
-    // JVM options
-	if (loadString(JVM_OPTIONS, tmp)) {
-		strcat(tmp, " ");
-	} else {
-        *tmp = 0;
-    }
-	/*
-	 * Load additional JVM options from .l4j.ini file
-	 * Options are separated by spaces or CRLF
-	 * # starts an inline comment
-	 */
-	strncpy(tmp_path, exePath, strlen(exePath) - 3);
-	strcat(tmp_path, "l4j.ini");
-	long hFile;
-	if ((hFile = _open(tmp_path, _O_RDONLY)) != -1) {
-		debug("Loading:\t%s\n", tmp_path);
-		const int jvmOptLen = strlen(tmp);
-		char* src = tmp + jvmOptLen;
-		char* dst = src;
-		const int len = _read(hFile, src, MAX_ARGS - jvmOptLen - BIG_STR);
-		BOOL copy = TRUE;
-		int i;
-		for (i = 0; i < len; i++, src++) {
-			if (*src == '#') {
-				copy = FALSE;
-			} else if (*src == 13 || *src == 10) {
-				copy = TRUE;
-				if (dst > tmp && *(dst - 1) != ' ') {
-					*dst++ = ' ';
-				}
-			} else if (copy) {
-				*dst++ = *src;
-			}
-		}
-		*dst = 0;
-		if (len > 0 && *(dst - 1) != ' ') {
-			strcat(tmp, " ");
-		}
-		_close(hFile);
-	}
+
+	// JVM options
+	char jvmOptions[MAX_ARGS] = {0};
+	setJvmOptions(jvmOptions, exePath);
 
     // Expand environment %variables%
-	expandVars(args, tmp, exePath, pathLen);
+	expandVars(args, jvmOptions, exePath, pathLen);
 
 	// MainClass + Classpath or Jar
 	char mainClass[STR] = {0};

@@ -105,6 +105,7 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
 void appendHeapSizes(char *dst);
 void appendHeapSize(char *dst, const int megabytesID, const int percentID,
 		const DWORDLONG availableMemory, const char *option);
+void setJvmOptions(char *jvmOptions, const char *exePath);
 int prepare(const char *lpCmdLine);
 void closeHandles();
 BOOL appendToPathVar(const char* path);
