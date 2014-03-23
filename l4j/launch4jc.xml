@@ -10,7 +10,7 @@
   </jre>
   <versionInfo>
     <fileDescription>Cross-platform Java application wrapper</fileDescription>
-    <copyright>Copyright (C) 2004, 2012 Grzegorz Kowal</copyright>
+    <copyright>Copyright (C) 2004, 2014 Grzegorz Kowal</copyright>
     <productName>launch4j</productName>
     <companyName>http://launch4j.sourceforge.net/</companyName>
     <internalName>Console launcher</internalName>

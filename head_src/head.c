@@ -505,7 +505,8 @@ int prepare(const char *lpCmdLine) {
 			return FALSE;
 		}
 		debugAll = strstr(lpCmdLine, "--l4j-debug-all") != NULL;
-		debug("\n\nCmdLine:\t%s %s\n", exePath, lpCmdLine);
+		debug("\n\nVersion:\t%s\n", VERSION);
+		debug("CmdLine:\t%s %s\n", exePath, lpCmdLine);
 	}
 
     setWow64Flag();

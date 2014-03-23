@@ -50,6 +50,8 @@
 #include <io.h>
 #include <process.h>
 
+#define VERSION "3.1"
+
 #define NO_JAVA_FOUND 0
 #define FOUND_JRE 1
 #define FOUND_SDK 2
