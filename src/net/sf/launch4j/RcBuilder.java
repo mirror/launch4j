@@ -98,13 +98,17 @@ public class RcBuilder {
 	public static final int MAX_HEAP_SIZE = 27;
 	public static final int MAX_HEAP_PERCENT = 28;
 	public static final int BUNDLED_JRE_64_BIT = 29;
+	public static final int RUNTIME_BITS = 30;
 
 	public static final int STARTUP_ERR = 101;
 	public static final int BUNDLED_JRE_ERR = 102;
 	public static final int JRE_VERSION_ERR = 103;
 	public static final int LAUNCHER_ERR = 104;
 	public static final int INSTANCE_ALREADY_EXISTS_MSG = 105;
-	
+
+	public static final int USE_64_BIT_RUNTIME = 1;
+	public static final int USE_32_BIT_RUNTIME = 2;
+
 	private final StringBuffer _sb = new StringBuffer();
 
 	public String getContent() {
@@ -201,6 +205,13 @@ public class RcBuilder {
 		addText(JAVA_MIN_VER, jre.getMinVersion());
 		addText(JAVA_MAX_VER, jre.getMaxVersion());
 		addText(JDK_PREFERENCE, String.valueOf(jre.getJdkPreferenceIndex()));
+		
+		String runtimeBits = jre.getRuntimeBits();
+		int use64Bits = runtimeBits == Jre.RUNTIME_BITS_64 || runtimeBits == Jre.RUNTIME_BITS_64_AND_32
+				? USE_64_BIT_RUNTIME : 0;
+		int use32Bits = runtimeBits == Jre.RUNTIME_BITS_32 || runtimeBits == Jre.RUNTIME_BITS_64_AND_32
+				? USE_32_BIT_RUNTIME : 0;
+		addInteger(RUNTIME_BITS, use64Bits | use32Bits);
 		addInteger(INITIAL_HEAP_SIZE, jre.getInitialHeapSize());
 		addInteger(INITIAL_HEAP_PERCENT, jre.getInitialHeapPercent());
 		addInteger(MAX_HEAP_SIZE, jre.getMaxHeapSize());

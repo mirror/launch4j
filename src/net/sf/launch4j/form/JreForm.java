@@ -1,5 +1,6 @@
 package net.sf.launch4j.form;
 
+import com.jeta.forms.components.separator.TitledSeparator;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import java.awt.BorderLayout;
@@ -30,16 +31,17 @@ public abstract class JreForm extends JPanel
    protected final JLabel _maxHeapSizeLabel = new JLabel();
    protected final JTextField _initialHeapSizeField = new JTextField();
    protected final JTextField _maxHeapSizeField = new JTextField();
+   protected final JTextField _maxHeapPercentField = new JTextField();
+   protected final JTextField _initialHeapPercentField = new JTextField();
+   protected final JComboBox _jdkPreferenceCombo = new JComboBox();
+   protected final JCheckBox _bundledJre64BitCheck = new JCheckBox();
+   protected final JComboBox _runtimeBitsCombo = new JComboBox();
    protected final JComboBox _varCombo = new JComboBox();
    protected final JButton _propertyButton = new JButton();
    protected final JButton _optionButton = new JButton();
    protected final JButton _envPropertyButton = new JButton();
    protected final JButton _envOptionButton = new JButton();
    protected final JTextField _envVarField = new JTextField();
-   protected final JTextField _maxHeapPercentField = new JTextField();
-   protected final JTextField _initialHeapPercentField = new JTextField();
-   protected final JComboBox _jdkPreferenceCombo = new JComboBox();
-   protected final JCheckBox _bundledJre64BitCheck = new JCheckBox();
 
    /**
     * Default constructor
@@ -119,7 +121,7 @@ public abstract class JreForm extends JPanel
    public JPanel createPanel()
    {
       JPanel jpanel1 = new JPanel();
-      FormLayout formlayout1 = new FormLayout("FILL:7DLU:NONE,RIGHT:MAX(65DLU;DEFAULT):NONE,FILL:3DLU:NONE,FILL:60DLU:NONE,FILL:3DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:60DLU:NONE,FILL:3DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:3DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE","CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,FILL:50DLU:GROW(1.0),CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE");
+      FormLayout formlayout1 = new FormLayout("FILL:7DLU:NONE,RIGHT:MAX(65DLU;DEFAULT):NONE,FILL:3DLU:NONE,FILL:60DLU:NONE,FILL:3DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:60DLU:NONE,FILL:3DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:3DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE","CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,FILL:50DLU:GROW(1.0),CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE");
       CellConstraints cc = new CellConstraints();
       jpanel1.setLayout(formlayout1);
 
@@ -129,25 +131,25 @@ public abstract class JreForm extends JPanel
 
       _jreMinLabel.setName("jreMinLabel");
       _jreMinLabel.setText(Messages.getString("jreMin"));
-      jpanel1.add(_jreMinLabel,cc.xy(2,4));
+      jpanel1.add(_jreMinLabel,cc.xy(2,6));
 
       _jreMaxLabel.setName("jreMaxLabel");
       _jreMaxLabel.setText(Messages.getString("jreMax"));
-      jpanel1.add(_jreMaxLabel,cc.xy(2,6));
+      jpanel1.add(_jreMaxLabel,cc.xy(2,8));
 
       _jvmOptionsTextLabel.setName("jvmOptionsTextLabel");
       _jvmOptionsTextLabel.setText(Messages.getString("jvmOptions"));
-      jpanel1.add(_jvmOptionsTextLabel,new CellConstraints(2,12,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+      jpanel1.add(_jvmOptionsTextLabel,new CellConstraints(2,16,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
 
       _jrePathField.setName("jrePathField");
       _jrePathField.setToolTipText(Messages.getString("jrePathTip"));
       jpanel1.add(_jrePathField,cc.xywh(4,2,7,1));
 
       _jreMinField.setName("jreMinField");
-      jpanel1.add(_jreMinField,cc.xy(4,4));
+      jpanel1.add(_jreMinField,cc.xy(4,6));
 
       _jreMaxField.setName("jreMaxField");
-      jpanel1.add(_jreMaxField,cc.xy(4,6));
+      jpanel1.add(_jreMaxField,cc.xy(4,8));
 
       _jvmOptionsTextArea.setName("jvmOptionsTextArea");
       _jvmOptionsTextArea.setToolTipText(Messages.getString("jvmOptionsTip"));
@@ -155,47 +157,46 @@ public abstract class JreForm extends JPanel
       jscrollpane1.setViewportView(_jvmOptionsTextArea);
       jscrollpane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
       jscrollpane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      jpanel1.add(jscrollpane1,cc.xywh(4,12,9,1));
+      jpanel1.add(jscrollpane1,cc.xywh(4,16,9,1));
 
       _initialHeapSizeLabel.setName("initialHeapSizeLabel");
       _initialHeapSizeLabel.setText(Messages.getString("initialHeapSize"));
-      jpanel1.add(_initialHeapSizeLabel,cc.xy(2,8));
+      jpanel1.add(_initialHeapSizeLabel,cc.xy(2,12));
 
       _maxHeapSizeLabel.setName("maxHeapSizeLabel");
       _maxHeapSizeLabel.setText(Messages.getString("maxHeapSize"));
-      jpanel1.add(_maxHeapSizeLabel,cc.xy(2,10));
+      jpanel1.add(_maxHeapSizeLabel,cc.xy(2,14));
 
       JLabel jlabel1 = new JLabel();
       jlabel1.setText("MB");
-      jpanel1.add(jlabel1,cc.xy(6,8));
+      jpanel1.add(jlabel1,cc.xy(6,12));
 
       JLabel jlabel2 = new JLabel();
       jlabel2.setText("MB");
-      jpanel1.add(jlabel2,cc.xy(6,10));
+      jpanel1.add(jlabel2,cc.xy(6,14));
 
       _initialHeapSizeField.setName("initialHeapSizeField");
-      jpanel1.add(_initialHeapSizeField,cc.xy(4,8));
+      jpanel1.add(_initialHeapSizeField,cc.xy(4,12));
 
       _maxHeapSizeField.setName("maxHeapSizeField");
-      jpanel1.add(_maxHeapSizeField,cc.xy(4,10));
+      jpanel1.add(_maxHeapSizeField,cc.xy(4,14));
 
-      jpanel1.add(createPanel1(),cc.xywh(2,14,11,1));
       _maxHeapPercentField.setName("maxHeapPercentField");
-      jpanel1.add(_maxHeapPercentField,cc.xy(8,10));
+      jpanel1.add(_maxHeapPercentField,cc.xy(8,14));
 
       _initialHeapPercentField.setName("initialHeapPercentField");
-      jpanel1.add(_initialHeapPercentField,cc.xy(8,8));
+      jpanel1.add(_initialHeapPercentField,cc.xy(8,12));
 
       _jdkPreferenceCombo.setName("jdkPreferenceCombo");
-      jpanel1.add(_jdkPreferenceCombo,cc.xywh(8,4,5,1));
+      jpanel1.add(_jdkPreferenceCombo,cc.xywh(8,6,5,1));
 
       JLabel jlabel3 = new JLabel();
       jlabel3.setText(Messages.getString("availableMemory"));
-      jpanel1.add(jlabel3,cc.xy(10,8));
+      jpanel1.add(jlabel3,cc.xy(10,12));
 
       JLabel jlabel4 = new JLabel();
       jlabel4.setText(Messages.getString("availableMemory"));
-      jpanel1.add(jlabel4,cc.xy(10,10));
+      jpanel1.add(jlabel4,cc.xy(10,14));
 
       _bundledJre64BitCheck.setActionCommand(Messages.getString("bundledJre64Bit"));
       _bundledJre64BitCheck.setName("bundledJre64BitCheck");
@@ -203,7 +204,20 @@ public abstract class JreForm extends JPanel
       _bundledJre64BitCheck.setToolTipText(Messages.getString("bundledJre64BitTip"));
       jpanel1.add(_bundledJre64BitCheck,cc.xy(12,2));
 
-      addFillComponents(jpanel1,new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13 },new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
+      _runtimeBitsCombo.setName("runtimeBitsCombo");
+      _runtimeBitsCombo.setToolTipText("");
+      jpanel1.add(_runtimeBitsCombo,cc.xywh(8,8,5,1));
+
+      jpanel1.add(createPanel1(),cc.xywh(2,18,11,1));
+      TitledSeparator titledseparator1 = new TitledSeparator();
+      titledseparator1.setText(Messages.getString("searchOptions"));
+      jpanel1.add(titledseparator1,cc.xywh(2,4,11,1));
+
+      TitledSeparator titledseparator2 = new TitledSeparator();
+      titledseparator2.setText(Messages.getString("options"));
+      jpanel1.add(titledseparator2,cc.xywh(2,10,11,1));
+
+      addFillComponents(jpanel1,new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13 },new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 });
       return jpanel1;
    }
 

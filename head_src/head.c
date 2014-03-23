@@ -37,6 +37,7 @@ FILE* hLog;
 BOOL debugAll = FALSE;
 BOOL console = FALSE;
 BOOL wow64 = FALSE;
+int runtimeBits = INIT_RUNTIME_BITS;
 int foundJava = NO_JAVA_FOUND;
 
 struct _stat statBuf;
@@ -241,29 +242,36 @@ void regSearch(const HKEY hKey, const char* keyName, const int searchType) {
 
 void regSearchWow(const char* keyName, const int searchType) {
 	HKEY hKey;
-	debug("64-bit search:\t%s...\n", keyName);
-	if (wow64 && RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-			keyName,
-			0,
-            KEY_READ | KEY_WOW64_64KEY,
-			&hKey) == ERROR_SUCCESS) {
-		
-		regSearch(hKey, keyName, searchType | KEY_WOW64_64KEY);
-		RegCloseKey(hKey);
-		if ((foundJava & KEY_WOW64_64KEY) != NO_JAVA_FOUND)
-		{
-			debug("Using 64-bit runtime.\n");
-			return;
+	if (runtimeBits == INIT_RUNTIME_BITS) {
+		runtimeBits = loadInt(RUNTIME_BITS);
+	}
+
+	if ((runtimeBits & USE_64_BIT_RUNTIME) && wow64) {
+		debug("64-bit search:\t%s...\n", keyName);
+		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+				keyName,
+				0,
+    	        KEY_READ | KEY_WOW64_64KEY,
+				&hKey) == ERROR_SUCCESS) {
+			regSearch(hKey, keyName, searchType | KEY_WOW64_64KEY);
+			RegCloseKey(hKey);
+			if ((foundJava & KEY_WOW64_64KEY) != NO_JAVA_FOUND) {
+				debug("Using 64-bit runtime.\n");
+				return;
+			}
 		}
 	}
-	debug("32-bit search:\t%s...\n", keyName);
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-			keyName,
-			0,
-            KEY_READ,
-			&hKey) == ERROR_SUCCESS) {
-		regSearch(hKey, keyName, searchType);
-		RegCloseKey(hKey);
+
+	if (runtimeBits & USE_32_BIT_RUNTIME) {
+		debug("32-bit search:\t%s...\n", keyName);
+		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+				keyName,
+				0,
+	            KEY_READ,
+				&hKey) == ERROR_SUCCESS) {
+			regSearch(hKey, keyName, searchType);
+			RegCloseKey(hKey);
+		}
 	}
 }
 
@@ -569,18 +577,29 @@ int prepare(const char *lpCmdLine) {
 			loadString(BUNDLED_JRE_ERR, errMsg);
 			return FALSE;
 		}
+
 		loadString(JAVA_MAX_VER, javaMaxVer);
 		if (!findJavaHome(cmd, loadInt(JDK_PREFERENCE))) {
 			loadString(JRE_VERSION_ERR, errMsg);
 			strcat(errMsg, " ");
 			strcat(errMsg, javaMinVer);
+
 			if (*javaMaxVer) {
 				strcat(errMsg, " - ");
 				strcat(errMsg, javaMaxVer);
 			}
+
+			if (runtimeBits == USE_64_BIT_RUNTIME
+					|| runtimeBits == USE_32_BIT_RUNTIME) {
+				strcat(errMsg, " (");
+				strcat(errMsg, runtimeBits == USE_64_BIT_RUNTIME ? "64" : "32");
+				strcat(errMsg, "-bit)");
+			}			
+			
 			loadString(DOWNLOAD_URL, errUrl);
 			return FALSE;
 		}
+
 		if (!isJrePathOk(cmd)) {
 			loadString(LAUNCHER_ERR, errMsg);
 			return FALSE;

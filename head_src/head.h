@@ -62,6 +62,10 @@
 #define PREFER_JDK 2
 #define JDK_ONLY 3
 
+#define USE_64_BIT_RUNTIME 1
+#define USE_32_BIT_RUNTIME 2
+#define INIT_RUNTIME_BITS 4
+
 #define KEY_WOW64_64KEY 0x0100
 
 #define HKEY_STR "HKEY"

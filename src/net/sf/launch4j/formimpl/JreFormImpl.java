@@ -59,12 +59,18 @@ public class JreFormImpl extends JreForm {
 				Messages.getString("jdkPreference.prefer.jre"),
 				Messages.getString("jdkPreference.prefer.jdk"),
 				Messages.getString("jdkPreference.jdk.only")}));
+
+		_runtimeBitsCombo.setModel(new DefaultComboBoxModel(new String[] {
+				Messages.getString("runtimeBits.64"),
+				Messages.getString("runtimeBits.64And32"),
+				Messages.getString("runtimeBits.32")}));
+
 		bindings.add("jre.path", _jrePathField)
 				.add("jre.bundledJre64Bit", _bundledJre64BitCheck)
 				.add("jre.minVersion", _jreMinField)
 				.add("jre.maxVersion", _jreMaxField)
-				.add("jre.jdkPreferenceIndex", _jdkPreferenceCombo,
-						Jre.DEFAULT_JDK_PREFERENCE_INDEX)
+				.add("jre.jdkPreferenceIndex", _jdkPreferenceCombo,	Jre.DEFAULT_JDK_PREFERENCE_INDEX)
+				.add("jre.runtimeBitsIndex", _runtimeBitsCombo, Jre.DEFAULT_JDK_PREFERENCE_INDEX)
 				.add("jre.initialHeapSize", _initialHeapSizeField)
 				.add("jre.initialHeapPercent", _initialHeapPercentField)
 				.add("jre.maxHeapSize", _maxHeapSizeField)

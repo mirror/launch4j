@@ -60,6 +60,10 @@ public class Jre implements IValidatable {
 	public static final String JDK_PREFERENCE_PREFER_JRE = "preferJre";
 	public static final String JDK_PREFERENCE_PREFER_JDK = "preferJdk";
 	public static final String JDK_PREFERENCE_JDK_ONLY = "jdkOnly";
+	
+	public static final String RUNTIME_BITS_64 = "64";
+	public static final String RUNTIME_BITS_64_AND_32 = "64/32";
+	public static final String RUNTIME_BITS_32 = "32";
 
 	private static final String[] JDK_PREFERENCE_NAMES = new String[] {
 			JDK_PREFERENCE_JRE_ONLY,
@@ -67,14 +71,23 @@ public class Jre implements IValidatable {
 			JDK_PREFERENCE_PREFER_JDK,
 			JDK_PREFERENCE_JDK_ONLY };
 
+	private static final String[] RUNTIME_BITS_OPTIONS = new String[] {
+			RUNTIME_BITS_64,
+			RUNTIME_BITS_64_AND_32,
+			RUNTIME_BITS_32	};
+
 	public static final int DEFAULT_JDK_PREFERENCE_INDEX
 			= Arrays.asList(JDK_PREFERENCE_NAMES).indexOf(JDK_PREFERENCE_PREFER_JRE);
+
+	public static final int DEFAULT_RUNTIME_BITS_INDEX
+			= Arrays.asList(RUNTIME_BITS_OPTIONS).indexOf(RUNTIME_BITS_64_AND_32);
 
 	private String path;
 	private boolean bundledJre64Bit;
 	private String minVersion;
 	private String maxVersion;
 	private String jdkPreference;
+	private String runtimeBits;
 	private Integer initialHeapSize;
 	private Integer initialHeapPercent;
 	private Integer maxHeapSize;
@@ -122,7 +135,9 @@ public class Jre implements IValidatable {
 					Messages.getString("Jre.max.heap.percent"));
 		}
 		Validator.checkIn(getJdkPreference(), JDK_PREFERENCE_NAMES,
-				"jre.jdkPreference", Messages.getString("Jre.jdkPreference.invalid"));
+				"jre.jdkPreference", Messages.getString("Jre.jdkPreference"));
+		Validator.checkIn(getRuntimeBits(), RUNTIME_BITS_OPTIONS,
+				"jre.runtimeBits", Messages.getString("Jre.runtimeBits"));
 		Validator.checkOptStrings(options,
 				Validator.MAX_ARGS,
 				Validator.MAX_ARGS,
@@ -185,7 +200,25 @@ public class Jre implements IValidatable {
 	}
 	
 	public void setJdkPreferenceIndex(int x) {
-		jdkPreference = JDK_PREFERENCE_NAMES[x];
+		this.jdkPreference = JDK_PREFERENCE_NAMES[x];
+	}
+	
+	public String getRuntimeBits() {
+		return Validator.isEmpty(runtimeBits) ? RUNTIME_BITS_64_AND_32
+												: runtimeBits;
+	}
+
+	public void setRuntimeBits(String runtimeBits) {
+		this.runtimeBits = runtimeBits;
+	}
+	
+	public int getRuntimeBitsIndex() {
+		int x = Arrays.asList(RUNTIME_BITS_OPTIONS).indexOf(getRuntimeBits());
+		return x != -1 ? x : DEFAULT_RUNTIME_BITS_INDEX;
+	}
+	
+	public void setRuntimeBitsIndex(int x) {
+		this.runtimeBits = RUNTIME_BITS_OPTIONS[x];
 	}
 
 	/** JRE path */
