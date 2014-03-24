@@ -36,6 +36,8 @@
  */
 package net.sf.launch4j.binding;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -56,7 +58,7 @@ import org.apache.commons.beanutils.PropertyUtils;
  * 
  * @author Copyright (C) 2005 Grzegorz Kowal
  */
-public class Bindings implements PropertyChangeListener {
+public class Bindings implements PropertyChangeListener, ActionListener {
 	private final Map<String, Binding> _bindings = new HashMap<String, Binding>();
 	private final Map<String, Binding> _optComponents = new HashMap<String, Binding>();
 	private boolean _modified = false;
@@ -64,6 +66,7 @@ public class Bindings implements PropertyChangeListener {
 	/**
 	 * Used to track component modifications.
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		String prop = evt.getPropertyName();
 		if ("AccessibleValue".equals(prop)
@@ -72,6 +75,11 @@ public class Bindings implements PropertyChangeListener {
 						&& evt.getSource().getClass().getName().contains("JList"))) {
 			_modified = true;
 		}
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		_modified = true;
 	}
 
 	/** 
@@ -311,7 +319,7 @@ public class Bindings implements PropertyChangeListener {
 	 * Handles JComboBox
 	 */
 	public Bindings add(String property, JComboBox combo, int defaultValue) {
-		registerPropertyChangeListener(combo);
+		combo.addActionListener(this);
 		return add(new JComboBoxBinding(property, combo, defaultValue));
 	}
 
@@ -319,7 +327,7 @@ public class Bindings implements PropertyChangeListener {
 	 * Handles JComboBox
 	 */
 	public Bindings add(String property, JComboBox combo) {
-		registerPropertyChangeListener(combo);
+		combo.addActionListener(this);
 		return add(new JComboBoxBinding(property, combo, 0));
 	}
 }
