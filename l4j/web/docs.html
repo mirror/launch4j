@@ -65,6 +65,7 @@ may be absolute paths or relative to the configuration file path.
     <strong>&lt;minVersion&gt;</strong><span class="codeword">x.x.x[_xx]</span><strong>&lt;/minVersion&gt;</strong>
     &lt;maxVersion&gt;<span class="codeword">x.x.x[_xx]</span>&lt;/maxVersion&gt;
     &lt;jdkPreference&gt;<span class="codeword">jreOnly|<u>preferJre</u>|preferJdk|jdkOnly</span>&lt;/jdkPreference&gt;
+    &lt;runtimeBits&gt;<span class="codeword">64|<u>64/32</u>|32</span>&lt;/runtimeBits&gt;
     &lt;!-- Heap sizes in MB and % of available memory --&gt;
     &lt;initialHeapSize&gt;<span class="codeword">MB</span>&lt;/initialHeapSize&gt;
     &lt;initialHeapPercent&gt;<span class="codeword">%</span>&lt;/initialHeapPercent&gt;
@@ -283,11 +284,28 @@ may be absolute paths or relative to the configuration file path.
 				dontUsePrivateJres=false)</dd>
 			<dt>preferJdk</dt>
 			<dd>Prefer a JDK private runtime, but use a
-				public JRE if it is newer than the
-				JDK</dd>
+				public JRE if it is newer than the JDK
+			</dd>
 			<dt>jdkOnly</dt>
 			<dd>Always use a private JDK runtime (fails
-				if there is no JDK installed)</dd>
+				if there is no JDK installed)
+			</dd>
+		</dl>
+	</blockquote>
+	<dl>
+		<dt>&lt;runtimeBits&gt;</dt>
+		<dd>Optional, defaults to 64/32; Allows to select between 64-bit and 32-bit runtimes.
+			Valid values are:
+		</dd>
+	</dl>
+	<blockquote>
+		<dl>
+			<dt>64</dt>
+			<dd>Use only 64-bit runtimes</dd>
+			<dt>64/32</dt>
+			<dd>Use 64-bit runtimes if available, otherwise use 32-bit</dd>
+			<dt>32</dt>
+			<dd>Use only 32-bit runtimes</dd>
 		</dl>
 	</blockquote>
 	<dl>
