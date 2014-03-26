@@ -50,7 +50,7 @@
 #include <io.h>
 #include <process.h>
 
-#define VERSION "3.2"
+#define VERSION "3.3"
 
 #define NO_JAVA_FOUND 0
 #define FOUND_JRE 1
