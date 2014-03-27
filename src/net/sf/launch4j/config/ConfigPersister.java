@@ -52,7 +52,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
- * @author Copyright (C) 2005 Grzegorz Kowal
+ * @author Copyright (C) 2014 Grzegorz Kowal, toshimm
  */
 public class ConfigPersister {
 
@@ -116,29 +116,29 @@ public class ConfigPersister {
 	}
 
 	public void load(File f) throws ConfigPersisterException {
+		FileReader r = null;
+		String configString = null;
+
 		try {
-			FileReader r = new FileReader(f);
-			char[] buf = new char[(int) f.length()];
-			r.read(buf);
-	    	r.close();
+			r = new FileReader(f);
+			StringBuffer sb = new StringBuffer();
+			final int TEMPSIZE = 256;
+			char[] temp = new char[TEMPSIZE];
+			int len = 0;
 
-	    	// Convert 2.x config to 3.x
-	    	String s = String.valueOf(buf)
-	    			.replaceAll("<headerType>0<", "<headerType>gui<")
-	    			.replaceAll("<headerType>1<", "<headerType>console<")
-	    			.replaceAll("jarArgs>", "cmdLine>")
-	    			.replaceAll("<jarArgs[ ]*/>", "<cmdLine/>")
-	    			.replaceAll("args>", "opt>")
-	    			.replaceAll("<args[ ]*/>", "<opt/>")
-	    			.replaceAll("<dontUsePrivateJres>false</dontUsePrivateJres>",
-	    					"<jdkPreference>" + Jre.JDK_PREFERENCE_PREFER_JRE + "</jdkPreference>")
-	    			.replaceAll("<dontUsePrivateJres>true</dontUsePrivateJres>",
-	    					"<jdkPreference>" + Jre.JDK_PREFERENCE_JRE_ONLY + "</jdkPreference>")
-	    			.replaceAll("<initialHeapSize>0</initialHeapSize>", "")
-	    			.replaceAll("<maxHeapSize>0</maxHeapSize>", "")
-	    			.replaceAll("<customProcName>.*</customProcName>", "");
+			while ((len = r.read(temp, 0, TEMPSIZE)) != -1) {
+				sb.append(temp, 0, len);
+			}
 
-	    	_config = (Config) _xstream.fromXML(s);
+			configString = String.valueOf(sb);
+		} catch (Exception e) {
+			throw new ConfigPersisterException(e);
+		} finally {
+			Util.close(r);
+		}
+
+	    try {
+	    	_config = (Config) _xstream.fromXML(convertToCurrent(configString));
 	    	setConfigPath(f);
 		} catch (Exception e) {
 			throw new ConfigPersisterException(e);
@@ -210,6 +210,26 @@ public class ConfigPersister {
 		} catch (Exception e) {
 			throw new ConfigPersisterException(e);
 		}
+	}
+	
+	/**
+	 * Converts 2.x config to current format.
+	 */
+	private String convertToCurrent(String configString) {
+    	return configString
+    			.replaceAll("<headerType>0<", "<headerType>gui<")
+    			.replaceAll("<headerType>1<", "<headerType>console<")
+    			.replaceAll("jarArgs>", "cmdLine>")
+    			.replaceAll("<jarArgs[ ]*/>", "<cmdLine/>")
+    			.replaceAll("args>", "opt>")
+    			.replaceAll("<args[ ]*/>", "<opt/>")
+    			.replaceAll("<dontUsePrivateJres>false</dontUsePrivateJres>",
+    					"<jdkPreference>" + Jre.JDK_PREFERENCE_PREFER_JRE + "</jdkPreference>")
+    			.replaceAll("<dontUsePrivateJres>true</dontUsePrivateJres>",
+    					"<jdkPreference>" + Jre.JDK_PREFERENCE_JRE_ONLY + "</jdkPreference>")
+    			.replaceAll("<initialHeapSize>0</initialHeapSize>", "")
+    			.replaceAll("<maxHeapSize>0</maxHeapSize>", "")
+    			.replaceAll("<customProcName>.*</customProcName>", "");
 	}
 
 	private void setConfigPath(File configFile) {

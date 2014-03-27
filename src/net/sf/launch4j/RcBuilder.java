@@ -38,8 +38,10 @@ package net.sf.launch4j;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 import net.sf.launch4j.config.Config;
@@ -161,12 +163,50 @@ public class RcBuilder {
 		if (c.isDontWrapJar() && c.getJar() != null) {
 			addWindowsPath(JAR, c.getJar().getPath());
 		}
+		
+		File file = Util.createTempFile("rc");
 
-		File f = Util.createTempFile("rc");
-		BufferedWriter w = new BufferedWriter(new FileWriter(f));
-		w.write(_sb.toString());
-		w.close();
-		return f;
+		if ("MS932".equals(System.getProperty("file.encoding"))) {
+			writeKanjiResourceFile(file);
+		} else {
+			writeResourceFile(file);
+		}
+
+		return file;
+	}
+	
+	private void writeResourceFile(File file) throws IOException {
+		BufferedWriter w = null;
+
+		try {
+			w = new BufferedWriter(new FileWriter(file));
+			w.write(_sb.toString());
+		} finally {
+			Util.close(w);
+		}
+	}
+
+	/**
+	 * Handle Japanese encoding - by toshimm.
+	 */
+	private void writeKanjiResourceFile(File file) throws IOException {
+		FileOutputStream output = null;
+		KanjiEscapeOutputStream kanji = null;
+		OutputStreamWriter writer = null;
+		BufferedWriter w = null;
+
+		try {
+			output = new FileOutputStream(file);
+			kanji = new KanjiEscapeOutputStream(output);
+			writer = new OutputStreamWriter(kanji);
+			w = new BufferedWriter(writer);
+			w.write(_sb.toString());
+		} finally {
+			Util.close(w);
+			Util.close(writer);
+			Util.close(kanji);
+			Util.close(output);
+		}
 	}
 
 	private void addVersionInfo(VersionInfo v) {
