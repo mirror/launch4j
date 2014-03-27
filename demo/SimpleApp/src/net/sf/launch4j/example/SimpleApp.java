@@ -48,10 +48,9 @@ import javax.swing.UIManager;
 public class SimpleApp extends JFrame {
     public SimpleApp(String[] args) {
         super("Java Application");
-        final int inset = 100;
+
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds (inset, inset,
-				screenSize.width - inset * 2, screenSize.height - inset * 2);
+		setBounds (screenSize.width / 4, screenSize.height / 4, screenSize.width / 2, screenSize.height / 2);
 
 		JMenu menu = new JMenu("File");
 		menu.add(new JMenuItem("Open"));
