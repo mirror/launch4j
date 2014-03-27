@@ -105,7 +105,7 @@ public class JreFormImpl extends JreForm {
 			final String var = (String) _varCombo.getSelectedItem();
 			if (var.startsWith("HKEY_")) {
 				_jvmOptionsTextArea.insert("-Dreg.key=\"%"
-						+ var + "\\\\...%\"\n", pos);
+						+ var + "\\...%\"\n", pos);
 			} else {
 				_jvmOptionsTextArea.insert("-Dlaunch4j." + var.toLowerCase()
 						+ "=\"%" + var + "%\"\n", pos);
@@ -118,7 +118,7 @@ public class JreFormImpl extends JreForm {
 			final int pos = _jvmOptionsTextArea.getCaretPosition();
 			final String var = (String) _varCombo.getSelectedItem();
 			if (var.startsWith("HKEY_")) {
-				_jvmOptionsTextArea.insert("%" + var + "\\\\...%\n", pos);
+				_jvmOptionsTextArea.insert("%" + var + "\\...%\n", pos);
 			} else {
 				_jvmOptionsTextArea.insert("%" + var + "%\n", pos);
 			}
