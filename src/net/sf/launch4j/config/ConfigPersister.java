@@ -39,12 +39,19 @@ package net.sf.launch4j.config;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 
 import net.sf.launch4j.Util;
 
@@ -52,7 +59,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
- * @author Copyright (C) 2014 Grzegorz Kowal, toshimm
+ * @author Copyright (C) 2014 Grzegorz Kowal
  */
 public class ConfigPersister {
 
@@ -116,28 +123,15 @@ public class ConfigPersister {
 	}
 
 	public void load(File f) throws ConfigPersisterException {
-		FileReader r = null;
-		String configString = null;
-
-		try {
-			r = new FileReader(f);
-			StringBuffer sb = new StringBuffer();
-			final int TEMPSIZE = 256;
-			char[] temp = new char[TEMPSIZE];
-			int len = 0;
-
-			while ((len = r.read(temp, 0, TEMPSIZE)) != -1) {
-				sb.append(temp, 0, len);
-			}
-
-			configString = String.valueOf(sb);
-		} catch (Exception e) {
-			throw new ConfigPersisterException(e);
-		} finally {
-			Util.close(r);
-		}
-
 	    try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document doc = builder.parse(f);
+
+			DOMImplementationLS domImplementation = (DOMImplementationLS) doc.getImplementation();
+		    LSSerializer lsSerializer = domImplementation.createLSSerializer();
+		    String configString = lsSerializer.writeToString(doc);
+
 	    	_config = (Config) _xstream.fromXML(convertToCurrent(configString));
 	    	setConfigPath(f);
 		} catch (Exception e) {
@@ -203,7 +197,9 @@ public class ConfigPersister {
 
 	public void save(File f) throws ConfigPersisterException {
 		try {
-			BufferedWriter w = new BufferedWriter(new FileWriter(f));
+			BufferedWriter w = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
+			w.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 	    	_xstream.toXML(_config, w);
 	    	w.close();
 	    	setConfigPath(f);
