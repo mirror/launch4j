@@ -98,6 +98,8 @@ int loadInt(const int resID);
 BOOL regQueryValue(const char* regPath, unsigned char* buffer,
 		unsigned long bufferLength);
 void regSearch(const HKEY hKey, const char* keyName, const int searchType);
+BOOL isJavaHomeValid(const char* keyName, const int searchType);
+BOOL isLauncherPathValid(const char* path);
 void regSearchWow(const char* keyName, const int searchType);
 void regSearchJreSdk(const char* jreKeyName, const char* sdkKeyName,
 		const int jdkPreference);
@@ -106,7 +108,6 @@ int getExePath(char* exePath);
 void appendPath(char* basepath, const char* path);
 void appendJavaw(char* jrePath);
 void appendAppClasspath(char* dst, const char* src);
-BOOL isJrePathOk(const char* path);
 BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathLen);
 void appendHeapSizes(char *dst);
 void appendHeapSize(char *dst, const int megabytesID, const int percentID,

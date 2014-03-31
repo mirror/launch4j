@@ -37,6 +37,7 @@ FILE* hLog;
 BOOL debugAll = FALSE;
 BOOL console = FALSE;
 BOOL wow64 = FALSE;
+BOOL corruptedJreFound = FALSE;
 int runtimeBits = INIT_RUNTIME_BITS;
 int foundJava = NO_JAVA_FOUND;
 
@@ -54,6 +55,7 @@ char javaMinVer[STR] = {0};
 char javaMaxVer[STR] = {0};
 char foundJavaVer[STR] = {0};
 char foundJavaKey[_MAX_PATH] = {0};
+char foundJavaHome[_MAX_PATH] = {0};
 
 char oldPwd[_MAX_PATH] = {0};
 char workingDir[_MAX_PATH] = {0};
@@ -212,32 +214,91 @@ BOOL regQueryValue(const char* regPath, unsigned char* buffer,
 
 void regSearch(const HKEY hKey, const char* keyName, const int searchType) {
 	DWORD x = 0;
-	unsigned long size = BIG_STR;
+	unsigned long versionSize = _MAX_PATH;
 	FILETIME time;
-	char buffer[BIG_STR] = {0};
+	char fullKeyName[_MAX_PATH] = {0};
+	char version[_MAX_PATH] = {0};
+
 	while (RegEnumKeyEx(
 				hKey,			// handle to key to enumerate
 				x++,			// index of subkey to enumerate
-				buffer,			// address of buffer for subkey name
-				&size,			// address for size of subkey buffer
+				version,		// address of buffer for subkey name
+				&versionSize,	// address for size of subkey buffer
 				NULL,			// reserved
 				NULL,			// address of buffer for class string
 				NULL,			// address for size of class buffer
 				&time) == ERROR_SUCCESS) {
-		
-		if (strcmp(buffer, javaMinVer) >= 0
-				&& (!*javaMaxVer || strcmp(buffer, javaMaxVer) <= 0)
-				&& strcmp(buffer, foundJavaVer) > 0) {
-			strcpy(foundJavaVer, buffer);
-			strcpy(foundJavaKey, keyName);
-			appendPath(foundJavaKey, buffer);
+		strcpy(fullKeyName, keyName);
+		appendPath(fullKeyName, version);
+		debug("Check:\t\t%s\n", fullKeyName);
+
+		if (strcmp(version, javaMinVer) >= 0
+				&& (!*javaMaxVer || strcmp(version, javaMaxVer) <= 0)
+				&& strcmp(version, foundJavaVer) > 0
+				&& isJavaHomeValid(fullKeyName, searchType)) {
+			strcpy(foundJavaVer, version);
+			strcpy(foundJavaKey, fullKeyName);
 			foundJava = searchType;
-			debug("Match:\t\t%s\n", foundJavaKey);
+			debug("Match:\t\t%s\n", version);
 		} else {
-			debug("Ignore:\t\t%s\\%s\n", keyName, buffer);
+			debug("Ignore:\t\t%s\n", version);
 		}
-		size = BIG_STR;
+
+		versionSize = _MAX_PATH;
 	}
+}
+
+BOOL isJavaHomeValid(const char* keyName, const int searchType) {
+	BOOL valid = FALSE;
+	HKEY hKey;
+	char path[_MAX_PATH] = {0};
+
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+			keyName,
+			0,
+            KEY_READ | (searchType & KEY_WOW64_64KEY),
+			&hKey) == ERROR_SUCCESS) {
+		unsigned char buffer[_MAX_PATH] = {0};
+		unsigned long bufferlength = _MAX_PATH;
+		unsigned long datatype;
+
+		if (RegQueryValueEx(hKey, "JavaHome", NULL, &datatype, buffer,
+				&bufferlength) == ERROR_SUCCESS) {
+			int i = 0;
+			do {
+				path[i] = buffer[i];
+			} while (path[i++] != 0);
+			if (searchType & FOUND_SDK) {
+				appendPath(path, "jre");
+			}
+			valid = isLauncherPathValid(path);
+		}
+		RegCloseKey(hKey);
+	}
+
+	if (valid) {
+		strcpy(foundJavaHome, path);
+	} else {
+		corruptedJreFound = TRUE;
+	}
+
+	return valid;
+}
+
+BOOL isLauncherPathValid(const char* path) {
+	char javaw[_MAX_PATH];
+	BOOL result = FALSE;
+	if (*path) {
+		strcpy(javaw, path);
+		appendJavaw(javaw);
+		result = _stat(javaw, &statBuf) == 0;
+		if (!result) {
+			// Don't display additional info in the error popup.
+			SetLastError(0);
+		}
+	}	
+	debug("Check launcher:\t%s %s\n", javaw, result ? "(OK)" : "(not found)");
+	return result;
 }
 
 void regSearchWow(const char* keyName, const int searchType) {
@@ -256,7 +317,6 @@ void regSearchWow(const char* keyName, const int searchType) {
 			regSearch(hKey, keyName, searchType | KEY_WOW64_64KEY);
 			RegCloseKey(hKey);
 			if ((foundJava & KEY_WOW64_64KEY) != NO_JAVA_FOUND) {
-				debug("Using 64-bit runtime.\n");
 				return;
 			}
 		}
@@ -294,36 +354,20 @@ BOOL findJavaHome(char* path, const int jdkPreference) {
 	regSearchJreSdk("SOFTWARE\\JavaSoft\\Java Runtime Environment",
 					"SOFTWARE\\JavaSoft\\Java Development Kit",
 					jdkPreference);
+
 	if (foundJava == NO_JAVA_FOUND) {
 		regSearchJreSdk("SOFTWARE\\IBM\\Java2 Runtime Environment",
 						"SOFTWARE\\IBM\\Java Development Kit",
 						jdkPreference);
 	}
+	
 	if (foundJava != NO_JAVA_FOUND) {
-		HKEY hKey;
-		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-				foundJavaKey,
-				0,
-	            KEY_READ | (foundJava & KEY_WOW64_64KEY),
-				&hKey) == ERROR_SUCCESS) {
-			unsigned char buffer[BIG_STR] = {0};
-			unsigned long bufferlength = BIG_STR;
-			unsigned long datatype;
-			if (RegQueryValueEx(hKey, "JavaHome", NULL, &datatype, buffer,
-					&bufferlength) == ERROR_SUCCESS) {
-				int i = 0;
-				do {
-					path[i] = buffer[i];
-				} while (path[i++] != 0);
-				if (foundJava & FOUND_SDK) {
-					appendPath(path, "jre");
-				}
-				RegCloseKey(hKey);
-				return TRUE;
-			}
-			RegCloseKey(hKey);
-		}
+		strcpy(path, foundJavaHome);
+		debug("Runtime used:\t%s (%s-bit)\n", foundJavaVer,
+				(foundJava & KEY_WOW64_64KEY) != NO_JAVA_FOUND ? "64" : "32");
+		return TRUE;	
 	}
+	
 	return FALSE;
 }
 
@@ -355,18 +399,6 @@ void appendJavaw(char* jrePath) {
 void appendAppClasspath(char* dst, const char* src) {
 	strcat(dst, src);
 	strcat(dst, ";");
-}
-
-BOOL isJrePathOk(const char* path) {
-	char javaw[_MAX_PATH];
-	BOOL result = FALSE;
-	if (*path) {
-		strcpy(javaw, path);
-		appendJavaw(javaw);
-		result = _stat(javaw, &statBuf) == 0;
-	}	
-	debug("Check launcher:\t%s %s\n", javaw, result ? "(OK)" : "(n/a)");
-	return result;
 }
 
 /* 
@@ -565,7 +597,7 @@ int prepare(const char *lpCmdLine) {
 			appendPath(cmd, jrePath);
 		}
 
-		if (isJrePathOk(cmd)) {
+		if (isLauncherPathValid(cmd)) {
 			foundJava = (wow64 && loadBool(BUNDLED_JRE_64_BIT))
 				? FOUND_BUNDLED | KEY_WOW64_64KEY
 				: FOUND_BUNDLED;
@@ -596,12 +628,16 @@ int prepare(const char *lpCmdLine) {
 				strcat(errMsg, "-bit)");
 			}			
 			
-			loadString(DOWNLOAD_URL, errUrl);
-			return FALSE;
-		}
+			if (corruptedJreFound) {
+				char launcherErrMsg[BIG_STR] = {0};
 
-		if (!isJrePathOk(cmd)) {
-			loadString(LAUNCHER_ERR, errMsg);
+				if (loadString(LAUNCHER_ERR, launcherErrMsg)) {
+					strcat(errMsg, "\n");
+					strcat(errMsg, launcherErrMsg);
+				}
+			}
+
+			loadString(DOWNLOAD_URL, errUrl);
 			return FALSE;
 		}
 	}
