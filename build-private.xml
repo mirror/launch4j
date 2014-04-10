@@ -92,6 +92,7 @@
 	<target name="jar" depends="compile" description="create jar">
 		<fileset dir="${lib}" id="lib.dist.fileset">
 			<include name="**/*.jar" />
+			<exclude name="**/ant.jar" />
 		</fileset>
 		<pathconvert pathsep=" " property="dist.classpath" refid="lib.dist.fileset">
 			<map from="${lib}" to="./lib" />
