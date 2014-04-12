@@ -54,11 +54,10 @@ import javax.swing.JToolBar;
 import javax.swing.UIManager;
 
 import com.jgoodies.looks.Options;
-import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
+import com.jgoodies.looks.windows.WindowsLookAndFeel;
 
 import foxtrot.Task;
 import foxtrot.Worker;
-
 import net.sf.launch4j.Builder;
 import net.sf.launch4j.BuilderException;
 import net.sf.launch4j.ExecException;
@@ -96,7 +95,7 @@ public class MainFrame extends JFrame {
 			Options.setUseNarrowButtons(false);
 			Options.setPopupDropShadowEnabled(true);
 
-			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
+			UIManager.setLookAndFeel(new WindowsLookAndFeel());
 			_instance = new MainFrame();
 		} catch (Exception e) {
 			System.err.println(e);
