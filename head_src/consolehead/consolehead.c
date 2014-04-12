@@ -34,32 +34,46 @@ int main(int argc, char* argv[])
 {
     setConsoleFlag();
 	LPTSTR cmdLine = GetCommandLine();
-	if (*cmdLine == '"') {
-		if (*(cmdLine = strchr(cmdLine + 1, '"') + 1)) {
+
+	if (*cmdLine == '"')
+	{
+		if (*(cmdLine = strchr(cmdLine + 1, '"') + 1))
+		{
 			cmdLine++;
 		}
-	} else if ((cmdLine = strchr(cmdLine, ' ')) != NULL) {
+	}
+	else if ((cmdLine = strchr(cmdLine, ' ')) != NULL)
+	{
 		cmdLine++;
-	} else {
+	}
+	else
+	{
 		cmdLine = "";
 	}
+
 	int result = prepare(cmdLine);
-	if (result == ERROR_ALREADY_EXISTS) {
+	if (result == ERROR_ALREADY_EXISTS)
+	{
 		char errMsg[BIG_STR] = {0};
 		loadString(INSTANCE_ALREADY_EXISTS_MSG, errMsg);
 		msgBox(errMsg);
 		closeLogFile();
 		return 2;
 	}
-	if (result != TRUE) {
+
+	if (result != TRUE)
+	{
 		signalError();
 		return 1;
 	}
 
 	result = (int) execute(TRUE);
-	if (result == -1) {
+	if (result == -1)
+	{
 		signalError();
-	} else {
+	}
+	else
+	{
 		return result;
 	}
 }
