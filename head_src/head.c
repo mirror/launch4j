@@ -48,7 +48,7 @@ DWORD priority;
 char mutexName[STR] = {0};
 
 char errUrl[256] = {0};
-char errTitle[STR] = "Launch4j";
+char errTitle[STR] = LAUNCH4j;
 char errMsg[BIG_STR] = {0};
 
 char javaMinVer[STR] = {0};
@@ -73,6 +73,23 @@ void closeLogFile() {
 	if (hLog != NULL) {
 		fclose(hLog);	
 	}
+}
+
+BOOL initializeLogging(const char *lpCmdLine, const char* exePath, const int pathLen) {
+	char varValue[MAX_VAR_SIZE] = {0};
+	GetEnvironmentVariable(LAUNCH4j, varValue, MAX_VAR_SIZE);
+
+    if (strstr(lpCmdLine, "--l4j-debug") != NULL
+			|| strstr(varValue, "debug") != NULL) {
+		hLog = openLogFile(exePath, pathLen);
+		if (hLog == NULL) {
+			return FALSE;
+		}
+		debugAll = strstr(lpCmdLine, "--l4j-debug-all") != NULL
+				|| strstr(varValue, "debug-all") != NULL;
+	}
+	
+	return TRUE;
 }
 
 void setWow64Flag() {
@@ -286,7 +303,7 @@ BOOL isJavaHomeValid(const char* keyName, const int searchType) {
 }
 
 BOOL isLauncherPathValid(const char* path) {
-	char javaw[_MAX_PATH];
+	char javaw[_MAX_PATH] = {0};
 	BOOL result = FALSE;
 	if (*path) {
 		strcpy(javaw, path);
@@ -405,8 +422,9 @@ void appendAppClasspath(char* dst, const char* src) {
  * Expand environment %variables%
  */
 BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathLen) {
-    char varName[STR];
-    char varValue[MAX_VAR_SIZE];
+    char varName[STR] = {0};
+    char varValue[MAX_VAR_SIZE] = {0};
+
     while (strlen(src) > 0) {
         char *start = strchr(src, '%');
         if (start != NULL) {
@@ -538,17 +556,12 @@ int prepare(const char *lpCmdLine) {
 		return FALSE;
 	}
 
-	// Initialize logging 
-    if (strstr(lpCmdLine, "--l4j-debug") != NULL) {
-		hLog = openLogFile(exePath, pathLen);
-		if (hLog == NULL) {
-			return FALSE;
-		}
-		debugAll = strstr(lpCmdLine, "--l4j-debug-all") != NULL;
-		debug("\n\nVersion:\t%s\n", VERSION);
-		debug("CmdLine:\t%s %s\n", exePath, lpCmdLine);
+	if (!initializeLogging(lpCmdLine, exePath, pathLen)) {
+		return FALSE;
 	}
 
+	debug("\n\nVersion:\t%s\n", VERSION);
+	debug("CmdLine:\t%s %s\n", exePath, lpCmdLine);
     setWow64Flag();
 
 	// Set default error message, title and optional support web site url.
@@ -643,7 +656,7 @@ int prepare(const char *lpCmdLine) {
 	}
 
     // Append a path to the Path environment variable
-	char jreBinPath[_MAX_PATH];
+	char jreBinPath[_MAX_PATH] = {0};
 	strcpy(jreBinPath, cmd);
 	strcat(jreBinPath, "\\bin");
 	if (!appendToPathVar(jreBinPath)) {
@@ -799,7 +812,7 @@ DWORD execute(const BOOL wait) {
     si.cb = sizeof(si);
 
 	DWORD dwExitCode = -1;
-	char cmdline[MAX_ARGS];
+	char cmdline[MAX_ARGS] = {0};
     strcpy(cmdline, "\"");
 	strcat(cmdline, cmd);
 	strcat(cmdline, "\" ");

@@ -50,6 +50,7 @@
 #include <io.h>
 #include <process.h>
 
+#define LAUNCH4j "Launch4j"
 #define VERSION "3.4"
 
 #define NO_JAVA_FOUND 0
@@ -90,6 +91,7 @@ typedef void (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
 FILE* openLogFile(const char* exePath, const int pathLen);
 void closeLogFile();
+BOOL initializeLogging(const char *lpCmdLine, const char* exePath, const int pathLen);
 void msgBox(const char* text);
 void signalError();
 BOOL loadString(const int resID, char* buffer);
