@@ -59,6 +59,7 @@ char foundJavaHome[_MAX_PATH] = {0};
 
 char oldPwd[_MAX_PATH] = {0};
 char workingDir[_MAX_PATH] = {0};
+char jreHomeDir[_MAX_PATH] = {0};
 char cmd[_MAX_PATH] = {0};
 char args[MAX_ARGS] = {0};
 
@@ -545,6 +546,10 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
 			{
                 strcat(dst, oldPwd);
 			}
+            else if (strcmp(varName, "JREHOMEDIR") == 0)
+			{
+                strcat(dst, jreHomeDir);
+			}
 			else if (strstr(varName, HKEY_STR) == varName)
 			{
 				regQueryValue(varName, dst + strlen(dst), BIG_STR);
@@ -792,6 +797,9 @@ int prepare(const char *lpCmdLine)
 			return FALSE;
 		}
 	}
+
+	// Store the JRE Home Dir
+	strcpy(jreHomeDir, cmd);
 
     // Append a path to the Path environment variable
 	char jreBinPath[_MAX_PATH] = {0};

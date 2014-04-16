@@ -30,6 +30,7 @@ may be absolute paths or relative to the configuration file path.
 
 <pre>
 &lt;!-- <strong>Bold</strong> elements are required --&gt;
+&lt;!-- %VAR% expands environment/special variables and registry keys --&gt;
 <strong>&lt;launch4jConfig&gt;</strong>
   <strong>&lt;headerType&gt;</strong><span class="codeword">gui|console</span><strong>&lt;/headerType&gt;</strong>
   <strong>&lt;outfile&gt;</strong><span class="codeword">file.exe</span><strong><span class="codeword"></span>&lt;/outfile&gt;</strong>
@@ -47,11 +48,11 @@ may be absolute paths or relative to the configuration file path.
   ...
   &lt;lib&gt;<span class="codeword">w32api lib</span>&lt;/lib&gt;
   ...
-  &lt;var&gt;<span class="codeword">var=text</span>&lt;/var&gt;
+  &lt;var&gt;<span class="codeword">var=text (%VAR%)</span>&lt;/var&gt;
   ...
   &lt;classPath&gt;
     <strong>&lt;mainClass&gt;</strong><span class="codeword">main class</span><strong>&lt;/mainClass&gt;</strong>
-    <strong>&lt;cp&gt;</strong><span class="codeword">classpath</span><strong>&lt;/cp&gt;</strong>
+    <strong>&lt;cp&gt;</strong><span class="codeword">classpath (%VAR%)</span><strong>&lt;/cp&gt;</strong>
     ...
   &lt;/classPath&gt;
   &lt;singleInstance&gt;
@@ -60,7 +61,7 @@ may be absolute paths or relative to the configuration file path.
   &lt;/singleInstance&gt; 
   <strong>&lt;jre&gt;</strong>
     &lt;!-- Specify one of the following or both --&gt;
-    <strong>&lt;path&gt;</strong><span class="codeword">bundled JRE path</span><strong>&lt;/path&gt;</strong>
+    <strong>&lt;path&gt;</strong><span class="codeword">bundled JRE path (%VAR%)</span><strong>&lt;/path&gt;</strong>
     &lt;bundledJre64Bit&gt;<span class="codeword">true|<u>false</u></span>&lt;/bundledJre64Bit&gt;
     <strong>&lt;minVersion&gt;</strong><span class="codeword">x.x.x[_xx]</span><strong>&lt;/minVersion&gt;</strong>
     &lt;maxVersion&gt;<span class="codeword">x.x.x[_xx]</span>&lt;/maxVersion&gt;
@@ -71,7 +72,7 @@ may be absolute paths or relative to the configuration file path.
     &lt;initialHeapPercent&gt;<span class="codeword">%</span>&lt;/initialHeapPercent&gt;
     &lt;maxHeapSize&gt;<span class="codeword">MB</span>&lt;/maxHeapSize&gt;
     &lt;maxHeapPercent&gt;<span class="codeword">%</span>&lt;/maxHeapPercent&gt;
-    &lt;opt&gt;<span class="codeword">text</span>&lt;/opt&gt;
+    &lt;opt&gt;<span class="codeword">text (%VAR%)</span>&lt;/opt&gt;
     ...
   <strong>&lt;/jre&gt;</strong>
   &lt;splash&gt;
@@ -510,24 +511,64 @@ expansion is supported, for example:
 -Xms16m
 </pre>
 
+<h2>Environemnt variables</h2>
+The following variables can be used in the configuration file (elements which contain %VAR%).
+They are substitued during runtime, so for example the EXEDIR is the directory where the user installed the wrapped application.
+<dl>
+	<dt class="option">%VAR%</dt>
+	<dd>
+		Any environment variable, for example %HOMEPATH%.
+	</dd>
+
+	<dt class="option">%EXEDIR%</dt>
+	<dd>
+		Wrapper directory path.
+	</dd>
+	
+	<dt class="option">%EXEFILE%</dt>
+	<dd>
+		Wrapper executable file path.
+	</dd>
+	
+	<dt class="option">%PWD%</dt>
+	<dd>
+		Current directory, after chdir was applied.
+	</dd>
+	
+	<dt class="option">%OLDPWD%</dt>
+	<dd>
+		Directory before chdir was applied.
+	</dd>
+	
+	<dt class="option">%JREHOMEDIR%</dt>
+	<dd>
+		Path to the JRE which was selected for executing the application. 
+	</dd>
+	
+	<dt class="option">%HKEY_...\...%</dt>
+	<dd>
+		Registry key value, e.g.<br />
+		%HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MemoryDiagnostic\LastScanTime%
+	</dd>
+</dl>
+
 <h2 id="Runtime_options">Runtime options</h2>
 <dl>
 	<dt class="option">--l4j-debug</dt>
 	<dd>
 		To make sure the output executable is configured correctly you can use the
 		debug launching mode to log various information to the launch4j.log file.
+		Environment variable can also be used...<br />
+		SET Launch4j=debug
 	</dd>
 
 	<dt class="option">--l4j-debug-all</dt>
 	<dd>
 		Same as above, but additionally log loaded resources (options stored during wrapper creation).
+		Environment variable can also be used...<br />
+		SET Launch4j=debug-all
 	</dd>	
 	
-	<dt class="option">--l4j-default-proc</dt>
-	<dd>
-		Use default process name.
-	</dd>
-
 	<dt class="option">--l4j-dont-wait</dt>
 	<dd>
 		Disable the "stay alive" function.

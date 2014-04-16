@@ -78,7 +78,7 @@ public class JreFormImpl extends JreForm {
 				.add("jre.options", _jvmOptionsTextArea);
 
 		_varCombo.setModel(new DefaultComboBoxModel(new String[] {
-				"EXEDIR", "EXEFILE", "PWD", "OLDPWD",
+				"EXEDIR", "EXEFILE", "PWD", "OLDPWD", "JREHOMEDIR",
 				"HKEY_CLASSES_ROOT", "HKEY_CURRENT_USER", "HKEY_LOCAL_MACHINE",
 				"HKEY_USERS", "HKEY_CURRENT_CONFIG" }));
 
