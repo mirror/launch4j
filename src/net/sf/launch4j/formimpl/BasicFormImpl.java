@@ -61,7 +61,7 @@ public class BasicFormImpl extends BasicForm {
 				.add("errTitle", _errorTitleField)
 				.add("downloadUrl", _downloadUrlField, Config.DOWNLOAD_URL)
 				.add("supportUrl", _supportUrlField)
-				.add("chdir", _chdirField)
+				.add("chdir", _chdirField, ".")
 				.add("priorityIndex", new JRadioButton[] { _normalPriorityRadio,
 															_idlePriorityRadio,
 															_highPriorityRadio })
