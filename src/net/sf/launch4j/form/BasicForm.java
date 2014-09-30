@@ -47,6 +47,7 @@ public abstract class BasicForm extends JPanel
    protected final JTextField _manifestField = new JTextField();
    protected final JButton _manifestButton = new JButton();
    protected final JCheckBox _stayAliveCheck = new JCheckBox();
+   protected final JCheckBox _restartOnCrashCheck = new JCheckBox();
 
    /**
     * Default constructor
@@ -126,7 +127,7 @@ public abstract class BasicForm extends JPanel
    public JPanel createPanel()
    {
       JPanel jpanel1 = new JPanel();
-      FormLayout formlayout1 = new FormLayout("FILL:7DLU:NONE,RIGHT:MAX(65DLU;DEFAULT):NONE,FILL:3DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:GROW(1.0),FILL:3DLU:NONE,FILL:26PX:NONE,FILL:7DLU:NONE","CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE");
+      FormLayout formlayout1 = new FormLayout("FILL:7DLU:NONE,RIGHT:MAX(65DLU;DEFAULT):NONE,FILL:3DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:GROW(1.0),FILL:3DLU:NONE,FILL:26PX:NONE,FILL:7DLU:NONE","CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE");
       CellConstraints cc = new CellConstraints();
       jpanel1.setLayout(formlayout1);
 
@@ -218,30 +219,30 @@ public abstract class BasicForm extends JPanel
 
       TitledSeparator titledseparator1 = new TitledSeparator();
       titledseparator1.setText(Messages.getString("downloadAndSupport"));
-      jpanel1.add(titledseparator1,cc.xywh(2,21,11,1));
+      jpanel1.add(titledseparator1,cc.xywh(2,23,11,1));
 
       _errorTitleLabel.setName("errorTitleLabel");
       _errorTitleLabel.setText(Messages.getString("errorTitle"));
-      jpanel1.add(_errorTitleLabel,cc.xy(2,23));
+      jpanel1.add(_errorTitleLabel,cc.xy(2,25));
 
       _errorTitleField.setName("errorTitleField");
       _errorTitleField.setToolTipText(Messages.getString("errorTitleTip"));
-      jpanel1.add(_errorTitleField,cc.xywh(4,23,7,1));
+      jpanel1.add(_errorTitleField,cc.xywh(4,25,7,1));
 
       _downloadUrlLabel.setIcon(loadImage("images/asterix.gif"));
       _downloadUrlLabel.setName("downloadUrlLabel");
       _downloadUrlLabel.setText(Messages.getString("downloadUrl"));
-      jpanel1.add(_downloadUrlLabel,cc.xy(2,25));
+      jpanel1.add(_downloadUrlLabel,cc.xy(2,27));
 
       _downloadUrlField.setName("downloadUrlField");
-      jpanel1.add(_downloadUrlField,cc.xywh(4,25,7,1));
+      jpanel1.add(_downloadUrlField,cc.xywh(4,27,7,1));
 
       _supportUrlLabel.setName("supportUrlLabel");
       _supportUrlLabel.setText(Messages.getString("supportUrl"));
-      jpanel1.add(_supportUrlLabel,cc.xy(2,27));
+      jpanel1.add(_supportUrlLabel,cc.xy(2,29));
 
       _supportUrlField.setName("supportUrlField");
-      jpanel1.add(_supportUrlField,cc.xywh(4,27,7,1));
+      jpanel1.add(_supportUrlField,cc.xywh(4,29,7,1));
 
       JLabel jlabel1 = new JLabel();
       jlabel1.setText(Messages.getString("manifest"));
@@ -259,8 +260,14 @@ public abstract class BasicForm extends JPanel
       _stayAliveCheck.setName("stayAliveCheck");
       _stayAliveCheck.setText(Messages.getString("stayAlive"));
       jpanel1.add(_stayAliveCheck,cc.xywh(4,18,7,1));
+      
+      _restartOnCrashCheck.setActionCommand("Restart the application after a crash");
+      _restartOnCrashCheck.setToolTipText(Messages.getString("restartOnCrashToolTip"));
+      _restartOnCrashCheck.setName("restartOnCrashCheck");
+      _restartOnCrashCheck.setText(Messages.getString("restartOnCrash"));
+      jpanel1.add(_restartOnCrashCheck,cc.xywh(4,20,7,1));
 
-      addFillComponents(jpanel1,new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13 },new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28 });
+      addFillComponents(jpanel1,new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13 },new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 });
       return jpanel1;
    }
 

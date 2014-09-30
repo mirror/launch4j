@@ -90,6 +90,7 @@ public class Config implements IValidatable {
 	private String downloadUrl;
 	private String supportUrl;
 	private boolean stayAlive;
+	private boolean restartOnCrash;
 	private File manifest;
 	private File icon;
 	private List<String> variables;
@@ -312,6 +313,15 @@ public class Config implements IValidatable {
 
 	public void setStayAlive(boolean stayAlive) {
 		this.stayAlive = stayAlive;
+	}
+	
+	/** Restart the application after a crash (i.e. exit code other than 0) */
+	public boolean isRestartOnCrash() {
+		return restartOnCrash;
+	}
+	
+	public void setRestartOnCrash(boolean restartOnCrash) {
+		this.restartOnCrash = restartOnCrash;
 	}
 	
 	public VersionInfo getVersionInfo() {

@@ -5,6 +5,7 @@
   <errTitle>SimpleApp</errTitle>
   <chdir>.</chdir>
   <icon>SimpleApp.ico</icon>
+  <restartOnCrash>true</restartOnCrash>
   <jre>
     <minVersion>1.6.0</minVersion>
   </jre>

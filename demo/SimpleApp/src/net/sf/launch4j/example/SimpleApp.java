@@ -35,9 +35,11 @@ package net.sf.launch4j.example;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -55,6 +57,23 @@ public class SimpleApp extends JFrame {
 		JMenu menu = new JMenu("File");
 		menu.add(new JMenuItem("Open"));
 		menu.add(new JMenuItem("Save"));
+		
+		menu.addSeparator();
+		
+		menu.add(new JMenuItem(new AbstractAction("Exit with code 0") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		}));
+		
+		menu.add(new JMenuItem(new AbstractAction("Exit with code 100") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(100);
+			}
+		}));
+		
 		JMenuBar mb = new JMenuBar();
 		mb.setOpaque(true);
 		mb.add(menu);
@@ -62,7 +81,7 @@ public class SimpleApp extends JFrame {
 
 		this.addWindowListener(new WindowAdapter() {
 	    	public void windowClosing(WindowEvent e) {
-				System.exit(123);
+				System.exit(0);
 		}});
 		setVisible(true);
 

@@ -41,6 +41,7 @@ BOOL stayAlive = FALSE;
 BOOL splash = FALSE;
 BOOL splashTimeoutErr;
 BOOL waitForWindow;
+BOOL restartOnCrash = FALSE;
 int splashTimeout = DEFAULT_SPLASH_TIMEOUT;
 
 int APIENTRY WinMain(HINSTANCE hInstance,
@@ -67,9 +68,12 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 	splash = loadBool(SHOW_SPLASH)
 			&& strstr(lpCmdLine, "--l4j-no-splash") == NULL;
-	stayAlive = loadBool(GUI_HEADER_STAYS_ALIVE)
-			&& strstr(lpCmdLine, "--l4j-dont-wait") == NULL;
-
+	restartOnCrash = loadBool(RESTART_ON_CRASH);
+	// if we should restart on crash, we must also stay alive to check for crashes
+	stayAlive = restartOnCrash ||
+			  (loadBool(GUI_HEADER_STAYS_ALIVE)
+			&& strstr(lpCmdLine, "--l4j-dont-wait") == NULL);
+			
 	if (splash || stayAlive)
 	{
 		hWnd = CreateWindowEx(WS_EX_TOOLWINDOW, "STATIC", "",
@@ -109,33 +113,46 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 			ShowWindow(hWnd, nCmdShow);
 			UpdateWindow (hWnd);
 		}
+	}
 
-		if (!SetTimer (hWnd, ID_TIMER, 1000 /* 1s */, TimerProc))
+	do
+	{
+		if (splash || stayAlive)
+		{
+			if (!SetTimer (hWnd, ID_TIMER, 1000 /* 1s */, TimerProc))
+			{
+				signalError();
+				return 1;
+			}
+		}
+		
+		if (execute(FALSE) == -1)
 		{
 			signalError();
 			return 1;
 		}
-	}
-
-	if (execute(FALSE) == -1)
-	{
-		signalError();
-		return 1;
-	}
-
-	if (!(splash || stayAlive))
-	{
-		debug("Exit code:\t0\n");
-		closeHandles();
-		return 0;
-	}
-
-	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
+	
+		if (!(splash || stayAlive))
+		{
+			debug("Exit code:\t0\n");
+			closeHandles();
+			return 0;
+		}
+	
+		MSG msg;
+		while (GetMessage(&msg, NULL, 0, 0))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		
+		if (dwExitCode == 0) {
+	  		debug("Exit code was 0, quitting\n");
+			break;
+  		}
+  		
+  		debug("Exit code was %d, restarting the application!\n", dwExitCode);
+	} while (restartOnCrash);
 
 	debug("Exit code:\t%d\n", dwExitCode);
 	closeHandles();
