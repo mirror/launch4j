@@ -146,13 +146,11 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 			DispatchMessage(&msg);
 		}
 		
-		if (dwExitCode == 0) {
-	  		debug("Exit code was 0, quitting\n");
-			break;
+		if (restartOnCrash && dwExitCode != 0) {
+	  		debug("Exit code:\t%d, restarting the application!\n", dwExitCode);
   		}
   		
-  		debug("Exit code was %d, restarting the application!\n", dwExitCode);
-	} while (restartOnCrash);
+	} while (restartOnCrash && dwExitCode != 0);
 
 	debug("Exit code:\t%d\n", dwExitCode);
 	closeHandles();
