@@ -249,9 +249,9 @@ public class RcBuilder {
 		addText(JDK_PREFERENCE, String.valueOf(jre.getJdkPreferenceIndex()));
 		
 		String runtimeBits = jre.getRuntimeBits();
-		int use64Bits = runtimeBits == Jre.RUNTIME_BITS_64 || runtimeBits == Jre.RUNTIME_BITS_64_AND_32
+		int use64Bits = Jre.RUNTIME_BITS_64.equals(runtimeBits) || Jre.RUNTIME_BITS_64_AND_32.equals(runtimeBits)
 				? USE_64_BIT_RUNTIME : 0;
-		int use32Bits = runtimeBits == Jre.RUNTIME_BITS_32 || runtimeBits == Jre.RUNTIME_BITS_64_AND_32
+		int use32Bits = Jre.RUNTIME_BITS_32.equals(runtimeBits) || Jre.RUNTIME_BITS_64_AND_32.equals(runtimeBits)
 				? USE_32_BIT_RUNTIME : 0;
 		addInteger(RUNTIME_BITS, use64Bits | use32Bits);
 		addInteger(INITIAL_HEAP_SIZE, jre.getInitialHeapSize());
