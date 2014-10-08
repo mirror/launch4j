@@ -67,7 +67,7 @@ public class SimpleApp extends JFrame {
 			}
 		}));
 		
-		menu.add(new JMenuItem(new AbstractAction("Exit with code 100") {
+		menu.add(new JMenuItem(new AbstractAction("Exit with code 100 and restart the application") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.exit(100);

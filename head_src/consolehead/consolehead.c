@@ -52,6 +52,7 @@ int main(int argc, char* argv[])
 	}
 
 	int result = prepare(cmdLine);
+
 	if (result == ERROR_ALREADY_EXISTS)
 	{
 		char errMsg[BIG_STR] = {0};
@@ -67,13 +68,12 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	result = (int) execute(TRUE);
-	if (result == -1)
+	DWORD dwExitCode = 0;
+
+	if (!execute(TRUE, &dwExitCode))
 	{
 		signalError();
 	}
-	else
-	{
-		return result;
-	}
+
+	return (int) dwExitCode;
 }

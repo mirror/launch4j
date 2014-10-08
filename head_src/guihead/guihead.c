@@ -125,13 +125,13 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 				return 1;
 			}
 		}
-		
-		if (execute(FALSE) == -1)
+
+		if (!execute(FALSE, &dwExitCode))
 		{
 			signalError();
 			return 1;
 		}
-	
+
 		if (!(splash || stayAlive))
 		{
 			debug("Exit code:\t0\n");

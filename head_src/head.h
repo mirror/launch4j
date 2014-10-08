@@ -118,6 +118,6 @@ void setJvmOptions(char *jvmOptions, const char *exePath);
 int prepare(const char *lpCmdLine);
 void closeHandles();
 BOOL appendToPathVar(const char* path);
-DWORD execute(const BOOL wait);
+BOOL execute(const BOOL wait, DWORD *dwExitCode);
 
 #endif // _LAUNCH4J_HEAD__INCLUDED_

@@ -55,7 +55,7 @@ public class ConsoleApp {
 				sb.append(' ');
 			}
 		}
-		sb.append("\n\nEnter a line of text, Ctrl-C to stop.\n\n>");
+		sb.append("\n\nEnter a line of text, 'quit' or Ctrl-C to stop.\n\n>");
 		System.out.print(sb.toString());
 		try {
 			BufferedReader is = new BufferedReader(new InputStreamReader(System.in));
