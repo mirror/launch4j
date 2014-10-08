@@ -65,7 +65,8 @@ public class BasicFormImpl extends BasicForm {
 				.add("priorityIndex", new JRadioButton[] { _normalPriorityRadio,
 															_idlePriorityRadio,
 															_highPriorityRadio })
-				.add("stayAlive", _stayAliveCheck);
+				.add("stayAlive", _stayAliveCheck)
+				.add("restartOnCrash", _restartOnCrashCheck);
 
 		_dontWrapJarCheck.addChangeListener(new DontWrapJarChangeListener());
 
