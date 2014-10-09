@@ -43,6 +43,7 @@ may be absolute paths or relative to the configuration file path.
   &lt;chdir&gt;<span class="codeword">path</span>&lt;/chdir&gt;
   &lt;priority&gt;<span class="codeword"><u>normal</u>|idle|high</span>&lt;/priority&gt;
   &lt;stayAlive&gt;<span class="codeword">true|false</span>&lt;/stayAlive&gt;
+  &lt;restartOnCrash&gt;<span class="codeword">true|false</span>&lt;/restartOnCrash&gt;
   &lt;icon&gt;<span class="codeword">file</span>&lt;/icon&gt;
   &lt;obj&gt;<span class="codeword">header object file</span>&lt;/obj&gt;
   ...
@@ -192,6 +193,12 @@ may be absolute paths or relative to the configuration file path.
 	<dd>Optional, defaults to false in GUI header, always true in console header.
 		When enabled the launcher waits for the Java application
 		to finish and returns it's exit code.
+	</dd>
+</dl>
+<dl>
+	<dt>&lt;restartOnCrash&gt;</dt>
+	<dd>Optional, defaults to false.
+		When the application exits, any exit code other than 0 is considered a crash and the application will be started again.
 	</dd>
 </dl>
 <dl>
