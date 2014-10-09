@@ -954,11 +954,10 @@ int prepare(const char *lpCmdLine)
 	return TRUE;
 }
 
-void closeHandles()
+void closeProcessHandles()
 {
 	CloseHandle(pi.hThread);
 	CloseHandle(pi.hProcess);
-	closeLogFile();
 }
 
 /*
@@ -998,8 +997,7 @@ BOOL execute(const BOOL wait, DWORD *dwExitCode)
 		{
 			WaitForSingleObject(pi.hProcess, INFINITE);
 			GetExitCodeProcess(pi.hProcess, dwExitCode);
-			debug("Exit code:\t%d\n", *dwExitCode);
-			closeHandles();
+			closeProcessHandles();
 		}
 		else
 		{

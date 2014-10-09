@@ -30,6 +30,10 @@
 #include "../resource.h"
 #include "../head.h"
 
+extern FILE* hLog;
+
+BOOL restartOnCrash = FALSE;
+
 int main(int argc, char* argv[])
 {
     setConsoleFlag();
@@ -68,12 +72,26 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	DWORD dwExitCode = 0;
+	restartOnCrash = loadBool(RESTART_ON_CRASH);
+	DWORD dwExitCode;
 
-	if (!execute(TRUE, &dwExitCode))
+	do
 	{
-		signalError();
-	}
+		dwExitCode = 0;
+	
+		if (!execute(TRUE, &dwExitCode))
+		{
+			signalError();
+			break;
+		}
 
+		if (restartOnCrash && dwExitCode != 0)
+		{
+	  		debug("Exit code:\t%d, restarting the application!\n", dwExitCode);
+  		}
+	} while (restartOnCrash && dwExitCode != 0);
+
+	debug("Exit code:\t%d\n", dwExitCode);
+	closeLogFile();
 	return (int) dwExitCode;
 }
