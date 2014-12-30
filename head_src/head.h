@@ -108,16 +108,24 @@ void regSearchJreSdk(const char* jreKeyName, const char* sdkKeyName,
 BOOL findJavaHome(char* path, const int jdkPreference);
 int getExePath(char* exePath);
 void appendPath(char* basepath, const char* path);
-void appendJavaw(char* jrePath);
+void appendLauncher(char* jrePath);
 void appendAppClasspath(char* dst, const char* src);
 BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathLen);
 void appendHeapSizes(char *dst);
 void appendHeapSize(char *dst, const int megabytesID, const int percentID,
 		const DWORDLONG availableMemory, const char *option);
 void setJvmOptions(char *jvmOptions, const char *exePath);
+BOOL createMutex();
+void setWorkingDirectory(const char *exePath, const int pathLen);
+void bundledJreSearch(const char *exePath, const int pathLen);
+BOOL jreSearch();
+BOOL appendToPathVar(const char* path);
+BOOL appendJreBinToPathVar();
+void setEnvironmentVariables(const char *exePath, const int pathLen);
+void setMainClassAndClassPath(const char *exePath, const int pathLen);
+void setCommandLineArgs(const char *lpCmdLine);
 int prepare(const char *lpCmdLine);
 void closeProcessHandles();
-BOOL appendToPathVar(const char* path);
 BOOL execute(const BOOL wait, DWORD *dwExitCode);
 
 #endif // _LAUNCH4J_HEAD__INCLUDED_
