@@ -33,7 +33,7 @@
 #include "guihead.h"
 
 extern FILE* hLog;
-extern PROCESS_INFORMATION pi;
+extern PROCESS_INFORMATION processInformation;
 
 HWND hWnd;
 DWORD dwExitCode = 0;
@@ -188,7 +188,7 @@ BOOL CALLBACK enumwndfn(HWND hwnd, LPARAM lParam)
 {
 	DWORD processId;
 	GetWindowThreadProcessId(hwnd, &processId);
-	if (pi.dwProcessId == processId)
+	if (processInformation.dwProcessId == processId)
 	{
 		LONG styles = GetWindowLong(hwnd, GWL_STYLE);
 		if ((styles & WS_VISIBLE) != 0)
@@ -230,7 +230,7 @@ VOID CALLBACK TimerProc(
 		}
 	}
 
-	GetExitCodeProcess(pi.hProcess, &dwExitCode);
+	GetExitCodeProcess(processInformation.hProcess, &dwExitCode);
 	if (dwExitCode != STILL_ACTIVE
 			|| !(splash || stayAlive))
 	{

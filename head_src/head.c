@@ -41,11 +41,8 @@ BOOL corruptedJreFound = FALSE;
 int runtimeBits = INIT_RUNTIME_BITS;
 int foundJava = NO_JAVA_FOUND;
 
-struct _stat statBuf;
-PROCESS_INFORMATION pi;
+PROCESS_INFORMATION processInformation;
 DWORD processPriority;
-
-char mutexName[STR] = {0};
 
 char errUrl[256] = {0};
 char errTitle[STR] = LAUNCH4j;
@@ -58,7 +55,6 @@ char foundJavaKey[_MAX_PATH] = {0};
 char foundJavaHome[_MAX_PATH] = {0};
 
 char oldPwd[_MAX_PATH] = {0};
-char workingDir[_MAX_PATH] = {0};
 char jreHomeDir[_MAX_PATH] = {0};
 char launcherCmd[_MAX_PATH] = {0};
 char launcherArgs[MAX_ARGS] = {0};
@@ -383,6 +379,7 @@ BOOL isJavaHomeValid(const char* keyName, const int searchType)
 
 BOOL isLauncherPathValid(const char* path)
 {
+	struct _stat statBuf;
 	char launcherPath[_MAX_PATH] = {0};
 	BOOL result = FALSE;
 
@@ -674,6 +671,8 @@ void setJvmOptions(char *jvmOptions, const char *exePath)
 
 BOOL createMutex()
 {
+	char mutexName[STR] = {0};
+
 	loadString(MUTEX_NAME, mutexName);
 
 	if (*mutexName)
@@ -696,7 +695,9 @@ BOOL createMutex()
 
 void setWorkingDirectory(const char *exePath, const int pathLen)
 {
+	char workingDir[_MAX_PATH] = {0};
 	char tmpPath[_MAX_PATH] = {0};
+
 	GetCurrentDirectory(_MAX_PATH, oldPwd);
 
 	if (loadString(CHDIR, tmpPath))
@@ -1037,14 +1038,15 @@ int prepare(const char *lpCmdLine)
 
 void closeProcessHandles()
 {
-	CloseHandle(pi.hThread);
-	CloseHandle(pi.hProcess);
+	CloseHandle(processInformation.hThread);
+	CloseHandle(processInformation.hProcess);
 }
 
 BOOL execute(const BOOL wait, DWORD *dwExitCode)
 {
 	STARTUPINFO si;
-    memset(&pi, 0, sizeof(pi));
+
+    memset(&processInformation, 0, sizeof(processInformation));
     memset(&si, 0, sizeof(si));
     si.cb = sizeof(si);
 
@@ -1055,12 +1057,12 @@ BOOL execute(const BOOL wait, DWORD *dwExitCode)
 	strcat(cmdline, launcherArgs);
 
 	if (CreateProcess(NULL, cmdline, NULL, NULL,
-			TRUE, processPriority, NULL, NULL, &si, &pi))
+			TRUE, processPriority, NULL, NULL, &si, &processInformation))
 	{
 		if (wait)
 		{
-			WaitForSingleObject(pi.hProcess, INFINITE);
-			GetExitCodeProcess(pi.hProcess, dwExitCode);
+			WaitForSingleObject(processInformation.hProcess, INFINITE);
+			GetExitCodeProcess(processInformation.hProcess, dwExitCode);
 			closeProcessHandles();
 		}
 		else
