@@ -278,8 +278,22 @@ BOOL regQueryValue(const char* regPath, unsigned char* buffer,
 	return result;
 }
 
-void regSearch(const HKEY hKey, const char* keyName, const int searchType)
+void regSearch(const char* keyName, const int searchType)
 {
+	HKEY hKey;
+	const DWORD wow64KeyMask = searchType & KEY_WOW64_64KEY;
+
+	debug("%s-bit search:\t%s...\n", wow64KeyMask ? "64" : "32", keyName);
+
+	if (!RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+			keyName,
+			0,
+	        KEY_READ | wow64KeyMask,
+			&hKey) == ERROR_SUCCESS)
+	{
+		return;
+	}
+
 	DWORD x = 0;
 	unsigned long versionSize = _MAX_PATH;
 	FILETIME time;
@@ -317,6 +331,8 @@ void regSearch(const HKEY hKey, const char* keyName, const int searchType)
 
 		versionSize = _MAX_PATH;
 	}
+
+	RegCloseKey(hKey);
 }
 
 BOOL isJavaHomeValid(const char* keyName, const int searchType)
@@ -389,7 +405,6 @@ BOOL isLauncherPathValid(const char* path)
 
 void regSearchWow(const char* keyName, const int searchType)
 {
-	HKEY hKey;
 	if (runtimeBits == INIT_RUNTIME_BITS)
 	{
 		runtimeBits = loadInt(RUNTIME_BITS);
@@ -397,34 +412,17 @@ void regSearchWow(const char* keyName, const int searchType)
 
 	if ((runtimeBits & USE_64_BIT_RUNTIME) && wow64)
 	{
-		debug("64-bit search:\t%s...\n", keyName);
-		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-				keyName,
-				0,
-    	        KEY_READ | KEY_WOW64_64KEY,
-				&hKey) == ERROR_SUCCESS)
+		regSearch(keyName, searchType | KEY_WOW64_64KEY);
+
+		if ((foundJava & KEY_WOW64_64KEY) != NO_JAVA_FOUND)
 		{
-			regSearch(hKey, keyName, searchType | KEY_WOW64_64KEY);
-			RegCloseKey(hKey);
-			if ((foundJava & KEY_WOW64_64KEY) != NO_JAVA_FOUND)
-			{
-				return;
-			}
+			return;
 		}
 	}
 
 	if (runtimeBits & USE_32_BIT_RUNTIME)
 	{
-		debug("32-bit search:\t%s...\n", keyName);
-		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-				keyName,
-				0,
-	            KEY_READ,
-				&hKey) == ERROR_SUCCESS)
-		{
-			regSearch(hKey, keyName, searchType);
-			RegCloseKey(hKey);
-		}
+		regSearch(keyName, searchType);
 	}
 }
 
