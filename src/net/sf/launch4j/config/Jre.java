@@ -63,6 +63,7 @@ public class Jre implements IValidatable {
 	
 	public static final String RUNTIME_BITS_64 = "64";
 	public static final String RUNTIME_BITS_64_AND_32 = "64/32";
+	public static final String RUNTIME_BITS_32_AND_64 = "32/64";
 	public static final String RUNTIME_BITS_32 = "32";
 
 	private static final String[] JDK_PREFERENCE_NAMES = new String[] {
@@ -74,6 +75,7 @@ public class Jre implements IValidatable {
 	private static final String[] RUNTIME_BITS_OPTIONS = new String[] {
 			RUNTIME_BITS_64,
 			RUNTIME_BITS_64_AND_32,
+			RUNTIME_BITS_32_AND_64,
 			RUNTIME_BITS_32	};
 
 	public static final int DEFAULT_JDK_PREFERENCE_INDEX

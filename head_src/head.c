@@ -2,7 +2,7 @@
 	Launch4j (http://launch4j.sourceforge.net/)
 	Cross-platform Java application wrapper for creating Windows native executables.
 
-	Copyright (c) 2004, 2014 Grzegorz Kowal,
+	Copyright (c) 2004, 2015 Grzegorz Kowal,
 							 Ian Roberts (jdk preference patch)
 							 Sylvain Mina (single instance patch)
 
@@ -407,19 +407,47 @@ void regSearchWow(const char* keyName, const int searchType)
 		runtimeBits = loadInt(RUNTIME_BITS);
 	}
 
-	if ((runtimeBits & USE_64_BIT_RUNTIME) && wow64)
+	switch (runtimeBits)
 	{
-		regSearch(keyName, searchType | KEY_WOW64_64KEY);
+		case USE_64_BIT_RUNTIME:
+			if (wow64)
+			{
+				regSearch(keyName, searchType | KEY_WOW64_64KEY);
+			}
+			break;
 
-		if ((foundJava & KEY_WOW64_64KEY) != NO_JAVA_FOUND)
-		{
-			return;
-		}
-	}
+		case USE_64_AND_32_BIT_RUNTIME:
+			if (wow64)
+			{
+				regSearch(keyName, searchType | KEY_WOW64_64KEY);
+				
+				if ((foundJava & KEY_WOW64_64KEY) != NO_JAVA_FOUND)
+				{
+					break;
+				}
+			}
 
-	if (runtimeBits & USE_32_BIT_RUNTIME)
-	{
-		regSearch(keyName, searchType);
+			regSearch(keyName, searchType);
+			break;
+
+		case USE_32_AND_64_BIT_RUNTIME:
+			regSearch(keyName, searchType);
+
+			if (foundJava != NO_JAVA_FOUND
+				&& (foundJava & KEY_WOW64_64KEY) == NO_JAVA_FOUND)
+			{
+				break;
+			}
+
+			if (wow64)
+			{
+				regSearch(keyName, searchType | KEY_WOW64_64KEY);
+			}
+			break;
+
+		case USE_32_BIT_RUNTIME:
+			regSearch(keyName, searchType);
+			break;
 	}
 }
 

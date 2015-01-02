@@ -109,9 +109,6 @@ public class RcBuilder {
 	public static final int LAUNCHER_ERR = 104;
 	public static final int INSTANCE_ALREADY_EXISTS_MSG = 105;
 
-	public static final int USE_64_BIT_RUNTIME = 1;
-	public static final int USE_32_BIT_RUNTIME = 2;
-
 	private final StringBuffer _sb = new StringBuffer();
 
 	public String getContent() {
@@ -247,13 +244,8 @@ public class RcBuilder {
 		addText(JAVA_MIN_VER, jre.getMinVersion());
 		addText(JAVA_MAX_VER, jre.getMaxVersion());
 		addText(JDK_PREFERENCE, String.valueOf(jre.getJdkPreferenceIndex()));
-		
-		String runtimeBits = jre.getRuntimeBits();
-		int use64Bits = Jre.RUNTIME_BITS_64.equals(runtimeBits) || Jre.RUNTIME_BITS_64_AND_32.equals(runtimeBits)
-				? USE_64_BIT_RUNTIME : 0;
-		int use32Bits = Jre.RUNTIME_BITS_32.equals(runtimeBits) || Jre.RUNTIME_BITS_64_AND_32.equals(runtimeBits)
-				? USE_32_BIT_RUNTIME : 0;
-		addInteger(RUNTIME_BITS, use64Bits | use32Bits);
+
+		addInteger(RUNTIME_BITS, jre.getRuntimeBitsIndex() + 1);
 		addInteger(INITIAL_HEAP_SIZE, jre.getInitialHeapSize());
 		addInteger(INITIAL_HEAP_PERCENT, jre.getInitialHeapPercent());
 		addInteger(MAX_HEAP_SIZE, jre.getMaxHeapSize());

@@ -63,6 +63,7 @@ public class JreFormImpl extends JreForm {
 		_runtimeBitsCombo.setModel(new DefaultComboBoxModel(new String[] {
 				Messages.getString("runtimeBits.64"),
 				Messages.getString("runtimeBits.64And32"),
+				Messages.getString("runtimeBits.32And64"),
 				Messages.getString("runtimeBits.32")}));
 
 		bindings.add("jre.path", _jrePathField)
