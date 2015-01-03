@@ -68,6 +68,7 @@ public class JreFormImpl extends JreForm {
 
 		bindings.add("jre.path", _jrePathField)
 				.add("jre.bundledJre64Bit", _bundledJre64BitCheck)
+				.add("jre.bundledJreAsFallback", _bundledJreAsFallbackCheck)
 				.add("jre.minVersion", _jreMinField)
 				.add("jre.maxVersion", _jreMaxField)
 				.add("jre.jdkPreferenceIndex", _jdkPreferenceCombo,	Jre.DEFAULT_JDK_PREFERENCE_INDEX)

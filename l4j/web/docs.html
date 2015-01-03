@@ -64,10 +64,11 @@ may be absolute paths or relative to the configuration file path.
     &lt;!-- Specify one of the following or both --&gt;
     <strong>&lt;path&gt;</strong><span class="codeword">bundled JRE path (%VAR%)</span><strong>&lt;/path&gt;</strong>
     &lt;bundledJre64Bit&gt;<span class="codeword">true|<u>false</u></span>&lt;/bundledJre64Bit&gt;
+    &lt;bundledJreAsFallback&gt;<span class="codeword">true|<u>false</u></span>&lt;/bundledJreAsFallback&gt;
     <strong>&lt;minVersion&gt;</strong><span class="codeword">x.x.x[_xx]</span><strong>&lt;/minVersion&gt;</strong>
     &lt;maxVersion&gt;<span class="codeword">x.x.x[_xx]</span>&lt;/maxVersion&gt;
     &lt;jdkPreference&gt;<span class="codeword">jreOnly|<u>preferJre</u>|preferJdk|jdkOnly</span>&lt;/jdkPreference&gt;
-    &lt;runtimeBits&gt;<span class="codeword">64|<u>64/32</u>|32</span>&lt;/runtimeBits&gt;
+    &lt;runtimeBits&gt;<span class="codeword">64|<u>64/32</u>|32/64|32</span>&lt;/runtimeBits&gt;
     &lt;!-- Heap sizes in MB and % of available memory --&gt;
     &lt;initialHeapSize&gt;<span class="codeword">MB</span>&lt;/initialHeapSize&gt;
     &lt;initialHeapPercent&gt;<span class="codeword">%</span>&lt;/initialHeapPercent&gt;
@@ -276,6 +277,16 @@ may be absolute paths or relative to the configuration file path.
 </blockquote>
 <blockquote>
 	<dl>
+		<dt>&lt;bundledJreAsFallback&gt;</dt>
+		<dd>Optional, defaults to false which treats the bundled JRE as the primary runtime.
+			When set to true, the bundled JRE will only be used in case the mix/max version search fails.
+			This can be used as a fallback option if the user does not have the required Java installed
+			and the bundled JRE	is provided on a CD or shared network location.
+		</dd>
+	</dl>
+</blockquote>
+<blockquote>
+	<dl>
 		<dt>&lt;jdkPreference&gt;</dt>
 		<dd>Optional, defaults to preferJre; Allows you to specify a preference
 			for a public JRE or a private JDK runtime. Valid values are:
@@ -313,6 +324,8 @@ may be absolute paths or relative to the configuration file path.
 			<dd>Use only 64-bit runtimes</dd>
 			<dt>64/32</dt>
 			<dd>Use 64-bit runtimes if available, otherwise use 32-bit</dd>
+			<dt>32/64</dt>
+			<dd>Use 32-bit runtimes if available, otherwise use 64-bit</dd>
 			<dt>32</dt>
 			<dd>Use only 32-bit runtimes</dd>
 		</dl>

@@ -102,6 +102,7 @@ public class RcBuilder {
 	public static final int BUNDLED_JRE_64_BIT = 29;
 	public static final int RUNTIME_BITS = 30;
 	public static final int RESTART_ON_CRASH = 31;
+	public static final int BUNDLED_JRE_AS_FALLBACK	= 32;
 
 	public static final int STARTUP_ERR = 101;
 	public static final int BUNDLED_JRE_ERR = 102;
@@ -241,6 +242,7 @@ public class RcBuilder {
 	private void addJre(Jre jre) {
 		addWindowsPath(JRE_PATH, jre.getPath());
 		addTrue(BUNDLED_JRE_64_BIT, jre.getBundledJre64Bit());
+		addTrue(BUNDLED_JRE_AS_FALLBACK, jre.getBundledJreAsFallback());
 		addText(JAVA_MIN_VER, jre.getMinVersion());
 		addText(JAVA_MAX_VER, jre.getMaxVersion());
 		addText(JDK_PREFERENCE, String.valueOf(jre.getJdkPreferenceIndex()));

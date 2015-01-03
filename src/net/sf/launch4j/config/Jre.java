@@ -86,6 +86,7 @@ public class Jre implements IValidatable {
 
 	private String path;
 	private boolean bundledJre64Bit;
+	private boolean bundledJreAsFallback;
 	private String minVersion;
 	private String maxVersion;
 	private String jdkPreference;
@@ -104,6 +105,8 @@ public class Jre implements IValidatable {
 		if (Validator.isEmpty(path)) {
 			Validator.checkFalse(bundledJre64Bit, "jre.bundledJre64Bit",
 					Messages.getString("Jre.bundled.64bit.invalid"));
+			Validator.checkFalse(bundledJreAsFallback, "jre.bundledJreAsFallback",
+					Messages.getString("Jre.bundled.fallback.invalid"));
 			Validator.checkFalse(Validator.isEmpty(minVersion),
 					"jre.minVersion", Messages.getString("Jre.specify.jre.min.version.or.path"));
 		} else {
@@ -238,6 +241,14 @@ public class Jre implements IValidatable {
 	
 	public void setBundledJre64Bit(boolean bundledJre64Bit) {
 		this.bundledJre64Bit = bundledJre64Bit;	
+	}
+	
+	public boolean getBundledJreAsFallback() {
+		return bundledJreAsFallback;
+	}
+	
+	public void setBundledJreAsFallback(boolean bundledJreAsFallback) {
+		this.bundledJreAsFallback = bundledJreAsFallback;
 	}
 
 	/** Initial heap size in MB */

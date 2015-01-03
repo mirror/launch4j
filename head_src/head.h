@@ -119,8 +119,10 @@ void appendHeapSize(char *dst, const int megabytesID, const int percentID,
 void setJvmOptions(char *jvmOptions, const char *exePath);
 BOOL createMutex();
 void setWorkingDirectory(const char *exePath, const int pathLen);
-void bundledJreSearch(const char *exePath, const int pathLen);
-BOOL jreSearch();
+BOOL bundledJreSearch(const char *exePath, const int pathLen);
+BOOL installedJreSearch();
+void createJreSearchError();
+BOOL jreSearch(const char *exePath, const int pathLen);
 BOOL appendToPathVar(const char* path);
 BOOL appendJreBinToPathVar();
 void setEnvironmentVariables(const char *exePath, const int pathLen);

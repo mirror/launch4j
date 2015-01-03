@@ -57,6 +57,7 @@ struct
 {
 	int runtimeBits;
 	int foundJava;
+	BOOL bundledJreAsFallback;
 	BOOL corruptedJreFound;
 	char javaMinVer[STR];
 	char javaMaxVer[STR];
@@ -66,6 +67,7 @@ struct
 } search = {
 	.runtimeBits = INIT_RUNTIME_BITS,
 	.foundJava = NO_JAVA_FOUND,
+	.bundledJreAsFallback = FALSE,
 	.corruptedJreFound = FALSE,
 	.javaMinVer = {0},
 	.javaMaxVer = {0},
@@ -761,7 +763,7 @@ void setWorkingDirectory(const char *exePath, const int pathLen)
 	}
 }
 
-void bundledJreSearch(const char *exePath, const int pathLen)
+BOOL bundledJreSearch(const char *exePath, const int pathLen)
 {
 	char tmpPath[_MAX_PATH] = {0};
 
@@ -770,6 +772,7 @@ void bundledJreSearch(const char *exePath, const int pathLen)
 		char jrePath[MAX_ARGS] = {0};
 		expandVars(jrePath, tmpPath, exePath, pathLen);
 		debug("Bundled JRE:\t%s\n", jrePath);
+
 		if (jrePath[0] == '\\' || jrePath[1] == ':')
 		{
 			// Absolute
@@ -788,58 +791,88 @@ void bundledJreSearch(const char *exePath, const int pathLen)
 				? FOUND_BUNDLED | KEY_WOW64_64KEY
 				: FOUND_BUNDLED;
 			strcpy(search.foundJavaHome, launcher.cmd);
+			return TRUE;
 		}
     }
+
+    return FALSE;
 }
 
-BOOL jreSearch()
+BOOL installedJreSearch()
 {
-	if (search.foundJava == NO_JAVA_FOUND)
+	return *search.javaMinVer && findJavaHome(launcher.cmd, loadInt(JDK_PREFERENCE));
+}
+
+void createJreSearchError()
+{
+	if (*search.javaMinVer)
 	{
-		if (!loadString(JAVA_MIN_VER, search.javaMinVer))
+		loadString(JRE_VERSION_ERR, error.msg);
+		strcat(error.msg, " ");
+		strcat(error.msg, search.javaMinVer);
+	
+		if (*search.javaMaxVer)
 		{
-			loadString(BUNDLED_JRE_ERR, error.msg);
-			return FALSE;
+			strcat(error.msg, " - ");
+			strcat(error.msg, search.javaMaxVer);
 		}
-
-		loadString(JAVA_MAX_VER, search.javaMaxVer);
-		if (!findJavaHome(launcher.cmd, loadInt(JDK_PREFERENCE)))
+	
+		if (search.runtimeBits == USE_64_BIT_RUNTIME
+				|| search.runtimeBits == USE_32_BIT_RUNTIME)
 		{
-			loadString(JRE_VERSION_ERR, error.msg);
-			strcat(error.msg, " ");
-			strcat(error.msg, search.javaMinVer);
-
-			if (*search.javaMaxVer)
+			strcat(error.msg, " (");
+			strcat(error.msg, search.runtimeBits == USE_64_BIT_RUNTIME ? "64" : "32");
+			strcat(error.msg, "-bit)");
+		}			
+		
+		if (search.corruptedJreFound)
+		{
+			char launcherErrMsg[BIG_STR] = {0};
+	
+			if (loadString(LAUNCHER_ERR, launcherErrMsg))
 			{
-				strcat(error.msg, " - ");
-				strcat(error.msg, search.javaMaxVer);
+				strcat(error.msg, "\n");
+				strcat(error.msg, launcherErrMsg);
 			}
+		}
+	
+		loadString(DOWNLOAD_URL, error.url);
+	}
+	else
+	{
+		loadString(BUNDLED_JRE_ERR, error.msg);
+	}
+}
 
-			if (search.runtimeBits == USE_64_BIT_RUNTIME
-					|| search.runtimeBits == USE_32_BIT_RUNTIME)
-			{
-				strcat(error.msg, " (");
-				strcat(error.msg, search.runtimeBits == USE_64_BIT_RUNTIME ? "64" : "32");
-				strcat(error.msg, "-bit)");
-			}			
-			
-			if (search.corruptedJreFound)
-			{
-				char launcherErrMsg[BIG_STR] = {0};
+BOOL jreSearch(const char *exePath, const int pathLen)
+{
+	BOOL result = TRUE;
 
-				if (loadString(LAUNCHER_ERR, launcherErrMsg))
-				{
-					strcat(error.msg, "\n");
-					strcat(error.msg, launcherErrMsg);
-				}
-			}
+	search.bundledJreAsFallback = loadBool(BUNDLED_JRE_AS_FALLBACK);
+	loadString(JAVA_MIN_VER, search.javaMinVer);
+	loadString(JAVA_MAX_VER, search.javaMaxVer);
 
-			loadString(DOWNLOAD_URL, error.url);
-			return FALSE;
+	if (search.bundledJreAsFallback)
+	{
+		if (!installedJreSearch())
+		{
+			result = bundledJreSearch(exePath, pathLen);
+		}
+	}
+	else
+	{
+		if (!bundledJreSearch(exePath, pathLen))
+		{
+			result = installedJreSearch();
 		}
 	}
 	
-	return TRUE;
+	if (!result)
+	{
+		createJreSearchError();
+	}
+
+	return result;
 }
 
 /*
@@ -1057,9 +1090,8 @@ int prepare(const char *lpCmdLine)
 	}
 
 	setWorkingDirectory(exePath, pathLen);
-	bundledJreSearch(exePath, pathLen);
     
-	if (!jreSearch())
+	if (!jreSearch(exePath, pathLen))
     {
 		return FALSE;
 	}

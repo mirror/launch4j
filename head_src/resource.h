@@ -66,6 +66,7 @@
 #define BUNDLED_JRE_64_BIT			29
 #define RUNTIME_BITS				30
 #define RESTART_ON_CRASH			31
+#define BUNDLED_JRE_AS_FALLBACK		32
 
 #define STARTUP_ERR					101
 #define BUNDLED_JRE_ERR				102
