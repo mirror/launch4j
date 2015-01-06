@@ -1,3 +1,3 @@
-JRE/SDK 1.4.0 or higher must be installed on your system to run this demo.
+JRE/SDK 1.6.0 or higher must be installed on your system to run this demo.
 
 try running it with some command line arguments...
