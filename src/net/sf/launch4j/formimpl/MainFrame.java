@@ -249,6 +249,7 @@ public class MainFrame extends JFrame {
 
 		public void windowClosing(WindowEvent e) {
 			if (canDiscardChanges()) {
+				dispose();
 				System.exit(0);
 			}
 		}
