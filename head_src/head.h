@@ -91,6 +91,7 @@
 
 typedef void (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
+BOOL initGlobals();
 FILE* openLogFile(const char* exePath, const int pathLen);
 void closeLogFile();
 BOOL initializeLogging(const char *lpCmdLine, const char* exePath, const int pathLen);

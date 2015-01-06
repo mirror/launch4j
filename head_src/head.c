@@ -37,7 +37,7 @@ FILE* hLog;
 BOOL debugAll = FALSE;
 BOOL console = FALSE;
 BOOL wow64 = FALSE;
-char oldPwd[_MAX_PATH] = {0};
+char oldPwd[_MAX_PATH];
 
 PROCESS_INFORMATION processInformation;
 DWORD processPriority;
@@ -47,11 +47,7 @@ struct
 	char title[STR];
 	char msg[BIG_STR];
 	char url[256];
-} error = {
-	.title = LAUNCH4j,
-	.msg = {0},
-	.url = {0}
-};
+} error;
 
 struct
 {
@@ -64,26 +60,32 @@ struct
 	char foundJavaVer[STR];
 	char foundJavaKey[_MAX_PATH];
 	char foundJavaHome[_MAX_PATH];
-} search = {
-	.runtimeBits = INIT_RUNTIME_BITS,
-	.foundJava = NO_JAVA_FOUND,
-	.bundledJreAsFallback = FALSE,
-	.corruptedJreFound = FALSE,
-	.javaMinVer = {0},
-	.javaMaxVer = {0},
-	.foundJavaVer = {0},
-	.foundJavaKey = {0},
-	.foundJavaHome = {0}
-};
+} search;
 
 struct
 {
 	char cmd[_MAX_PATH];
 	char args[MAX_ARGS];
-} launcher = {
-	.cmd = {0},
-	.args = {0}
-};
+} launcher;
+
+BOOL initGlobals()
+{
+	hModule = GetModuleHandle(NULL);
+
+	if (hModule == NULL)
+	{
+		return FALSE;
+	}
+
+	strcpy(error.title, LAUNCH4j);
+
+	search.runtimeBits = INIT_RUNTIME_BITS;
+	search.foundJava = NO_JAVA_FOUND;
+	search.bundledJreAsFallback = FALSE;
+	search.corruptedJreFound = FALSE;
+	
+	return TRUE;
+}
 
 FILE* openLogFile(const char* exePath, const int pathLen)
 {
@@ -1050,9 +1052,7 @@ void setCommandLineArgs(const char *lpCmdLine)
 
 int prepare(const char *lpCmdLine)
 {
-	hModule = GetModuleHandle(NULL);
-
-	if (hModule == NULL)
+	if (!initGlobals())
 	{
 		return FALSE;
 	}
@@ -1074,8 +1074,8 @@ int prepare(const char *lpCmdLine)
     setWow64Flag();
 
 	// Set default error message, title and optional support web site url.
-	loadString(SUPPORT_URL, error.url);
 	loadString(ERR_TITLE, error.title);
+	loadString(SUPPORT_URL, error.url);
 
 	if (!loadString(STARTUP_ERR, error.msg))
 	{
