@@ -4,6 +4,7 @@
 	<property name="build" location="build" />
 	<property name="jar" location="./${ant.project.name}.jar" />
 	<property name="launch4j.dir" location="." />
+	<property name="maven" location="maven" />
 
 	<path id="dist.classpath">
 		<pathelement path="${build}" />
@@ -58,5 +59,14 @@
 		<delete file="${jar}" />
 		<ant dir="./demo/ConsoleApp" target="clean" inheritAll="false" />
 		<ant dir="./demo/SimpleApp" target="clean" inheritAll="false" />
+	</target>
+	
+	<target name="switch-to-maven" description="switch project to maven">
+		<copy todir=".">
+			<fileset dir="${maven}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<delete dir="${lib}" />
 	</target>
 </project>
