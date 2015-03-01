@@ -3,7 +3,7 @@ FileName=consolehead.dev
 Name=consolehead
 UnitCount=4
 Type=1
-Ver=2
+Ver=1
 ObjFiles=
 Includes=
 Libs=
@@ -22,14 +22,12 @@ OverrideOutputName=consolehead.exe
 HostApplication=
 Folders=
 CommandLine=
-UseCustomMakefile=0
+UseCustomMakefile=1
 CustomMakefile=Makefile.win
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=000000d000000000000001000
-LogOutput=
-LogOutputEnabled=0
+CompilerSettings=0000000001001000000100
 
 [Unit1]
 FileName=consolehead.c
@@ -49,7 +47,7 @@ Build=1
 LanguageID=1033
 CharsetID=1252
 CompanyName=
-FileVersion=0.1.1.1
+FileVersion=
 FileDescription=Developed using the Dev-C++ IDE
 InternalName=
 LegalCopyright=
@@ -58,7 +56,6 @@ OriginalFilename=
 ProductName=
 ProductVersion=
 AutoIncBuildNr=0
-SyncProduct=0
 
 [Unit2]
 FileName=..\resource.h
