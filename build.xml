@@ -68,5 +68,6 @@
 			</fileset>
 		</copy>
 		<delete dir="${lib}" />
+		<mkdir dir="./target" />
 	</target>
 </project>
