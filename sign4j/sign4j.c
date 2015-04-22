@@ -33,8 +33,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#ifdef _WIN32
 #include <io.h>
 #include <fcntl.h>
+#else
+#include <sys/io.h>
+#include <sys/fcntl.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -44,6 +49,14 @@
 #define SWAP_BLOCK_SIZE    (4 * 1024 * 1024)
 #define TEST_FILE_NAME     "sign4j_temporary.exe"
 #define SIGN4J_VERSION     "3.0"
+
+#ifndef _WIN32
+#define O_BINARY 0
+#define _O_SHORT_LIVED 0
+#define _S_IREAD S_IREAD
+#define _S_IWRITE S_IWRITE
+#define stricmp strcasecmp
+#endif
 
 typedef unsigned char byte;
 
@@ -127,7 +140,12 @@ int main (int argc, char* argv[])
          trg = outf;
       close (fd);
 
+#ifdef _WIN32
       strcpy (command,  "\" ");
+#else
+      strcpy (command, "");
+#endif
+
       for (i = j; i < argc; i++)
       {
          p = (argv[i] == outf ? trg : argv[i]);
@@ -139,9 +157,18 @@ int main (int argc, char* argv[])
             strcat (command, "\"");
          strcat (command, " ");
       }
+
+#ifdef _WIN32
       strcat (command, "\"");
+#endif
+
       if (! vrb)
+#ifdef _WIN32
          strcat (command, " > NUL");
+#else
+         strcat (command, " > /dev/null");
+#endif
+
       system (command);
 
       if ((td = open (trg, O_RDONLY | O_BINARY)) < 0)
@@ -168,7 +195,12 @@ int main (int argc, char* argv[])
       printf ("You don't need sign4j to sign this file\n");
    }
 
+#ifdef _WIN32
    strcpy (command,  "\" ");
+#else
+   strcpy (command, "");
+#endif
+
    for (i = j; i < argc; i++)
    {
       p = argv[i];
@@ -180,7 +212,11 @@ int main (int argc, char* argv[])
          strcat (command, "\"");
       strcat (command, " ");
    }
+
+#ifdef _WIN32
    strcat (command, "\"");
+#endif
+
    return system (command);
 }
 
