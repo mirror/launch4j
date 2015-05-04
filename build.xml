@@ -62,7 +62,7 @@
 	</target>
 	
 	<target name="switch-to-maven" description="switch project to maven">
-		<copy todir=".">
+		<copy todir="." overwrite="true">
 			<fileset dir="${maven}">
 				<include name="**/*" />
 			</fileset>
