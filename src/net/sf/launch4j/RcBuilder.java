@@ -225,7 +225,9 @@ public class RcBuilder {
 				"{\n" + 
 				" BLOCK \"StringFileInfo\"\n" +
 				" {\n" +
-				"  BLOCK \"040904E4\"\n" +	// English
+				"  BLOCK \"");
+		_sb.append(String.format("%04X%04X", v.getLanguage().getId(), v.getCharset().getId()));
+		_sb.append("\"\n" +
 				"  {\n");
 
 		addVerBlockValue("CompanyName", v.getCompanyName());
@@ -237,7 +239,9 @@ public class RcBuilder {
 		addVerBlockValue("OriginalFilename", v.getOriginalFilename());
 		addVerBlockValue("ProductName", v.getProductName());
 		addVerBlockValue("ProductVersion", v.getTxtProductVersion());
-		_sb.append("  }\n }\nBLOCK \"VarFileInfo\"\n{\nVALUE \"Translation\", 0x0409, 0x04E4\n}\n}");     
+		_sb.append("  }\n }\nBLOCK \"VarFileInfo\"\n{\nVALUE \"Translation\", ");
+		_sb.append(String.format("0x%04X, 0x%04X", v.getLanguage().getId(), v.getCharset().getId()));
+		_sb.append("\n}\n}");
 	}
 
 	private void addJre(Jre jre) {
