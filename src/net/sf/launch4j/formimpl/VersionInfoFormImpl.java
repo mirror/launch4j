@@ -58,6 +58,7 @@ public class VersionInfoFormImpl extends VersionInfoForm {
 				.add("versionInfo.txtFileVersion", _txtFileVersionField)
 				.add("versionInfo.txtProductVersion", _txtProductVersionField)
 				.add("versionInfo.companyName", _companyNameField)
-				.add("versionInfo.copyright", _copyrightField);
+				.add("versionInfo.copyright", _copyrightField)
+				.add("versionInfo.trademarks", _trademarksField);
 	}
 }

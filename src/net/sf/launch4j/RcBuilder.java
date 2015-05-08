@@ -233,6 +233,7 @@ public class RcBuilder {
 		addVerBlockValue("FileVersion", v.getTxtFileVersion());
 		addVerBlockValue("InternalName", v.getInternalName());
 		addVerBlockValue("LegalCopyright", v.getCopyright());
+		addVerBlockValue("LegalTrademarks", v.getTrademarks());
 		addVerBlockValue("OriginalFilename", v.getOriginalFilename());
 		addVerBlockValue("ProductName", v.getProductName());
 		addVerBlockValue("ProductVersion", v.getTxtProductVersion());

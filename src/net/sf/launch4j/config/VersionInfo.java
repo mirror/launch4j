@@ -55,6 +55,7 @@ public class VersionInfo implements IValidatable {
 	private String companyName;
 	private String internalName;
 	private String originalFilename;
+	private String trademarks;
 
 	public void checkInvariants() {
 		Validator.checkString(fileVersion, 20, VERSION_PATTERN,
@@ -77,6 +78,8 @@ public class VersionInfo implements IValidatable {
 				Messages.getString("VersionInfo.company.name"));
 		Validator.checkString(internalName, 50, 	"versionInfo.internalName",
 				Messages.getString("VersionInfo.internal.name"));
+		Validator.checkOptString(trademarks, 150, "versionInfo.trademarks",
+				Messages.getString("VersionInfo.trademarks"));
 		Validator.checkTrue(!internalName.endsWith(".exe"), "versionInfo.internalName",
 				Messages.getString("VersionInfo.internal.name.not.exe"));
 		Validator.checkString(originalFilename, 50, "versionInfo.originalFilename",
@@ -164,5 +167,13 @@ public class VersionInfo implements IValidatable {
 
 	public void setTxtProductVersion(String txtProductVersion) {
 		this.txtProductVersion = txtProductVersion;
+	}
+
+	public String getTrademarks() {
+		return trademarks;
+	}
+
+	public void setTrademarks(String trademarks) {
+		this.trademarks = trademarks;
 	}
 }
