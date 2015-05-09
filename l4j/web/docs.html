@@ -29,14 +29,17 @@ all of the configuration parameters through the Ant task. All files
 may be absolute paths or relative to the configuration file path.
 
 <pre>
-&lt;!-- <strong>Bold</strong> elements are required --&gt;
-&lt;!-- %VAR% expands environment/special variables and registry keys --&gt;
+&lt;!--
+  <strong>Bold</strong> elements are required.
+  <span class="codeword"><u>Underlined</u></span> values are the default when the element is not specified.
+  %VAR% expands environment/special variables and registry keys.
+--&gt;
 <strong>&lt;launch4jConfig&gt;</strong>
   <strong>&lt;headerType&gt;</strong><span class="codeword">gui|console</span><strong>&lt;/headerType&gt;</strong>
   <strong>&lt;outfile&gt;</strong><span class="codeword">file.exe</span><strong><span class="codeword"></span>&lt;/outfile&gt;</strong>
   &lt;jar&gt;<span class="codeword">file</span><span class="codeword"></span>&lt;/jar&gt;
   &lt;dontWrapJar&gt;<span class="codeword">true|<u>false</u></span>&lt;/dontWrapJar&gt;
-  &lt;errTitle&gt;<span class="codeword">text</span>&lt;/errTitle&gt;
+  &lt;errTitle&gt;<span class="codeword">application name</span>&lt;/errTitle&gt;
   &lt;downloadUrl&gt;<span class="codeword"><u>http://java.com/download</u></span>&lt;/downloadUrl&gt;
   &lt;supportUrl&gt;<span class="codeword">url</span>&lt;/supportUrl&gt;
   &lt;cmdLine&gt;<span class="codeword">text</span>&lt;/cmdLine&gt;
@@ -61,7 +64,7 @@ may be absolute paths or relative to the configuration file path.
     &lt;windowTitle&gt;<span class="codeword">text</span>&lt;/windowTitle&gt;
   &lt;/singleInstance&gt; 
   <strong>&lt;jre&gt;</strong>
-    &lt;!-- Specify one of the following or both --&gt;
+    &lt;!-- Specify <strong>path</strong> or <strong>minVersion</strong> or both. --&gt;
     <strong>&lt;path&gt;</strong><span class="codeword">bundled JRE path (%VAR%)</span><strong>&lt;/path&gt;</strong>
     &lt;bundledJre64Bit&gt;<span class="codeword">true|<u>false</u></span>&lt;/bundledJre64Bit&gt;
     &lt;bundledJreAsFallback&gt;<span class="codeword">true|<u>false</u></span>&lt;/bundledJreAsFallback&gt;
@@ -69,7 +72,7 @@ may be absolute paths or relative to the configuration file path.
     &lt;maxVersion&gt;<span class="codeword">x.x.x[_xx]</span>&lt;/maxVersion&gt;
     &lt;jdkPreference&gt;<span class="codeword">jreOnly|<u>preferJre</u>|preferJdk|jdkOnly</span>&lt;/jdkPreference&gt;
     &lt;runtimeBits&gt;<span class="codeword">64|<u>64/32</u>|32/64|32</span>&lt;/runtimeBits&gt;
-    &lt;!-- Heap sizes in MB and % of available memory --&gt;
+    &lt;!-- Heap sizes in MB and % of available memory. --&gt;
     &lt;initialHeapSize&gt;<span class="codeword">MB</span>&lt;/initialHeapSize&gt;
     &lt;initialHeapPercent&gt;<span class="codeword">%</span>&lt;/initialHeapPercent&gt;
     &lt;maxHeapSize&gt;<span class="codeword">MB</span>&lt;/maxHeapSize&gt;
@@ -100,7 +103,8 @@ may be absolute paths or relative to the configuration file path.
     <strong>&lt;bundledJreErr&gt;</strong>text<strong>&lt;/bundledJreErr&gt;</strong>
     <strong>&lt;jreVersionErr&gt;</strong>text<strong>&lt;/jreVersionErr&gt;</strong>
     <strong>&lt;launcherErr&gt;</strong>text<strong>&lt;/launcherErr&gt;</strong>
-    <strong>&lt;instanceAlreadyExistsMsg&gt;</strong>text (used by console header only)<strong>&lt;/instanceAlreadyExistsMsg&gt;</strong>
+    &lt;!-- Used by console header only. --&gt;
+    <strong>&lt;instanceAlreadyExistsMsg&gt;</strong>text<strong>&lt;/instanceAlreadyExistsMsg&gt;</strong>
   &lt;/messages&gt;
 <strong>&lt;/launch4jConfig&gt;</strong>
 </pre>
@@ -607,6 +611,7 @@ They are substitued during runtime, so for example the EXEDIR is the directory w
 </dl>
 
 <h2 id="Settings">Settings</h2>
+These settings are only used during building of the launcher or wrapper, not during their execution.
 <dl>
 	<dt>Alternate bin directory: launch4j.bindir</dt>
 	<dd>
