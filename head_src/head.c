@@ -150,7 +150,14 @@ void msgBox(const char* text)
 {
     if (console)
 	{
-        printf("%s: %s\n", error.title, text);
+        if (*error.title)
+        {
+            printf("%s: %s\n", error.title, text);
+        }
+        else
+        {
+            printf("%s\n", text);
+        }
     }
 	else
 	{
