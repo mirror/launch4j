@@ -1,6 +1,4 @@
-# mvn -Pfull-release deploy
-
-# mvn nexus-staging:release -Pfull-release
+Run once the Ant target switch-to-maven, it will reconfigure the project to use maven.
 
 *** Creation of Distribution Release ***
 Windows: mvn -P dist,win32 clean package
