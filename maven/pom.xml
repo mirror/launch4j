@@ -10,12 +10,14 @@
 
 	<licenses>
 		<license>
-			<name>MIT License</name>
-			<url>http://www.opensource.org/licenses/mit-license.php</url>
-		</license>
-		<license>
 			<name>BSD 3-Clause License</name>
 			<url>http://opensource.org/licenses/BSD-3-Clause</url>
+			<comments>Launch4j is licensed under the BSD 3-Clause License.</comments>
+		</license>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+			<comments>Launch4j code (head) which is attached to the wrapped jars is licensed under the MIT License.</comments>
 		</license>
 	</licenses>
 
