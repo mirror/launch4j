@@ -114,6 +114,13 @@ table td {
 	color: #ffffff;
 }
 
+#leftnav a.button {
+	display: inline;
+}
+#leftnav a.button:hover {
+	background-color: transparent;
+}
+
 
 #content {
 	max-width: 52em;
