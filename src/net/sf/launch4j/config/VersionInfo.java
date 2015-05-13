@@ -44,6 +44,8 @@ import net.sf.launch4j.binding.Validator;
  */
 public class VersionInfo implements IValidatable {
 	public static final String VERSION_PATTERN = "(\\d+\\.){3}\\d+";
+	public static final int DEFAULT_LANGUAGE_INDEX = LanguageID.ENGLISH_US.ordinal();
+	public static final int DEFAULT_CHARSET_INDEX = CharsetID.MULTILINGUAL.ordinal();
 
 	private String fileVersion;
 	private String txtFileVersion;
@@ -55,6 +57,9 @@ public class VersionInfo implements IValidatable {
 	private String companyName;
 	private String internalName;
 	private String originalFilename;
+	private String trademarks;
+	private LanguageID language;
+	private CharsetID charset;
 
 	public void checkInvariants() {
 		Validator.checkString(fileVersion, 20, VERSION_PATTERN,
@@ -77,6 +82,8 @@ public class VersionInfo implements IValidatable {
 				Messages.getString("VersionInfo.company.name"));
 		Validator.checkString(internalName, 50, 	"versionInfo.internalName",
 				Messages.getString("VersionInfo.internal.name"));
+		Validator.checkOptString(trademarks, 150, "versionInfo.trademarks",
+				Messages.getString("VersionInfo.trademarks"));
 		Validator.checkTrue(!internalName.endsWith(".exe"), "versionInfo.internalName",
 				Messages.getString("VersionInfo.internal.name.not.exe"));
 		Validator.checkString(originalFilename, 50, "versionInfo.originalFilename",
@@ -164,5 +171,45 @@ public class VersionInfo implements IValidatable {
 
 	public void setTxtProductVersion(String txtProductVersion) {
 		this.txtProductVersion = txtProductVersion;
+	}
+
+	public String getTrademarks() {
+		return trademarks;
+	}
+
+	public void setTrademarks(String trademarks) {
+		this.trademarks = trademarks;
+	}
+
+	public LanguageID getLanguage() {
+		return (language == null) ? LanguageID.values()[DEFAULT_LANGUAGE_INDEX] : language;
+	}
+
+	public void setLanguage(LanguageID language) {
+		this.language = language;
+	}
+
+	public int getLanguageIndex() {
+		return (language == null) ? DEFAULT_LANGUAGE_INDEX : language.ordinal();
+	}
+
+	public void setLanguageIndex(int index) {
+		language = LanguageID.values()[index];
+	}
+
+	public CharsetID getCharset() {
+		return (charset == null) ? CharsetID.values()[DEFAULT_CHARSET_INDEX] : charset;
+	}
+
+	public void setCharset(CharsetID charset) {
+		this.charset = charset;
+	}
+
+	public int getCharsetIndex() {
+		return (charset == null) ? DEFAULT_CHARSET_INDEX : charset.ordinal();
+	}
+
+	public void setCharsetIndex(int index) {
+		charset = CharsetID.values()[index];
 	}
 }
