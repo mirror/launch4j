@@ -35,6 +35,7 @@ package net.sf.launch4j.config;
 
 /**
  * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058%28v=vs.85%29.aspx">VERSIONINFO resource</a>
+ * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381057%28v=vs.85%29.aspx">VarFileInfo BLOCK</a>
  */
 public enum CharsetID {
     /** 0x0000 */
