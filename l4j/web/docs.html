@@ -97,6 +97,22 @@ may be absolute paths or relative to the configuration file path.
     &lt;companyName&gt;<span class="codeword">text</span>&lt;/companyName&gt;
     <strong>&lt;internalName&gt;</strong><span class="codeword">filename</span><strong>&lt;/internalName&gt;</strong>
     <strong>&lt;originalFilename&gt;</strong><span class="codeword">filename.exe</span><strong>&lt;/originalFilename&gt;</strong>
+    &lt;trademarks&gt;<span class="codeword">text</span>&lt;/trademarks&gt;
+    &lt;language&gt;<span class="codeword">
+      ALBANIAN|ARABIC|BAHASA|DUTCH_BELGIAN|FRENCH_BELGIAN|BULGARIAN|
+      FRENCH_CANADIAN|CASTILIAN_SPANISH|CATALAN|CROATO_SERBIAN_LATIN|
+      CZECH|DANISH|DUTCH|ENGLISH_UK|<u>ENGLISH_US</u>|FINNISH|FRENCH|GERMAN|
+      GREEK|HEBREW|HUNGARIAN|ICELANDIC|ITALIAN|JAPANESE|KOREAN|
+      NORWEGIAN_BOKMAL|NORWEGIAN_NYNORSK|POLISH|PORTUGUESE_BRAZIL|
+      PORTUGUESE_PORTUGAL|RHAETO_ROMANIC|ROMANIAN|RUSSIAN|
+      SERBO_CROATIAN_CYRILLIC|SIMPLIFIED_CHINESE|SLOVAK|SPANISH_MEXICO|
+      SWEDISH|FRENCH_SWISS|GERMAN_SWISS|ITALIAN_SWISS|THAI|
+      TRADITIONAL_CHINESE|TURKISH|URDU
+    </span>&lt;/language&gt;
+    &lt;charset&gt;<span class="codeword">
+      ASCII|ARABIC|CYRILLIC|GREEK|HEBREW|SHIFT_JIS|SHIFT_KSC|
+      LATIN2|<u>MULTILINGUAL</u>|BIG5|TURKISH|UNICODE
+    </span>&lt;/charset&gt;
   &lt;/versionInfo&gt;
   &lt;messages&gt;
     <strong>&lt;startupErr&gt;</strong>text<strong>&lt;/startupErr&gt;</strong>
@@ -410,7 +426,8 @@ may be absolute paths or relative to the configuration file path.
 
 <dl>
 	<dt>&lt;versionInfo&gt;</dt>
-	<dd>Optional, version information to be displayed by the Windows Explorer.</dd>
+	<dd>Optional, <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058%28v=vs.85%29.aspx">version information</a>
+	to be displayed by the Windows Explorer.</dd>
 </dl>
 <blockquote>
 	<dl>
@@ -454,6 +471,18 @@ may be absolute paths or relative to the configuration file path.
 		<dd>Original name of the file without the path. Allows to determine
 			whether a file has been renamed by a user.
 		</dd>
+	</dl>
+	<dl>
+		<dt>&lt;trademarks&gt;</dt>
+		<dd>Trademarks that apply to the file.</dd>
+	</dl>
+	<dl>
+		<dt>&lt;language&gt;</dt>
+		<dd>One of the language codes.</dd>
+	</dl>
+	<dl>
+		<dt>&lt;charset&gt;</dt>
+		<dd>One of the character-set identifiers.</dd>
 	</dl>
 </blockquote>
 
