@@ -36,7 +36,7 @@
           <version>1.7.6</version>
           <executions>
             <execution>
-              <id>l4j-clui</id>
+              <id>l4j</id>
               <phase>package</phase>
               <goals><goal>launch4j</goal></goals>
               <configuration>
