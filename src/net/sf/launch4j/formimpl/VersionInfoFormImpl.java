@@ -51,8 +51,8 @@ import net.sf.launch4j.form.VersionInfoForm;
 public class VersionInfoFormImpl extends VersionInfoForm {
 
 	public VersionInfoFormImpl(Bindings bindings, JFileChooser fc) {
-		_languageCombo.setModel(new DefaultComboBoxModel<LanguageID>(LanguageID.values()));
-		_charsetCombo.setModel(new DefaultComboBoxModel<CharsetID>(CharsetID.values()));
+		_languageCombo.setModel(new DefaultComboBoxModel(LanguageID.values()));
+		_charsetCombo.setModel(new DefaultComboBoxModel(CharsetID.values()));
 		bindings.addOptComponent("versionInfo", VersionInfo.class, _versionInfoCheck)
 				.add("versionInfo.fileVersion", _fileVersionField)
 				.add("versionInfo.productVersion", _productVersionField)

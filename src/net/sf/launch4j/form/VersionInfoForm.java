@@ -13,8 +13,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import net.sf.launch4j.config.CharsetID;
-import net.sf.launch4j.config.LanguageID;
 
 public abstract class VersionInfoForm extends JPanel
 {
@@ -43,9 +41,9 @@ public abstract class VersionInfoForm extends JPanel
    protected final JLabel _trademarksLabel = new JLabel();
    protected final JTextField _trademarksField = new JTextField();;
    protected final JLabel _languageLabel = new JLabel();
-   protected final JComboBox<LanguageID> _languageCombo = new JComboBox<LanguageID>();
+   protected final JComboBox _languageCombo = new JComboBox();
    protected final JLabel _charsetLabel = new JLabel();
-   protected final JComboBox<CharsetID> _charsetCombo = new JComboBox<CharsetID>();
+   protected final JComboBox _charsetCombo = new JComboBox();
 
    /**
     * Default constructor
