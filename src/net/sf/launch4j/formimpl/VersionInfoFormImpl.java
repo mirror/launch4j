@@ -40,7 +40,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 
 import net.sf.launch4j.binding.Bindings;
-import net.sf.launch4j.config.CharsetID;
 import net.sf.launch4j.config.LanguageID;
 import net.sf.launch4j.config.VersionInfo;
 import net.sf.launch4j.form.VersionInfoForm;
@@ -52,7 +51,6 @@ public class VersionInfoFormImpl extends VersionInfoForm {
 
 	public VersionInfoFormImpl(Bindings bindings, JFileChooser fc) {
 		_languageCombo.setModel(new DefaultComboBoxModel(LanguageID.values()));
-		_charsetCombo.setModel(new DefaultComboBoxModel(CharsetID.values()));
 		bindings.addOptComponent("versionInfo", VersionInfo.class, _versionInfoCheck)
 				.add("versionInfo.fileVersion", _fileVersionField)
 				.add("versionInfo.productVersion", _productVersionField)
@@ -66,7 +64,6 @@ public class VersionInfoFormImpl extends VersionInfoForm {
 				.add("versionInfo.copyright", _copyrightField)
 				.add("versionInfo.trademarks", _trademarksField)
 				.add("versionInfo.languageIndex", _languageCombo, VersionInfo.DEFAULT_LANGUAGE_INDEX)
-				.add("versionInfo.charsetIndex", _charsetCombo, VersionInfo.DEFAULT_CHARSET_INDEX)
 		;
 	}
 }

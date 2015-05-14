@@ -45,7 +45,6 @@ import net.sf.launch4j.binding.Validator;
 public class VersionInfo implements IValidatable {
 	public static final String VERSION_PATTERN = "(\\d+\\.){3}\\d+";
 	public static final int DEFAULT_LANGUAGE_INDEX = LanguageID.ENGLISH_US.ordinal();
-	public static final int DEFAULT_CHARSET_INDEX = CharsetID.MULTILINGUAL.ordinal();
 
 	private String fileVersion;
 	private String txtFileVersion;
@@ -59,7 +58,6 @@ public class VersionInfo implements IValidatable {
 	private String originalFilename;
 	private String trademarks;
 	private LanguageID language;
-	private CharsetID charset;
 
 	public void checkInvariants() {
 		Validator.checkString(fileVersion, 20, VERSION_PATTERN,
@@ -195,21 +193,5 @@ public class VersionInfo implements IValidatable {
 
 	public void setLanguageIndex(int index) {
 		language = LanguageID.values()[index];
-	}
-
-	public CharsetID getCharset() {
-		return (charset == null) ? CharsetID.values()[DEFAULT_CHARSET_INDEX] : charset;
-	}
-
-	public void setCharset(CharsetID charset) {
-		this.charset = charset;
-	}
-
-	public int getCharsetIndex() {
-		return (charset == null) ? DEFAULT_CHARSET_INDEX : charset.ordinal();
-	}
-
-	public void setCharsetIndex(int index) {
-		charset = CharsetID.values()[index];
 	}
 }

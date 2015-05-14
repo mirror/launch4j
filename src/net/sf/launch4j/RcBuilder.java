@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import net.sf.launch4j.config.CharsetID;
 import net.sf.launch4j.config.Config;
 import net.sf.launch4j.config.ConfigPersister;
 import net.sf.launch4j.config.Jre;
@@ -226,7 +227,7 @@ public class RcBuilder {
 				" BLOCK \"StringFileInfo\"\n" +
 				" {\n" +
 				"  BLOCK \"");
-		_sb.append(String.format("%04X%04X", v.getLanguage().getId(), v.getCharset().getId()));
+		_sb.append(String.format("%04X%04X", v.getLanguage().getId(), CharsetID.MULTILINGUAL));
 		_sb.append("\"\n" +
 				"  {\n");
 
@@ -240,7 +241,7 @@ public class RcBuilder {
 		addVerBlockValue("ProductName", v.getProductName());
 		addVerBlockValue("ProductVersion", v.getTxtProductVersion());
 		_sb.append("  }\n }\nBLOCK \"VarFileInfo\"\n{\nVALUE \"Translation\", ");
-		_sb.append(String.format("0x%04X, 0x%04X", v.getLanguage().getId(), v.getCharset().getId()));
+		_sb.append(String.format("0x%04X, 0x%04X", v.getLanguage().getId(), CharsetID.MULTILINGUAL));
 		_sb.append("\n}\n}");
 	}
 
