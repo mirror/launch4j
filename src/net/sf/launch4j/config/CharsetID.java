@@ -66,9 +66,11 @@ public enum CharsetID implements Describable {
     ;
 
     private static final CharsetID[] VALUES = CharsetID.values();
+
     static {
         Arrays.sort(VALUES, new DescribableComparator());
     }
+
     private final int id;
     private final String description;
 

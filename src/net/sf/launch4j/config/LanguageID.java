@@ -88,9 +88,11 @@ public enum LanguageID implements Describable {
     ;
 
     private static final LanguageID[] VALUES = LanguageID.values();
+
     static {
         Arrays.sort(VALUES, new DescribableComparator());
     }
+
     private final int id;
     private final String description;
 
