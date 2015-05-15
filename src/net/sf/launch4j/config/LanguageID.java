@@ -40,14 +40,14 @@ import java.util.Arrays;
  * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381057%28v=vs.85%29.aspx">VarFileInfo BLOCK</a>
  */
 public enum LanguageID implements Describable {
-	ALBANIAN(0x041C, Messages.getString("Language.albanian")),
+    ALBANIAN(0x041C, Messages.getString("Language.albanian")),
     ARABIC(0x0401, Messages.getString("Language.arabic")),
     BAHASA(0x0421, Messages.getString("Language.bahasa")),
     DUTCH_BELGIAN(0x0813, Messages.getString("Language.belgian.dutch")),
     FRENCH_BELGIAN(0x080C, Messages.getString("Language.belgian.french")),
     BULGARIAN(0x0402, Messages.getString("Language.bulgarian")),
     FRENCH_CANADIAN(0x0C0C, Messages.getString("Language.canadian.french")),
-    CASTILIAN_SPANISH(0x040A, Messages.getString("Language.castilian.spanish")),
+    CASTILIAN_SPANISH(0x040A, Messages.getString("Language.spanish.castilian")),
     CATALAN(0x0403, Messages.getString("Language.catalan")),
     CROATO_SERBIAN_LATIN(0x041A, Messages.getString("Language.croato.serbian.latin")),
     CZECH(0x0405, Messages.getString("Language.czech")),
@@ -74,7 +74,7 @@ public enum LanguageID implements Describable {
     ROMANIAN(0x0418, Messages.getString("Language.romanian")),
     RUSSIAN(0x0419, Messages.getString("Language.russian")),
     SERBO_CROATIAN_CYRILLIC(0x081A, Messages.getString("Language.serbo.croatian.cyrillic")),
-    SIMPLIFIED_CHINESE(0x0804, Messages.getString("Language.simplified.chinese")),
+    SIMPLIFIED_CHINESE(0x0804, Messages.getString("Language.chinese.simplified")),
     SLOVAK(0x041B, Messages.getString("Language.slovak")),
     SPANISH_MEXICO(0x080A, Messages.getString("Language.spanish.mexico")),
     SWEDISH(0x041D, Messages.getString("Language.swedish")),
@@ -82,7 +82,7 @@ public enum LanguageID implements Describable {
     GERMAN_SWISS(0x0807, Messages.getString("Language.swiss.german")),
     ITALIAN_SWISS(0x0810, Messages.getString("Language.swiss.italian")),
     THAI(0x041E, Messages.getString("Language.thai")),
-    TRADITIONAL_CHINESE(0x0404, Messages.getString("Language.traditional.chinese")),
+    TRADITIONAL_CHINESE(0x0404, Messages.getString("Language.chinese.traditional")),
     TURKISH(0x041F, Messages.getString("Language.turkish")),
     URDU(0x0420, Messages.getString("Language.urdu")),
     ;
