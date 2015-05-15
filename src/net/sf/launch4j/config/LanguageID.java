@@ -33,11 +33,13 @@
 
 package net.sf.launch4j.config;
 
+import java.util.Arrays;
+
 /**
  * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058%28v=vs.85%29.aspx">VERSIONINFO resource</a>
  * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381057%28v=vs.85%29.aspx">VarFileInfo BLOCK</a>
  */
-public enum LanguageID {
+public enum LanguageID implements Describable {
 	ALBANIAN(0x041C, Messages.getString("Language.albanian")),
     ARABIC(0x0401, Messages.getString("Language.arabic")),
     BAHASA(0x0421, Messages.getString("Language.bahasa")),
@@ -85,6 +87,10 @@ public enum LanguageID {
     URDU(0x0420, Messages.getString("Language.urdu")),
     ;
 
+    private static final LanguageID[] VALUES = LanguageID.values();
+    static {
+        Arrays.sort(VALUES, new DescribableComparator());
+    }
     private final int id;
     private final String description;
 
@@ -97,6 +103,7 @@ public enum LanguageID {
         return id;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
@@ -104,5 +111,20 @@ public enum LanguageID {
     @Override
     public String toString() {
         return description;
+    }
+
+    @Override
+    public int getIndex() {
+        for (int i = 0; i < VALUES.length; i++) {
+            if (VALUES[i] == this) {
+                return i;
+            }
+        }
+        // should never happen
+        return -1;
+    }
+
+    public static LanguageID[] sortedValues() {
+        return VALUES;
     }
 }

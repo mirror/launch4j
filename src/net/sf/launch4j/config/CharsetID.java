@@ -33,11 +33,12 @@
 
 package net.sf.launch4j.config;
 
+import java.util.Arrays;
 /**
  * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058%28v=vs.85%29.aspx">VERSIONINFO resource</a>
  * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381057%28v=vs.85%29.aspx">VarFileInfo BLOCK</a>
  */
-public enum CharsetID {
+public enum CharsetID implements Describable {
     /** 0x0000 */
     ASCII(0, Messages.getString("Charset.ascii")),
     /** 0x04E8 */
@@ -64,6 +65,10 @@ public enum CharsetID {
     UNICODE(1200, Messages.getString("Charset.unicode")),
     ;
 
+    private static final CharsetID[] VALUES = CharsetID.values();
+    static {
+        Arrays.sort(VALUES, new DescribableComparator());
+    }
     private final int id;
     private final String description;
 
@@ -79,5 +84,25 @@ public enum CharsetID {
     @Override
     public String toString() {
         return description;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public int getIndex() {
+        for (int i = 0; i < VALUES.length; i++) {
+            if (VALUES[i] == this) {
+                return i;
+            }
+        }
+        // should never happen
+        return -1;
+    }
+
+    public static CharsetID[] sortedValues() {
+        return VALUES;
     }
 }

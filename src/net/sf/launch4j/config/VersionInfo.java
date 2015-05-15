@@ -44,7 +44,7 @@ import net.sf.launch4j.binding.Validator;
  */
 public class VersionInfo implements IValidatable {
 	public static final String VERSION_PATTERN = "(\\d+\\.){3}\\d+";
-	public static final int DEFAULT_LANGUAGE_INDEX = LanguageID.ENGLISH_US.ordinal();
+	public static final int DEFAULT_LANGUAGE_INDEX = LanguageID.ENGLISH_US.getIndex();
 
 	private String fileVersion;
 	private String txtFileVersion;
@@ -188,10 +188,10 @@ public class VersionInfo implements IValidatable {
 	}
 
 	public int getLanguageIndex() {
-		return (language == null) ? DEFAULT_LANGUAGE_INDEX : language.ordinal();
+		return (language == null) ? DEFAULT_LANGUAGE_INDEX : language.getIndex();
 	}
 
 	public void setLanguageIndex(int index) {
-		language = LanguageID.values()[index];
+		language = LanguageID.sortedValues()[index];
 	}
 }
