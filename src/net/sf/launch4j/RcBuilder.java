@@ -227,7 +227,7 @@ public class RcBuilder {
 				" BLOCK \"StringFileInfo\"\n" +
 				" {\n" +
 				"  BLOCK \"");
-		_sb.append(String.format("%04X%04X", v.getLanguage().getId(), CharsetID.MULTILINGUAL));
+		_sb.append(String.format("%04X%04X", v.getLanguage().getId(), CharsetID.MULTILINGUAL.getId()));
 		_sb.append("\"\n" +
 				"  {\n");
 
@@ -241,7 +241,7 @@ public class RcBuilder {
 		addVerBlockValue("ProductName", v.getProductName());
 		addVerBlockValue("ProductVersion", v.getTxtProductVersion());
 		_sb.append("  }\n }\nBLOCK \"VarFileInfo\"\n{\nVALUE \"Translation\", ");
-		_sb.append(String.format("0x%04X, 0x%04X", v.getLanguage().getId(), CharsetID.MULTILINGUAL));
+		_sb.append(String.format("0x%04X, 0x%04X", v.getLanguage().getId(), CharsetID.MULTILINGUAL.getId()));
 		_sb.append("\n}\n}");
 	}
 
