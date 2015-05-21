@@ -35,7 +35,7 @@ may be absolute paths or relative to the configuration file path.
   %VAR% expands environment/special variables and registry keys.
 --&gt;
 <strong>&lt;launch4jConfig&gt;</strong>
-  <strong>&lt;headerType&gt;</strong><span class="codeword">gui|console</span><strong>&lt;/headerType&gt;</strong>
+  <strong>&lt;headerType&gt;</strong><span class="codeword">gui|console|jniGui32|jniConsole32</span><strong>&lt;/headerType&gt;</strong>
   <strong>&lt;outfile&gt;</strong><span class="codeword">file.exe</span><strong><span class="codeword"></span>&lt;/outfile&gt;</strong>
   &lt;jar&gt;<span class="codeword">file</span><span class="codeword"></span>&lt;/jar&gt;
   &lt;dontWrapJar&gt;<span class="codeword">true|<u>false</u></span>&lt;/dontWrapJar&gt;
@@ -147,6 +147,18 @@ may be absolute paths or relative to the configuration file path.
 		    	<tr>
 		    		<td>console</td>
 		    		<td>java</td>
+		    		<td>no</td>
+		    		<td class="description">always waits and returns application's exit code.</td>
+		    	</tr>
+		    	<tr>
+		    		<td>jniGui32</td>
+		    		<td>launch4j</td>
+		    		<td>yes</td>
+		    		<td class="description">always waits and returns application's exit code.</td>
+		    	</tr>
+		    	<tr>
+		    		<td>jniConsole32</td>
+		    		<td>launch4j</td>
 		    		<td>no</td>
 		    		<td class="description">always waits and returns application's exit code.</td>
 		    	</tr>

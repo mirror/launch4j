@@ -63,9 +63,13 @@ public class Config implements IValidatable {
 
 	public static final String GUI_HEADER = "gui";
 	public static final String CONSOLE_HEADER = "console";
+	public static final String JNI_GUI_HEADER_32 = "jniGui32";
+	public static final String JNI_CONSOLE_HEADER_32 = "jniConsole32";
 
 	private static final String[] HEADER_TYPES = new String[] { GUI_HEADER,
-																	CONSOLE_HEADER };
+																CONSOLE_HEADER,
+																JNI_GUI_HEADER_32,
+																JNI_CONSOLE_HEADER_32 };
 
 	private static final String[] PRIORITY_CLASS_NAMES = new String[] { "normal",
 																		"idle",
@@ -119,7 +123,7 @@ public class Config implements IValidatable {
 		if (!Validator.isEmpty(chdir)) {
 			Validator.checkRelativeWinPath(chdir, "chdir",
 					Messages.getString("Config.chdir.relative"));
-			Validator.checkFalse(chdir.toLowerCase().equals("true")	
+			Validator.checkFalse(chdir.toLowerCase().equals("true")
 					|| chdir.toLowerCase().equals("false"),
 					"chdir", Messages.getString("Config.chdir.path"));
 		}
@@ -135,7 +139,7 @@ public class Config implements IValidatable {
 				"supportUrl", Messages.getString("Config.support.url"));
 		Validator.checkIn(getHeaderType(), HEADER_TYPES, "headerType",
 				Messages.getString("Config.header.type"));
-		Validator.checkFalse(getHeaderType().equals(CONSOLE_HEADER) && splash != null,
+		Validator.checkFalse(!isGuiApplication() && splash != null,
 				"headerType",
 				Messages.getString("Config.splash.not.impl.by.console.hdr"));
 		Validator.checkOptStrings(variables,
@@ -189,10 +193,14 @@ public class Config implements IValidatable {
 	public void setErrTitle(String errTitle) {
 		this.errTitle = errTitle;
 	}
+	
+	public boolean isGuiApplication() {
+		return headerType == GUI_HEADER || headerType == JNI_GUI_HEADER_32;
+	}
 
 	/** launch4j header file. */
 	public String getHeaderType() {
-		return headerType.toLowerCase();
+		return headerType;
 	}
 
 	public void setHeaderType(String headerType) {
@@ -215,9 +223,7 @@ public class Config implements IValidatable {
 
 	public List<String> getHeaderObjects() {
 		return isCustomHeaderObjects() ? headerObjects
-				: getHeaderType().equals(GUI_HEADER)
-						? LdDefaults.GUI_HEADER_OBJECTS
-						: LdDefaults.CONSOLE_HEADER_OBJECTS;
+				: LdDefaults.getHeaderObjects(getHeaderTypeIndex());
 	}
 
 	public void setHeaderObjects(List<String> headerObjects) {
@@ -229,7 +235,7 @@ public class Config implements IValidatable {
 	}
 
 	public List<String> getLibs() {
-		return isCustomLibs() ? libs : LdDefaults.LIBS;
+		return isCustomLibs() ? libs : LdDefaults.getLibs(headerType);
 	}
 
 	public void setLibs(List<String> libs) {

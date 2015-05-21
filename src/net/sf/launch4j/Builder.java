@@ -102,8 +102,7 @@ public class Builder {
 					.add("--dynamicbase")
 					.add("--nxcompat")
 					.add("--no-seh")
-					.add((c.getHeaderType().equals(Config.GUI_HEADER))
-							? "--subsystem windows" : "--subsystem console")
+					.add(c.isGuiApplication() ? "--subsystem windows" : "--subsystem console")
 					.add("-s")		// strip symbols
 					.addFiles(c.getHeaderObjects())
 					.addAbsFile(ro)
