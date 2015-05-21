@@ -28,10 +28,13 @@
 	THE SOFTWARE.
 */
 
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
+#endif // _WIN32_WINNT
+
 #ifndef _LAUNCH4J_HEAD__INCLUDED_
 #define _LAUNCH4J_HEAD__INCLUDED_
 
-#define _WIN32_WINNT 0x0501
 #define WIN32_LEAN_AND_MEAN		// VC - Exclude rarely-used stuff from Windows headers
 
 // Windows Header Files:
@@ -132,5 +135,8 @@ void setCommandLineArgs(const char *lpCmdLine);
 int prepare(const char *lpCmdLine);
 void closeProcessHandles();
 BOOL execute(const BOOL wait, DWORD *dwExitCode);
+const char* getJavaHome();
+const char* getMainClass();
+const char* getLauncherArgs();
 
 #endif // _LAUNCH4J_HEAD__INCLUDED_

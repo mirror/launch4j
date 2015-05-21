@@ -64,6 +64,7 @@ struct
 
 struct
 {
+	char mainClass[_MAX_PATH];
 	char cmd[_MAX_PATH];
 	char args[MAX_ARGS];
 } launcher;
@@ -941,13 +942,12 @@ void setMainClassAndClassPath(const char *exePath, const int pathLen)
 {
 	char classPath[MAX_ARGS] = {0};
 	char expandedClassPath[MAX_ARGS] = {0};
-	char mainClass[STR] = {0};
 	char jar[_MAX_PATH] = {0};
 	char fullFileName[_MAX_PATH] = {0};
 	const BOOL wrapper = loadBool(WRAPPER);
 	loadString(JAR, jar);
 
-	if (loadString(MAIN_CLASS, mainClass))
+	if (loadString(MAIN_CLASS, launcher.mainClass))
 	{
 		if (!loadString(CLASSPATH, classPath))
 		{
@@ -1004,7 +1004,7 @@ void setMainClassAndClassPath(const char *exePath, const int pathLen)
 
 		*(launcher.args + strlen(launcher.args) - 1) = 0;
 		strcat(launcher.args, "\" ");
-		strcat(launcher.args, mainClass);
+		strcat(launcher.args, launcher.mainClass);
 	}
 	else if (wrapper)
 	{
@@ -1165,3 +1165,19 @@ BOOL execute(const BOOL wait, DWORD *dwExitCode)
 	*dwExitCode = -1;
 	return FALSE;
 }
+
+const char* getJavaHome()
+{
+	return search.foundJavaHome;
+}
+
+const char* getMainClass()
+{
+	return launcher.mainClass;	
+}
+
+const char* getLauncherArgs()
+{
+    return launcher.args;    
+}
+
