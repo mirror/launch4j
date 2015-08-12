@@ -102,13 +102,13 @@ public class LdDefaults {
 	}
 	
 	public static List<String> getLibs(String headerType) {
-		if (headerType == Config.GUI_HEADER
-				|| headerType == Config.CONSOLE_HEADER) {
+		if (Config.GUI_HEADER.equals(headerType)
+				|| Config.CONSOLE_HEADER.equals(headerType)) {
 			return LIBS;
 		}
 
-		if (headerType == Config.JNI_GUI_HEADER_32
-				|| headerType == Config.JNI_CONSOLE_HEADER_32) {
+		if (Config.JNI_GUI_HEADER_32.equals(headerType)
+				|| Config.JNI_CONSOLE_HEADER_32.equals(headerType)) {
 			return JNI_LIBS;
 		}
 		

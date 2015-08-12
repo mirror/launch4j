@@ -39,6 +39,7 @@ package net.sf.launch4j.config;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import net.sf.launch4j.binding.IValidatable;
 import net.sf.launch4j.binding.Validator;
@@ -195,7 +196,7 @@ public class Config implements IValidatable {
 	}
 	
 	public boolean isGuiApplication() {
-		return headerType == GUI_HEADER || headerType == JNI_GUI_HEADER_32;
+		return GUI_HEADER.equals(headerType) || JNI_GUI_HEADER_32.equals(headerType);
 	}
 
 	/** launch4j header file. */
