@@ -177,13 +177,19 @@ public class RcBuilder {
 	}
 	
 	private void writeResourceFile(File file) throws IOException {
+		FileOutputStream os = null;
+		OutputStreamWriter osw = null;
 		BufferedWriter w = null;
 
 		try {
-			w = new BufferedWriter(new FileWriter(file));
+			os = new FileOutputStream(file);
+			osw = new OutputStreamWriter(os, "ISO-8859-1");
+			w = new BufferedWriter(osw);
 			w.write(_sb.toString());
 		} finally {
 			Util.close(w);
+			Util.close(osw);
+			Util.close(os);
 		}
 	}
 
