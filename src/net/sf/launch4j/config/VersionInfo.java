@@ -180,7 +180,7 @@ public class VersionInfo implements IValidatable {
 	}
 
 	public LanguageID getLanguage() {
-		return (language == null) ? LanguageID.values()[DEFAULT_LANGUAGE_INDEX] : language;
+		return (language == null) ? LanguageID.sortedValues()[DEFAULT_LANGUAGE_INDEX] : language;
 	}
 
 	public void setLanguage(LanguageID language) {
