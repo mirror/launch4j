@@ -76,6 +76,10 @@ public class HeaderFormImpl extends HeaderForm {
 		
 		_headerObjectsCheck.addActionListener(new HeaderObjectsActionListener());
 		_libsCheck.addActionListener(new LibsActionListener());
+		
+		// TODO: Enable when ready.
+		_jniGuiHeaderRadio.setVisible(false);
+		_jniConsoleHeaderRadio.setVisible(false);
 	}
 	
 	private void updateLibs() {
