@@ -105,6 +105,7 @@ BOOL loadBool(const int resID);
 int loadInt(const int resID);
 BOOL regQueryValue(const char* regPath, unsigned char* buffer,
 		unsigned long bufferLength);
+void formatJavaVersion(char* version, const char* originalVersion);
 void regSearch(const char* keyName, const int searchType);
 BOOL isJavaHomeValid(const char* keyName, const int searchType);
 BOOL isLauncherPathValid(const char* path);
