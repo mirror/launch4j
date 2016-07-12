@@ -56,6 +56,10 @@ public class SimpleApp extends JFrame {
 	public SimpleApp(String[] args) {
 		super("Java Application");
 
+		if (args.length == 1 && "throw".equals(args[0])) {
+			throw new IllegalStateException("Exception thrown from SimpleApp.");
+		}
+
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds (screenSize.width / 4, screenSize.height / 4, screenSize.width / 2, screenSize.height / 2);
 
