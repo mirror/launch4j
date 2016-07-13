@@ -151,7 +151,29 @@ public class Config implements IValidatable {
 				Messages.getString("Config.variables.err"));
 		Validator.checkIn(getPriority(), PRIORITY_CLASS_NAMES, "priority",
 				Messages.getString("Config.priority"));
+		checkJniInvariants();
 		jre.checkInvariants();
+	}
+	
+	private void checkJniInvariants() {
+		// TODO: Remove once JNI is fully implemented.
+		if (isJniApplication()) {
+			Validator.checkTrue(".".equals(chdir), "chdir",
+					"Only '.' is allowed in change directory.");
+			Validator.checkTrue(Validator.isEmpty(cmdLine), "cmdLine",
+					"Constant command line arguments not supported.");
+			Validator.checkFalse(stayAlive, "stayAlive",
+					"Stay alive option is not used in JNI, this is the default behavior.");
+			Validator.checkFalse(restartOnCrash, "restartOnCrash",
+					"Restart on crash not supported.");
+			Validator.checkIn(getPriority(), new String[] { "normal" }, "priority",
+					"Process priority is not supported,");
+			Validator.checkNotNull(classPath, "classpath", "classpath");
+			Validator.checkFalse(jre.getBundledJre64Bit(), "jre.bundledJre64Bit",
+					"64-bit bundled JRE not supported.");
+			Validator.checkTrue(Jre.RUNTIME_BITS_32.equals(jre.getRuntimeBits()), "jre.runtimeBits", 
+					"64-bit JRE not supported.");
+		}
 	}
 	
 	public void validate() {
@@ -196,6 +218,11 @@ public class Config implements IValidatable {
 	
 	public boolean isGuiApplication() {
 		return GUI_HEADER.equals(headerType) || JNI_GUI_HEADER_32.equals(headerType);
+	}
+	
+	public boolean isJniApplication() {
+		return JNI_GUI_HEADER_32.equals(headerType)
+				|| JNI_CONSOLE_HEADER_32.equals(headerType);
 	}
 
 	/** launch4j header file. */
