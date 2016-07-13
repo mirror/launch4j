@@ -146,6 +146,16 @@ public class SimpleApp extends JFrame {
 		}
 
 		sb.append("}\n");
+		
+		final int mb = 1024 * 1024;
+		sb.append("Free memory (MB): ");
+		sb.append(Runtime.getRuntime().freeMemory() / mb);
+		sb.append("\nTotal memory (MB): ");
+		sb.append(Runtime.getRuntime().totalMemory() / mb);
+		sb.append("\nMax memory (MB): ");
+		sb.append(Runtime.getRuntime().maxMemory() / mb);
+		sb.append("\n");
+
 		return sb.toString();
 	}
    	
