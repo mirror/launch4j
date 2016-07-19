@@ -151,19 +151,36 @@ may be absolute paths or relative to the configuration file path.
 		    		<td class="description">always waits and returns application's exit code.</td>
 		    	</tr>
 		    	<tr>
-		    		<td>jniGui32</td>
+		    		<td>jniGui32 <strong style="color: red">(beta)</strong></td>
 		    		<td>launch4j</td>
 		    		<td>yes</td>
 		    		<td class="description">always waits and returns application's exit code.</td>
 		    	</tr>
 		    	<tr>
-		    		<td>jniConsole32</td>
+		    		<td>jniConsole32 <strong style="color: red">(beta)</strong></td>
 		    		<td>launch4j</td>
 		    		<td>no</td>
 		    		<td class="description">always waits and returns application's exit code.</td>
 		    	</tr>
 		    </tbody>
 		</table>
+		<br />
+		When JNI headers are used the JVM is created directly by the launch4j wrapper executable instead of running java/javaw launchers.
+		The process name will be the same as the wrapper. The JNI headers are in BETA and some features are not available which is signaled 
+		during wrapper build based on the configuration.
+		For production use consider the classic gui/console headers.
+		<br />
+		Missing features:
+		<ul>
+			<li>Only '.' is allowed in change directory (chdir).</li>
+			<li>Command line arguments cannot be passed to the executable.</li>
+			<li>Constant command line arguments (cmdLine).</li>
+			<li>stayAlive should be ignored by JNI headers.</li>
+			<li>Restart of appplication based on exit code (restartOnCrash).</li>
+			<li>Process priority - only normal is supported (priority).</li>
+			<li>Jar manifest is ignored, mainclass and classpath must be defined.</li>
+			<li>64-bit JRE are not supported.</li>
+		</ul>
 	</dd>
 </dl>
 <dl>

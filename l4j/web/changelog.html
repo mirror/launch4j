@@ -1,7 +1,14 @@
 <h2>Changelog</h2>
 
-<h4>Changes in version 3.9 (-2015)</h4>
+<h4>Changes in version 3.9 (20-07-2016)</h4>
 <ul class="changes">
+	<li>Ticket #146 Fixed java version check where the update number was greater than 99 (3 digits).</li>
+	<li>Enlarged the total classpath length to 30KB.</li>
+	<li>Ticket #142 Unbound VersionInfo returns wrong LanguageID (Sebastian Bögl).</li>
+	<li>Ticket #141 Ensure encoding of resource file to be iso-8859-1 (Thomas Scheithauer).</li>
+	<li>More reactive splash screen response to main window appearance (Federico Fissore).</li>
+	<li>FR #95 Launch4j should return an exit value (Sebastian Bögl).</li>
+	<li>FR #94 Add the working directory classifier for OS X (Sebastian Bögl).</li>
 	<li>FR #39 Launch Java VM through JNI (Ryan Rusaw) - BETA!</li>
 	<li>FR #69 Configure the language property of generated executables (Sebastian Bögl).</li>
 	<li>FR #77 Add legal trademarks as an additional field in version info tab (Sebastian Bögl).</li>
@@ -25,7 +32,6 @@
 	<li>FR #70 Java search sequence - bundled JRE can be used before or after the min/max version search (bundledJreAsFallback).</li>
 	<li>Fixed: Crash when classpath contained wildcard patterns where the dependency was in the same directory as the launcher.</li>
 	<li>Fixed launch4j GUI application closing - the process was still running.</li>
-	<li style="text-decoration: line-through">Updated to Dev-Cpp 5.7.1, MinGW 4.8.1 (head_src and w32api files).</li>
 </ul>
 
 <h4>Changes in version 3.5 (09-10-2014)</h4>
