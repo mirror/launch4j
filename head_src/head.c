@@ -224,10 +224,7 @@ BOOL loadString(const int resID, char* buffer)
 					buffer[x] = (char) lpBuffer[x];
 				} while (buffer[x++] != 0);
 				
-				if (debugAll)
-				{
-					debug("Resource %d:\t%s\n", resID, buffer);
-				}
+				debugAll("Resource %d:\t%s\n", resID, buffer);
 				return TRUE;
 			}
 		}    
@@ -538,6 +535,7 @@ void regSearchJreSdk(const char* jreKeyName, const char* sdkKeyName,
 
 BOOL findJavaHome(char* path, const int jdkPreference)
 {
+    debugAll("findJavaHome()\n");
 	regSearchJreSdk("SOFTWARE\\JavaSoft\\Java Runtime Environment",
 					"SOFTWARE\\JavaSoft\\Java Development Kit",
 					jdkPreference);
@@ -768,6 +766,7 @@ BOOL createMutex()
 
 	if (*mutexName)
 	{
+        debug("Create mutex:\t%s\n", mutexName);
 		SECURITY_ATTRIBUTES security;
 		security.nLength = sizeof(SECURITY_ATTRIBUTES);
 		security.bInheritHandle = TRUE;
@@ -802,6 +801,7 @@ void setWorkingDirectory(const char *exePath, const int pathLen)
 
 BOOL bundledJreSearch(const char *exePath, const int pathLen)
 {
+    debugAll("bundledJreSearch()\n");
 	char tmpPath[_MAX_PATH] = {0};
 
 	if (loadString(JRE_PATH, tmpPath))
@@ -837,6 +837,7 @@ BOOL bundledJreSearch(const char *exePath, const int pathLen)
 
 BOOL installedJreSearch()
 {
+    debugAll("installedJreSearch()\n");
 	return *search.javaMinVer && findJavaHome(launcher.cmd, loadInt(JDK_PREFERENCE));
 }
 
@@ -883,13 +884,16 @@ void createJreSearchError()
 
 BOOL jreSearch(const char *exePath, const int pathLen)
 {
+    debugAll("jreSearch()\n");
 	BOOL result = TRUE;
 
 	search.bundledJreAsFallback = loadBool(BUNDLED_JRE_AS_FALLBACK);
 	loadString(JAVA_MIN_VER, search.originalJavaMinVer);
 	formatJavaVersion(search.javaMinVer, search.originalJavaMinVer);
+	debug("Java min ver:\t%s\n", search.javaMinVer);
 	loadString(JAVA_MAX_VER, search.originalJavaMaxVer);
     formatJavaVersion(search.javaMaxVer, search.originalJavaMaxVer);
+    debug("Java max ver:\t%s\n", search.javaMaxVer);
 
 	if (search.bundledJreAsFallback)
 	{
@@ -978,6 +982,8 @@ void setMainClassAndClassPath(const char *exePath, const int pathLen)
 
 	if (loadString(MAIN_CLASS, launcher.mainClass))
 	{
+        debug("Main class:\t%s\n", launcher.mainClass);
+
 		if (!loadString(CLASSPATH, classPath))
 		{
 			debug("Info:\t\tClasspath not defined.\n");
