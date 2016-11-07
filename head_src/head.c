@@ -207,6 +207,7 @@ BOOL loadString(const int resID, char* buffer)
 	HRSRC hResource;
 	HGLOBAL hResourceLoaded;
 	LPBYTE lpBuffer;
+	debugAll("Resource %d:\t", resID);
 
 	hResource = FindResourceEx(hModule, RT_RCDATA, MAKEINTRESOURCE(resID),
 			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
@@ -224,7 +225,7 @@ BOOL loadString(const int resID, char* buffer)
 					buffer[x] = (char) lpBuffer[x];
 				} while (buffer[x++] != 0);
 				
-				debugAll("Resource %d:\t%s\n", resID, buffer);
+				debugAll("%s\n", buffer);
 				return TRUE;
 			}
 		}    
@@ -234,6 +235,8 @@ BOOL loadString(const int resID, char* buffer)
 		SetLastError(0);
 		buffer[0] = 0;
 	}
+	
+	debugAll("<NULL>\n");
 	return FALSE;
 }
 
@@ -508,6 +511,10 @@ void regSearchWow(const char* keyName, const int searchType)
 		case USE_32_BIT_RUNTIME:
 			regSearch(keyName, searchType);
 			break;
+			
+		default:
+            debug("Runtime bits:\tFailed to load.\n");
+            break;
 	}
 }
 
