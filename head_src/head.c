@@ -547,6 +547,11 @@ BOOL findJavaHome(char* path, const int jdkPreference)
 					"SOFTWARE\\JavaSoft\\Java Development Kit",
 					jdkPreference);
 
+    // Java 9 support
+	regSearchJreSdk("SOFTWARE\\JavaSoft\\JRE",
+					"SOFTWARE\\JavaSoft\\JDK",
+					jdkPreference);
+
 	if (search.foundJava == NO_JAVA_FOUND)
 	{
 		regSearchJreSdk("SOFTWARE\\IBM\\Java2 Runtime Environment",
