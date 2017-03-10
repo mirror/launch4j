@@ -50,6 +50,7 @@ public class Config implements IValidatable {
 
 	// 1.x config properties_____________________________________________________________
 	public static final String HEADER = "header";
+	public static final String TARGET = "target";
 	public static final String JAR = "jar";
 	public static final String OUTFILE = "outfile";
 	public static final String ERR_TITLE = "errTitle";
@@ -70,7 +71,12 @@ public class Config implements IValidatable {
 																CONSOLE_HEADER,
 																JNI_GUI_HEADER_32,
 																JNI_CONSOLE_HEADER_32 };
-
+	public static final String TARGET_32 = "i686";
+	public static final String TARGET_64 = "x86_64";
+	
+	private static final String[] TARGET_TYPES = new String[] { TARGET_32,
+			TARGET_64 };
+	
 	private static final String[] PRIORITY_CLASS_NAMES = new String[] { "normal",
 																		"idle",
 																		"high" };
@@ -81,6 +87,7 @@ public class Config implements IValidatable {
 
 	private boolean dontWrapJar;
 	private String headerType = GUI_HEADER;
+	private String targetType = TARGET_32;
 	private List<String> headerObjects;
 	private List<String> libs;
 	private File jar;
@@ -139,6 +146,8 @@ public class Config implements IValidatable {
 				"supportUrl", Messages.getString("Config.support.url"));
 		Validator.checkIn(getHeaderType(), HEADER_TYPES, "headerType",
 				Messages.getString("Config.header.type"));
+		Validator.checkIn(getTargetType(), TARGET_TYPES, "targetType",
+				Messages.getString("Config.target.type"));
 		Validator.checkFalse(!isGuiApplication() && splash != null,
 				"headerType",
 				Messages.getString("Config.splash.not.impl.by.console.hdr"));
@@ -244,13 +253,31 @@ public class Config implements IValidatable {
 		headerType = HEADER_TYPES[headerTypeIndex];
 	}
 
+	public String getTargetType() {
+		return targetType;
+	}
+
+	public void setTargetType(String targetType) {
+		this.targetType = targetType;
+	}
+
+	/** launch4j target type index - used by GUI. */
+	public int gettargetTypeIndex() {
+		int x = Arrays.asList(TARGET_TYPES).indexOf(getTargetType());
+		return x != -1 ? x : 0;
+	}
+
+	public void setTargetTypeIndex(int targetTypeIndex) {
+		headerType = TARGET_TYPES[targetTypeIndex];
+	}
+	
 	public boolean isCustomHeaderObjects() {
 		return headerObjects != null && !headerObjects.isEmpty();
 	}
 
 	public List<String> getHeaderObjects() {
 		return isCustomHeaderObjects() ? headerObjects
-				: LdDefaults.getHeaderObjects(getHeaderTypeIndex());
+				: LdDefaults.getHeaderObjects(getHeaderTypeIndex(), getTargetType());
 	}
 
 	public void setHeaderObjects(List<String> headerObjects) {
@@ -262,7 +289,7 @@ public class Config implements IValidatable {
 	}
 
 	public List<String> getLibs() {
-		return isCustomLibs() ? libs : LdDefaults.getLibs(headerType);
+		return isCustomLibs() ? libs : LdDefaults.getLibs(headerType, getTargetType());
 	}
 
 	public void setLibs(List<String> libs) {

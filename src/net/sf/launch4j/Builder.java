@@ -93,7 +93,7 @@ public class Builder {
 			Cmd resCmd = new Cmd(_basedir);
 			resCmd.addExe("windres")
 					.add(Util.WINDOWS_OS ? "--preprocessor=type" : "--preprocessor=cat")
-					.add("-J rc -O coff -F pe-i386")
+					.add("-J rc -O coff -F " + (c.TARGET_32.equals(c.getTargetType()) ? "pe-i386" : "pe-x86-64"))
 					.addAbsFile(rc)
 					.addAbsFile(ro);
 			_log.append(Messages.getString("Builder.compiling.resources"));
@@ -101,8 +101,8 @@ public class Builder {
 
 			Cmd ldCmd = new Cmd(_basedir);
 			ldCmd.addExe("ld")
-					.add("-mi386pe")
-					.add("--oformat pei-i386")
+					.add(c.TARGET_32.equals(c.getTargetType()) ? "-mi386pe" : "")
+					.add("--oformat " + (c.TARGET_32.equals(c.getTargetType()) ? "pei-i386" : "pei-x86-64"))
 					.add("--dynamicbase")
 					.add("--nxcompat")
 					.add("--no-seh")

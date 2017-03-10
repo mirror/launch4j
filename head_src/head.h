@@ -72,8 +72,6 @@
 #define USE_32_BIT_RUNTIME 4
 #define INIT_RUNTIME_BITS 9
 
-#define KEY_WOW64_64KEY 0x0100
-
 #define HKEY_STR "HKEY"
 #define HKEY_CLASSES_ROOT_STR "HKEY_CLASSES_ROOT"
 #define HKEY_CURRENT_USER_STR "HKEY_CURRENT_USER"
@@ -140,5 +138,6 @@ BOOL execute(const BOOL wait, DWORD *dwExitCode);
 const char* getJavaHome();
 const char* getMainClass();
 const char* getLauncherArgs();
+void setConsoleFlag();
 
 #endif // _LAUNCH4J_HEAD__INCLUDED_
