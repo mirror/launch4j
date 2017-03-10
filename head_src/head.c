@@ -42,6 +42,8 @@ char oldPwd[_MAX_PATH];
 PROCESS_INFORMATION processInformation;
 DWORD processPriority;
 
+int _MINGW_INSTALL_DEBUG_MATHERR = 0;
+
 struct
 {
 	char title[STR];
