@@ -659,6 +659,10 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
 			{
 				regQueryValue(varName, dst + strlen(dst), BIG_STR);
             }
+			else if (strcmp(varName, "") == 0)
+			{
+                strcat(dst, "%");
+            }
 			else if (GetEnvironmentVariable(varName, varValue, MAX_VAR_SIZE) > 0)
 			{
                 strcat(dst, varValue);
