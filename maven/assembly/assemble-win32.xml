@@ -41,7 +41,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			<outputDirectory>${finalName}-workdir-win32/bin</outputDirectory>
 		</fileSet>
 		<fileSet>
-<!-- 			<directory>src/main</directory> -->
 			<outputDirectory>${finalName}-workdir-win32</outputDirectory>
 			<includes>
 				<include>w32api/**/*</include>
