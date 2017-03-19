@@ -52,6 +52,7 @@
 #include <sys/stat.h>
 #include <io.h>
 #include <process.h>
+#include <time.h>
 
 #define LAUNCH4j "Launch4j"
 #define VERSION "3.9"

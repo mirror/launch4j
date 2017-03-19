@@ -618,6 +618,10 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
 {
     char varName[STR] = {0};
     char varValue[MAX_VAR_SIZE] = {0};
+    time_t rawtime;
+	struct tm * timeinfo;
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
 
     while (strlen(src) > 0)
 	{
@@ -656,6 +660,14 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
             else if (strcmp(varName, "JREHOMEDIR") == 0)
 			{
                 strcat(dst, search.foundJavaHome);
+			}
+            else if (strcmp(varName, "CLIENTNAME") == 0)
+			{
+                strcat(dst, getenv ("CLIENTNAME") != NULL ? getenv ("CLIENTNAME") : getenv ("COMPUTERNAME"));
+			}
+            else if (strcmp(varName, "TIMESTAMP") == 0)
+			{
+            	strftime(dst + strlen(dst), 16, "%Y%m%d_%H%M%S", timeinfo);
 			}
 			else if (strstr(varName, HKEY_STR) == varName)
 			{
@@ -734,10 +746,23 @@ void setJvmOptions(char *jvmOptions, const char *exePath)
 	 * Options are separated by spaces or CRLF
 	 * # starts an inline comment
 	 */
+	char tmpPath[_MAX_PATH] = {0};
 	char iniFilePath[_MAX_PATH] = {0};
-	strncpy(iniFilePath, exePath, strlen(exePath) - 3);
-	strcat(iniFilePath, "l4j.ini");
 	long hFile;
+
+	if (loadString(INI_PATH, tmpPath)) {
+		expandVars(iniFilePath, tmpPath, exePath, strlen(exePath));
+		struct _stat statBuf;
+		if (_stat(iniFilePath, &statBuf) == 0 && statBuf.st_mode & S_IFDIR) {
+			strncat(iniFilePath, strrchr(exePath, '\\'), strlen(exePath) - 3);
+			strcat(iniFilePath, "l4j.ini");
+		}
+	}
+	else
+	{
+		strncpy(iniFilePath, exePath, strlen(exePath) - 3);
+		strcat(iniFilePath, "l4j.ini");
+	}
 
 	if ((hFile = _open(iniFilePath, _O_RDONLY)) != -1)
 	{

@@ -104,6 +104,7 @@ public class RcBuilder {
 	public static final int RUNTIME_BITS = 30;
 	public static final int RESTART_ON_CRASH = 31;
 	public static final int BUNDLED_JRE_AS_FALLBACK	= 32;
+	public static final int INI_PATH = 33;
 
 	public static final int STARTUP_ERR = 101;
 	public static final int BUNDLED_JRE_ERR = 102;
@@ -168,6 +169,10 @@ public class RcBuilder {
 
 		if (c.isDontWrapJar() && c.getJar() != null) {
 			addWindowsPath(JAR, c.getJar().getPath());
+		}
+		
+		if(c.getIniPath() != null) {
+			addText(INI_PATH, c.getIniPath());
 		}
 		
 		File file = Util.createTempFile("rc");

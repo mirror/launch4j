@@ -111,6 +111,7 @@ public class Config implements IValidatable {
 	private Splash splash;
 	private VersionInfo versionInfo;
 	private Msg	messages;
+	private String iniPath;
 
 	public void checkInvariants() {
 		Validator.checkTrue(outfile != null && outfile.getPath().endsWith(".exe"),
@@ -451,5 +452,13 @@ public class Config implements IValidatable {
 
 	public void setSingleInstance(SingleInstance singleInstance) {
     	this.singleInstance = singleInstance;
+    }
+
+	public String getIniPath() {
+    	return iniPath;
+    }
+
+	public void setIniPath(String iniPath) {
+    	this.iniPath = iniPath;
     }
 }
