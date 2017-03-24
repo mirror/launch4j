@@ -53,6 +53,8 @@
 #include <io.h>
 #include <process.h>
 #include <time.h>
+#include <ctype.h>
+#include <jni.h>
 
 #define LAUNCH4j "Launch4j"
 #define VERSION "3.9"
@@ -140,5 +142,12 @@ const char* getJavaHome();
 const char* getMainClass();
 const char* getLauncherArgs();
 void setConsoleFlag();
+
+int getArgCount(const char* pcArgStr);
+void saveJvmOptions(const char *jrePath, const char *mainClass, const char *pcOpts);
+JNIEnv* createVm();
+int invokeMainClass(JNIEnv* psJNIEnv);
+void cleanupVm();
+BOOL executeVm(DWORD *dwExitCode);
 
 #endif // _LAUNCH4J_HEAD__INCLUDED_

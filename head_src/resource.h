@@ -68,6 +68,7 @@
 #define RESTART_ON_CRASH			31
 #define BUNDLED_JRE_AS_FALLBACK		32
 #define INI_PATH					33
+#define JNI							34
 
 #define STARTUP_ERR					101
 #define BUNDLED_JRE_ERR				102

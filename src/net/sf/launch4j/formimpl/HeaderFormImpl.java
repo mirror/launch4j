@@ -65,8 +65,8 @@ public class HeaderFormImpl extends HeaderForm {
 
 		_guiHeaderRadio.setActionCommand(Config.GUI_HEADER);
 		_consoleHeaderRadio.setActionCommand(Config.CONSOLE_HEADER);
-		_jniGuiHeaderRadio.setActionCommand(Config.JNI_GUI_HEADER_32);
-		_jniConsoleHeaderRadio.setActionCommand(Config.JNI_CONSOLE_HEADER_32);
+		//_jniGuiHeaderRadio.setActionCommand(Config.JNI_GUI_HEADER_32);
+		//_jniConsoleHeaderRadio.setActionCommand(Config.JNI_CONSOLE_HEADER_32);
 
 		ActionListener headerTypeActionListener = new HeaderTypeActionListener();
 		_guiHeaderRadio.addActionListener(headerTypeActionListener);

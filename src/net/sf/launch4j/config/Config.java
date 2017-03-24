@@ -64,13 +64,9 @@ public class Config implements IValidatable {
 
 	public static final String GUI_HEADER = "gui";
 	public static final String CONSOLE_HEADER = "console";
-	public static final String JNI_GUI_HEADER_32 = "jniGui32";
-	public static final String JNI_CONSOLE_HEADER_32 = "jniConsole32";
 
 	private static final String[] HEADER_TYPES = new String[] { GUI_HEADER,
-																CONSOLE_HEADER,
-																JNI_GUI_HEADER_32,
-																JNI_CONSOLE_HEADER_32 };
+																CONSOLE_HEADER };
 	public static final String TARGET_32 = "i686";
 	public static final String TARGET_64 = "x86_64";
 	
@@ -112,6 +108,7 @@ public class Config implements IValidatable {
 	private VersionInfo versionInfo;
 	private Msg	messages;
 	private String iniPath;
+	private boolean jni = false;
 
 	public void checkInvariants() {
 		Validator.checkTrue(outfile != null && outfile.getPath().endsWith(".exe"),
@@ -167,11 +164,7 @@ public class Config implements IValidatable {
 	
 	private void checkJniInvariants() {
 		// TODO: Remove once JNI is fully implemented.
-		if (isJniApplication()) {
-			Validator.checkTrue(".".equals(chdir), "chdir",
-					"Only '.' is allowed in change directory.");
-			Validator.checkTrue(Validator.isEmpty(cmdLine), "cmdLine",
-					"Constant command line arguments not supported.");
+		if (isJni()) {
 			Validator.checkFalse(stayAlive, "stayAlive",
 					"Stay alive option is not used in JNI, this is the default behavior.");
 			Validator.checkFalse(restartOnCrash, "restartOnCrash",
@@ -179,10 +172,6 @@ public class Config implements IValidatable {
 			Validator.checkIn(getPriority(), new String[] { "normal" }, "priority",
 					"Process priority is not supported,");
 			Validator.checkNotNull(classPath, "classpath", "classpath");
-			Validator.checkFalse(jre.getBundledJre64Bit(), "jre.bundledJre64Bit",
-					"64-bit bundled JRE not supported.");
-			Validator.checkTrue(Jre.RUNTIME_BITS_32.equals(jre.getRuntimeBits()), "jre.runtimeBits", 
-					"64-bit JRE not supported.");
 		}
 	}
 	
@@ -227,12 +216,15 @@ public class Config implements IValidatable {
 	}
 	
 	public boolean isGuiApplication() {
-		return GUI_HEADER.equals(headerType) || JNI_GUI_HEADER_32.equals(headerType);
+		return GUI_HEADER.equals(headerType);
 	}
 	
-	public boolean isJniApplication() {
-		return JNI_GUI_HEADER_32.equals(headerType)
-				|| JNI_CONSOLE_HEADER_32.equals(headerType);
+	public boolean isJni() {
+		return jni;
+	}
+
+	public void setJni(boolean jni) {
+		this.jni = jni;
 	}
 
 	/** launch4j header file. */

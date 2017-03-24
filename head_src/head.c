@@ -68,10 +68,19 @@ struct
 
 struct
 {
+	char classpath[MAX_ARGS];
 	char mainClass[_MAX_PATH];
 	char cmd[_MAX_PATH];
 	char args[MAX_ARGS];
+	char cmdline[MAX_ARGS];
 } launcher;
+
+/* Java Invocation API stuff */
+typedef jint (JNICALL CreateJavaVM_t)(JavaVM **pvm, void **env, void *args);
+JavaVM* g_pJavaVM = NULL;
+JNIEnv* g_pJNIEnv = NULL;
+JavaVMInitArgs g_sJavaVMInitArgs;
+const char* g_pcSep = " \t\f\r\n\v";
 
 BOOL initGlobals()
 {
@@ -1033,15 +1042,14 @@ void setMainClassAndClassPath(const char *exePath, const int pathLen)
 		}
 		
 		expandVars(expandedClassPath, classPath, exePath, pathLen);
-		strcat(launcher.args, "-classpath \"");
 
 		if (wrapper)
 		{
-			appendAppClasspath(launcher.args, exePath);
+			appendAppClasspath(launcher.classpath, exePath);
 		}
 		else if (*jar)
 		{
-			appendAppClasspath(launcher.args, jar);
+			appendAppClasspath(launcher.classpath, jar);
 		}
 
 		// Deal with wildcards or >> strcat(launcherArgs, exp); <<
@@ -1066,7 +1074,7 @@ void setMainClassAndClassPath(const char *exePath, const int pathLen)
 					do
 					{
 						strcpy(fileName, c_file.name);
-						appendAppClasspath(launcher.args, fullFileName);
+						appendAppClasspath(launcher.classpath, fullFileName);
 						debug("      \"      :\t%s\n", fullFileName);
 					} while (_findnext(hFile, &c_file) == 0);
 				}
@@ -1075,12 +1083,18 @@ void setMainClassAndClassPath(const char *exePath, const int pathLen)
 			}
 			else
 			{
-				appendAppClasspath(launcher.args, cp);
+				appendAppClasspath(launcher.classpath, cp);
 			}
 			cp = strtok(NULL, ";");
 		}
 
-		*(launcher.args + strlen(launcher.args) - 1) = 0;
+		if(strlen(launcher.classpath))
+			*(launcher.classpath + strlen(launcher.classpath) - 1) = 0;
+		sprintf(classPath,"-Djava.class.path=%s", launcher.classpath);
+		g_sJavaVMInitArgs.options[0].optionString = malloc(strlen(classPath) + 1);
+		strcpy(g_sJavaVMInitArgs.options[0].optionString, classPath);
+		strcat(launcher.args, "-classpath \"");
+		strcat(launcher.args, launcher.classpath);
 		strcat(launcher.args, "\" ");
 		strcat(launcher.args, launcher.mainClass);
 	}
@@ -1131,6 +1145,7 @@ void setCommandLineArgs(const char *lpCmdLine)
 		{
 			strcat(launcher.args, " ");
 			strcat(launcher.args, tmp);
+			strcat(launcher.cmdline, tmp);
 		}
 	}
 }
@@ -1194,6 +1209,16 @@ int prepare(const char *lpCmdLine)
 	char jvmOptions[MAX_ARGS] = {0};
 	setJvmOptions(jvmOptions, exePath);
 	expandVars(launcher.args, jvmOptions, exePath, pathLen);
+	char rgcOptCpy[MAX_ARGS] = {0};
+	strncpy(rgcOptCpy, launcher.args, MAX_ARGS - 1);
+	char *pcCurrOpt;
+	int iArgCnt = getArgCount(rgcOptCpy) + 1;
+	char iCurrArg = 1;
+	g_sJavaVMInitArgs.options = malloc(iArgCnt * sizeof(JavaVMOption));
+	memset(g_sJavaVMInitArgs.options, 0, iArgCnt * sizeof(JavaVMOption));
+	for (pcCurrOpt = strtok(rgcOptCpy, g_pcSep); pcCurrOpt; pcCurrOpt = strtok(NULL, g_pcSep), iCurrArg++)
+		g_sJavaVMInitArgs.options[iCurrArg].optionString = pcCurrOpt;
+	g_sJavaVMInitArgs.nOptions = iArgCnt;
 	setMainClassAndClassPath(exePath, pathLen);
 	setCommandLineArgs(lpCmdLine);
 
@@ -1211,37 +1236,65 @@ void closeProcessHandles()
 
 BOOL execute(const BOOL wait, DWORD *dwExitCode)
 {
-	STARTUPINFO si;
-
-    memset(&processInformation, 0, sizeof(processInformation));
-    memset(&si, 0, sizeof(si));
-    si.cb = sizeof(si);
-
-	char cmdline[MAX_ARGS] = {0};
-    strcpy(cmdline, "\"");
-	strcat(cmdline, launcher.cmd);
-	strcat(cmdline, "\" ");
-	strcat(cmdline, launcher.args);
-
-	if (CreateProcess(NULL, cmdline, NULL, NULL,
-			TRUE, processPriority, NULL, NULL, &si, &processInformation))
+	if (loadBool(JNI))
 	{
-		if (wait)
+		BOOL result = TRUE;
+		*dwExitCode = -1;
+
+		/* Use Invocation API */
+		if (createVm())
 		{
-			WaitForSingleObject(processInformation.hProcess, INFINITE);
-			GetExitCodeProcess(processInformation.hProcess, dwExitCode);
-			closeProcessHandles();
+			*dwExitCode = invokeMainClass(g_pJNIEnv);
+			cleanupVm();
 		}
 		else
 		{
-			*dwExitCode = 0;
+			result = FALSE;
 		}
-		
-		return TRUE;
-	}
 
-	*dwExitCode = -1;
-	return FALSE;
+		/* Free the allocated memory */
+		for (int  iIdx = 0; iIdx < g_sJavaVMInitArgs.nOptions; iIdx++)
+		{
+			free(g_sJavaVMInitArgs.options[iIdx].optionString);
+		}
+		free(g_sJavaVMInitArgs.options);
+
+		return result;
+	}
+	else
+	{
+		STARTUPINFO si;
+
+	    memset(&processInformation, 0, sizeof(processInformation));
+	    memset(&si, 0, sizeof(si));
+	    si.cb = sizeof(si);
+
+		char cmdline[MAX_ARGS] = {0};
+	    strcpy(cmdline, "\"");
+		strcat(cmdline, launcher.cmd);
+		strcat(cmdline, "\" ");
+		strcat(cmdline, launcher.args);
+
+		if (CreateProcess(NULL, cmdline, NULL, NULL,
+				TRUE, processPriority, NULL, NULL, &si, &processInformation))
+		{
+			if (wait)
+			{
+				WaitForSingleObject(processInformation.hProcess, INFINITE);
+				GetExitCodeProcess(processInformation.hProcess, dwExitCode);
+				closeProcessHandles();
+			}
+			else
+			{
+				*dwExitCode = 0;
+			}
+
+			return TRUE;
+		}
+
+		*dwExitCode = -1;
+		return FALSE;
+	}
 }
 
 const char* getJavaHome()
@@ -1259,3 +1312,154 @@ const char* getLauncherArgs()
     return launcher.args;    
 }
 
+int getArgCount(const char* pcArgStr)
+{
+	const char *pCopy;
+	int iArgCnt= 0;
+	int bInWtSpc = 1;
+	for(pCopy = pcArgStr; *pCopy; pCopy++)
+	{
+		if (!isspace(*pCopy) && bInWtSpc)
+		{
+			iArgCnt++;
+		}
+		bInWtSpc = isspace(*pCopy);
+	}
+	return iArgCnt;
+}
+
+JNIEnv* createVm()
+{
+	int				iRetVal;
+	CreateJavaVM_t	*pfnCreateJavaVM;
+	char			rgcLibPth[_MAX_PATH + 18];
+	const char * subDirs[] = {
+		"client",
+		"server",
+		"j9vm",
+		"classic"
+	};
+	struct _stat statBuf;
+
+	for (int i = 0; i < sizeof(subDirs)/sizeof(const char *); i++)
+	{
+		sprintf(rgcLibPth, "%s\\bin\\%s\\jvm.dll", getJavaHome(), subDirs[i]);
+		if(_stat(rgcLibPth, &statBuf) == 0)
+		break;
+	}
+
+	/* Get a handle to the jvm dll */
+	HINSTANCE  g_hInstance;
+	if ((g_hInstance = LoadLibrary(rgcLibPth)) == NULL)
+	{
+		return NULL;
+	}
+
+	/* Get the CreateJavaVM() function */
+	pfnCreateJavaVM = (CreateJavaVM_t *)GetProcAddress(g_hInstance, "JNI_CreateJavaVM");
+
+	if (pfnCreateJavaVM == NULL)
+	{
+		return NULL;
+	}
+
+	g_sJavaVMInitArgs.version				= JNI_VERSION_1_2;
+	g_sJavaVMInitArgs.ignoreUnrecognized	= JNI_TRUE;
+	/* Start the VM */
+	iRetVal = pfnCreateJavaVM(&g_pJavaVM, (void **)&g_pJNIEnv, &g_sJavaVMInitArgs);
+
+	if (iRetVal != 0)
+	{
+		return NULL;
+	}
+	
+	return g_pJNIEnv;
+}
+
+int invokeMainClass(JNIEnv* psJNIEnv) 
+{
+	jclass			jcMnCls;
+	jmethodID		jmMnMthd;
+	jobjectArray	joAppArgs;
+	jstring			jsAppArg;
+	jthrowable 		jtExcptn;
+	char			*pcCurrArg;
+	int				iArgCnt= 0, iOption = -1;
+	char			rgcMnClsCpy[MAX_ARGS] = {0};
+
+	/* Ensure Java JNI Env is set up */
+	if(psJNIEnv == NULL)
+	{
+		return -1;
+	}
+	/* We need a class name */
+	if (launcher.mainClass[0] == '\0')
+	{
+		return -1;
+	}
+	else
+	{
+		/* Replace . with / in fully qualified class name */
+		char *pClsNm;
+		for(pClsNm = launcher.mainClass; *pClsNm; pClsNm++)
+		{
+			if(*pClsNm == '.')
+				*pClsNm = '/';
+		}
+	}
+	/* Find the class */
+	jcMnCls = (*psJNIEnv)->FindClass(psJNIEnv, launcher.mainClass);
+	jtExcptn = (*psJNIEnv)->ExceptionOccurred(psJNIEnv);
+	if (jtExcptn != NULL)
+	{
+		(*psJNIEnv)->ExceptionDescribe(psJNIEnv);
+		return -1;
+	}
+	if (jcMnCls == NULL)
+	{
+		return -1;
+	}
+	/* Get the static main method */
+	jmMnMthd = (*psJNIEnv)->GetStaticMethodID(psJNIEnv, jcMnCls, "main", "([Ljava/lang/String;)V");
+	jtExcptn = (*psJNIEnv)->ExceptionOccurred(psJNIEnv);
+	if (jtExcptn != NULL)
+	{
+		(*psJNIEnv)->ExceptionDescribe(psJNIEnv);
+	}
+	if (jmMnMthd == NULL)
+	{
+		return -1;
+	}
+	/* Build the String[] array if we need one */
+	strncpy(rgcMnClsCpy, launcher.cmdline, MAX_ARGS);
+	iArgCnt = getArgCount(rgcMnClsCpy);
+	joAppArgs = (jobjectArray)(*psJNIEnv)->NewObjectArray(psJNIEnv, iArgCnt, 
+		(*psJNIEnv)->FindClass(psJNIEnv, "java/lang/String"), NULL);
+	jtExcptn = (*psJNIEnv)->ExceptionOccurred(psJNIEnv);
+	if (jtExcptn != NULL)
+	{
+		(*psJNIEnv)->ExceptionDescribe(psJNIEnv);
+		return -1;
+	}
+	for (pcCurrArg = strtok(rgcMnClsCpy, g_pcSep); pcCurrArg; pcCurrArg = strtok(NULL, g_pcSep))
+	{
+		iOption++;
+		jsAppArg = (*psJNIEnv)->NewStringUTF(psJNIEnv, pcCurrArg);
+		(*psJNIEnv)->SetObjectArrayElement(psJNIEnv, joAppArgs, iOption, jsAppArg);
+		jtExcptn = (*psJNIEnv)->ExceptionOccurred(psJNIEnv);
+		if(jtExcptn != NULL)
+		{
+			(*psJNIEnv)->ExceptionDescribe(psJNIEnv);
+			return -1;
+		}
+	}
+	/* Execute the class */
+	(*psJNIEnv)->CallStaticVoidMethod(psJNIEnv, jcMnCls, jmMnMthd, joAppArgs);
+	return 0;
+}
+
+void cleanupVm()
+{
+	/* Destroy the VM */
+	(*g_pJavaVM)->DestroyJavaVM(g_pJavaVM);
+}

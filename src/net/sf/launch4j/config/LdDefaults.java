@@ -52,30 +52,9 @@ public class LdDefaults {
 			"head/consolehead.o",
 			"head/head.o" });
 	
-	private static final List<String> JNI_GUI_32_OBJECTS = Arrays.asList(new String[] {
-			"w32api/crt2.o",
-			"head/jniguihead.o",
-			"head/head.o",
-			"head/jnihead.o" });
-
-	private static final List<String> JNI_CONSOLE_32_OBJECTS = Arrays.asList(new String[] {
-			"w32api/crt2.o",
-			"head/jniconsolehead.o",
-			"head/head.o",
-			"head/jnihead.o" });
-
 	private static final List<List<String>> HEADER_OBJECTS;
 
 	private static final List<String> LIBS = Arrays.asList(new String[] {
-			"w32api/libmingw32.a",
-			"w32api/libgcc.a",
-			"w32api/libmsvcrt.a",
-			"w32api/libkernel32.a",
-			"w32api/libuser32.a",
-			"w32api/libadvapi32.a",
-			"w32api/libshell32.a" });
-
-	private static final List<String> JNI_LIBS = Arrays.asList(new String[] {
 			"w32api/libmingw32.a",
 			"w32api/libmingwex.a",
 			"w32api/libgcc.a",
@@ -90,8 +69,6 @@ public class LdDefaults {
 		HEADER_OBJECTS = new ArrayList<List<String>>();
 		HEADER_OBJECTS.add(GUI_OBJECTS);
 		HEADER_OBJECTS.add(CONSOLE_OBJECTS);
-		HEADER_OBJECTS.add(JNI_GUI_32_OBJECTS);
-		HEADER_OBJECTS.add(JNI_CONSOLE_32_OBJECTS);
 	}
 
 	private static List<String> addTargetPath(List<String> objects, String targetType) {
@@ -117,11 +94,6 @@ public class LdDefaults {
 			return addTargetPath(LIBS, targetType);
 		}
 
-		if (Config.JNI_GUI_HEADER_32.equals(headerType)
-				|| Config.JNI_CONSOLE_HEADER_32.equals(headerType)) {
-			return addTargetPath(JNI_LIBS, targetType);
-		}
-		
 		throw new IllegalArgumentException("Unknown headerType: " + headerType);
 	}
 }

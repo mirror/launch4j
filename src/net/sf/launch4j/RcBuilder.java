@@ -105,6 +105,7 @@ public class RcBuilder {
 	public static final int RESTART_ON_CRASH = 31;
 	public static final int BUNDLED_JRE_AS_FALLBACK	= 32;
 	public static final int INI_PATH = 33;
+	public static final int JNI = 34;
 
 	public static final int STARTUP_ERR = 101;
 	public static final int BUNDLED_JRE_ERR = 102;
@@ -145,6 +146,7 @@ public class RcBuilder {
 		addText(PRIORITY_CLASS, String.valueOf(c.getPriorityClass()));
 		addTrue(GUI_HEADER_STAYS_ALIVE, c.isStayAlive());
 		addTrue(RESTART_ON_CRASH, c.isRestartOnCrash());
+		addTrue(JNI, c.isJni());
 		addSplash(c.getSplash());
 		addMessages(c);
 
