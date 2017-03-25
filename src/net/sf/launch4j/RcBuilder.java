@@ -106,6 +106,8 @@ public class RcBuilder {
 	public static final int BUNDLED_JRE_AS_FALLBACK	= 32;
 	public static final int INI_PATH = 33;
 	public static final int JNI = 34;
+	public static final int LOGGING = 35;
+	public static final int LOG_PATH = 36;
 
 	public static final int STARTUP_ERR = 101;
 	public static final int BUNDLED_JRE_ERR = 102;
@@ -177,6 +179,14 @@ public class RcBuilder {
 			addText(INI_PATH, c.getIniPath());
 		}
 		
+		if(c.getLogging() != null) {
+			addText(LOGGING, c.getLogging());
+		}
+
+		if(c.getLogPath() != null) {
+			addText(LOG_PATH, c.getLogPath());
+		}
+
 		File file = Util.createTempFile("rc");
 
 		if ("MS932".equals(System.getProperty("file.encoding"))) {

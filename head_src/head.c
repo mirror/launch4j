@@ -103,9 +103,24 @@ BOOL initGlobals()
 
 FILE* openLogFile(const char* exePath, const int pathLen)
 {
+	char tmpPath[_MAX_PATH] = {0};
 	char path[_MAX_PATH] = {0};
-	strncpy(path, exePath, pathLen);
-	strcat(path, "\\launch4j.log");
+
+	if (loadString(LOGPATH, tmpPath)) {
+		expandVars(path, tmpPath, exePath, strlen(exePath));
+		struct _stat statBuf;
+		if (_stat(path, &statBuf) == 0 && statBuf.st_mode & S_IFDIR) {
+			char *exePathTmp = strrchr(exePath, '\\');
+			strncat(path, exePathTmp, strlen(exePathTmp) - 3);
+			strcat(path, "launch4j.log");
+		}
+	}
+	else
+	{
+		strncpy(path, exePath, pathLen);
+		strcat(path, "\\launch4j.log");
+	}
+
 	return fopen(path, "a");
 }
 
@@ -120,10 +135,13 @@ void closeLogFile()
 BOOL initializeLogging(const char *lpCmdLine, const char* exePath, const int pathLen)
 {
 	char varValue[MAX_VAR_SIZE] = {0};
+	char varLogging[MAX_VAR_SIZE] = {0};
 	GetEnvironmentVariable(LAUNCH4j, varValue, MAX_VAR_SIZE);
+	loadString(LOGGING, varLogging);
 
     if (strstr(lpCmdLine, "--l4j-debug") != NULL
-			|| strstr(varValue, "debug") != NULL)
+			|| strstr(varValue, "debug") != NULL
+			|| strstr(varLogging, "debug") != NULL)
 	{
 		hLog = openLogFile(exePath, pathLen);
 
@@ -133,7 +151,8 @@ BOOL initializeLogging(const char *lpCmdLine, const char* exePath, const int pat
 		}
 
 		debugAll = strstr(lpCmdLine, "--l4j-debug-all") != NULL
-				|| strstr(varValue, "debug-all") != NULL;
+				|| strstr(varValue, "debug-all") != NULL
+				|| strstr(varLogging, "debug-all") != NULL;
 	}
 	
 	debug("\n\nVersion:\t%s\n", VERSION);
@@ -763,7 +782,8 @@ void setJvmOptions(char *jvmOptions, const char *exePath)
 		expandVars(iniFilePath, tmpPath, exePath, strlen(exePath));
 		struct _stat statBuf;
 		if (_stat(iniFilePath, &statBuf) == 0 && statBuf.st_mode & S_IFDIR) {
-			strncat(iniFilePath, strrchr(exePath, '\\'), strlen(exePath) - 3);
+			char *exePathTmp = strrchr(exePath, '\\');
+			strncat(iniFilePath, exePathTmp, strlen(exePathTmp) - 3);
 			strcat(iniFilePath, "l4j.ini");
 		}
 	}

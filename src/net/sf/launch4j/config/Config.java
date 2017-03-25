@@ -77,6 +77,9 @@ public class Config implements IValidatable {
 																		"idle",
 																		"high" };
 
+	private static final String[] LOGGING_CLASS_NAMES = new String[] { "debug",
+			"debug-all" };
+
 	private static final int[] PRIORITY_CLASSES = new int[] { 0x00000020,
 															0x00000040,
 															0x00000080 };
@@ -109,6 +112,8 @@ public class Config implements IValidatable {
 	private Msg	messages;
 	private String iniPath;
 	private boolean jni = false;
+	private String logPath;
+	private String logging;
 
 	public void checkInvariants() {
 		Validator.checkTrue(outfile != null && outfile.getPath().endsWith(".exe"),
@@ -158,6 +163,9 @@ public class Config implements IValidatable {
 				Messages.getString("Config.variables.err"));
 		Validator.checkIn(getPriority(), PRIORITY_CLASS_NAMES, "priority",
 				Messages.getString("Config.priority"));
+		if(getLogging() != null)
+			Validator.checkIn(getLogging(), LOGGING_CLASS_NAMES, "logging",
+				Messages.getString("Config.logging"));
 		checkJniInvariants();
 		jre.checkInvariants();
 	}
@@ -452,5 +460,21 @@ public class Config implements IValidatable {
 
 	public void setIniPath(String iniPath) {
     	this.iniPath = iniPath;
+    }
+
+	public String getLogPath() {
+    	return logPath;
+    }
+
+	public void setLogPath(String logPath) {
+    	this.logPath = logPath;
+    }
+
+	public String getLogging() {
+    	return logging;
+    }
+
+	public void setLogging(String logging) {
+    	this.logging = logging;
     }
 }
