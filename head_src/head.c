@@ -1142,6 +1142,8 @@ void setCommandLineArgs(const char *lpCmdLine)
 	{
 		strcat(launcher.args, " ");
 		strcat(launcher.args, tmp);
+		strcat(launcher.cmdline, " ");
+		strcat(launcher.cmdline, tmp);
 	}
 
 	// Command line arguments
@@ -1165,6 +1167,7 @@ void setCommandLineArgs(const char *lpCmdLine)
 		{
 			strcat(launcher.args, " ");
 			strcat(launcher.args, tmp);
+			strcat(launcher.cmdline, " ");
 			strcat(launcher.cmdline, tmp);
 		}
 	}
