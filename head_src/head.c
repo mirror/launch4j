@@ -107,7 +107,7 @@ FILE* openLogFile(const char* exePath, const int pathLen)
 	char path[_MAX_PATH] = {0};
 
 	if (loadString(LOGPATH, tmpPath)) {
-		expandVars(path, tmpPath, exePath, strlen(exePath));
+		expandVars(path, tmpPath, exePath, pathLen);
 		struct _stat statBuf;
 		if (_stat(path, &statBuf) == 0 && statBuf.st_mode & S_IFDIR) {
 			char *exePathTmp = strrchr(exePath, '\\');
