@@ -50,6 +50,7 @@ public class Config implements IValidatable {
 
 	// 1.x config properties_____________________________________________________________
 	public static final String HEADER = "header";
+	public static final String TARGET = "target";
 	public static final String JAR = "jar";
 	public static final String OUTFILE = "outfile";
 	public static final String ERR_TITLE = "errTitle";
@@ -63,17 +64,21 @@ public class Config implements IValidatable {
 
 	public static final String GUI_HEADER = "gui";
 	public static final String CONSOLE_HEADER = "console";
-	public static final String JNI_GUI_HEADER_32 = "jniGui32";
-	public static final String JNI_CONSOLE_HEADER_32 = "jniConsole32";
 
 	private static final String[] HEADER_TYPES = new String[] { GUI_HEADER,
-																CONSOLE_HEADER,
-																JNI_GUI_HEADER_32,
-																JNI_CONSOLE_HEADER_32 };
-
+																CONSOLE_HEADER };
+	public static final String TARGET_32 = "i686";
+	public static final String TARGET_64 = "x86_64";
+	
+	private static final String[] TARGET_TYPES = new String[] { TARGET_32,
+			TARGET_64 };
+	
 	private static final String[] PRIORITY_CLASS_NAMES = new String[] { "normal",
 																		"idle",
 																		"high" };
+
+	private static final String[] LOGGING_CLASS_NAMES = new String[] { "debug",
+			"debug-all" };
 
 	private static final int[] PRIORITY_CLASSES = new int[] { 0x00000020,
 															0x00000040,
@@ -81,6 +86,7 @@ public class Config implements IValidatable {
 
 	private boolean dontWrapJar;
 	private String headerType = GUI_HEADER;
+	private String targetType = TARGET_32;
 	private List<String> headerObjects;
 	private List<String> libs;
 	private File jar;
@@ -104,6 +110,10 @@ public class Config implements IValidatable {
 	private Splash splash;
 	private VersionInfo versionInfo;
 	private Msg	messages;
+	private String iniPath;
+	private boolean jni = false;
+	private String logPath;
+	private String logging;
 
 	public void checkInvariants() {
 		Validator.checkTrue(outfile != null && outfile.getPath().endsWith(".exe"),
@@ -139,6 +149,8 @@ public class Config implements IValidatable {
 				"supportUrl", Messages.getString("Config.support.url"));
 		Validator.checkIn(getHeaderType(), HEADER_TYPES, "headerType",
 				Messages.getString("Config.header.type"));
+		Validator.checkIn(getTargetType(), TARGET_TYPES, "targetType",
+				Messages.getString("Config.target.type"));
 		Validator.checkFalse(!isGuiApplication() && splash != null,
 				"headerType",
 				Messages.getString("Config.splash.not.impl.by.console.hdr"));
@@ -151,17 +163,16 @@ public class Config implements IValidatable {
 				Messages.getString("Config.variables.err"));
 		Validator.checkIn(getPriority(), PRIORITY_CLASS_NAMES, "priority",
 				Messages.getString("Config.priority"));
+		if(getLogging() != null)
+			Validator.checkIn(getLogging(), LOGGING_CLASS_NAMES, "logging",
+				Messages.getString("Config.logging"));
 		checkJniInvariants();
 		jre.checkInvariants();
 	}
 	
 	private void checkJniInvariants() {
 		// TODO: Remove once JNI is fully implemented.
-		if (isJniApplication()) {
-			Validator.checkTrue(".".equals(chdir), "chdir",
-					"Only '.' is allowed in change directory.");
-			Validator.checkTrue(Validator.isEmpty(cmdLine), "cmdLine",
-					"Constant command line arguments not supported.");
+		if (isJni()) {
 			Validator.checkFalse(stayAlive, "stayAlive",
 					"Stay alive option is not used in JNI, this is the default behavior.");
 			Validator.checkFalse(restartOnCrash, "restartOnCrash",
@@ -169,10 +180,6 @@ public class Config implements IValidatable {
 			Validator.checkIn(getPriority(), new String[] { "normal" }, "priority",
 					"Process priority is not supported,");
 			Validator.checkNotNull(classPath, "classpath", "classpath");
-			Validator.checkFalse(jre.getBundledJre64Bit(), "jre.bundledJre64Bit",
-					"64-bit bundled JRE not supported.");
-			Validator.checkTrue(Jre.RUNTIME_BITS_32.equals(jre.getRuntimeBits()), "jre.runtimeBits", 
-					"64-bit JRE not supported.");
 		}
 	}
 	
@@ -217,12 +224,15 @@ public class Config implements IValidatable {
 	}
 	
 	public boolean isGuiApplication() {
-		return GUI_HEADER.equals(headerType) || JNI_GUI_HEADER_32.equals(headerType);
+		return GUI_HEADER.equals(headerType);
 	}
 	
-	public boolean isJniApplication() {
-		return JNI_GUI_HEADER_32.equals(headerType)
-				|| JNI_CONSOLE_HEADER_32.equals(headerType);
+	public boolean isJni() {
+		return jni;
+	}
+
+	public void setJni(boolean jni) {
+		this.jni = jni;
 	}
 
 	/** launch4j header file. */
@@ -244,13 +254,31 @@ public class Config implements IValidatable {
 		headerType = HEADER_TYPES[headerTypeIndex];
 	}
 
+	public String getTargetType() {
+		return targetType;
+	}
+
+	public void setTargetType(String targetType) {
+		this.targetType = targetType;
+	}
+
+	/** launch4j target type index - used by GUI. */
+	public int gettargetTypeIndex() {
+		int x = Arrays.asList(TARGET_TYPES).indexOf(getTargetType());
+		return x != -1 ? x : 0;
+	}
+
+	public void setTargetTypeIndex(int targetTypeIndex) {
+		headerType = TARGET_TYPES[targetTypeIndex];
+	}
+	
 	public boolean isCustomHeaderObjects() {
 		return headerObjects != null && !headerObjects.isEmpty();
 	}
 
 	public List<String> getHeaderObjects() {
 		return isCustomHeaderObjects() ? headerObjects
-				: LdDefaults.getHeaderObjects(getHeaderTypeIndex());
+				: LdDefaults.getHeaderObjects(getHeaderTypeIndex(), getTargetType());
 	}
 
 	public void setHeaderObjects(List<String> headerObjects) {
@@ -262,7 +290,7 @@ public class Config implements IValidatable {
 	}
 
 	public List<String> getLibs() {
-		return isCustomLibs() ? libs : LdDefaults.getLibs(headerType);
+		return isCustomLibs() ? libs : LdDefaults.getLibs(headerType, getTargetType());
 	}
 
 	public void setLibs(List<String> libs) {
@@ -424,5 +452,29 @@ public class Config implements IValidatable {
 
 	public void setSingleInstance(SingleInstance singleInstance) {
     	this.singleInstance = singleInstance;
+    }
+
+	public String getIniPath() {
+    	return iniPath;
+    }
+
+	public void setIniPath(String iniPath) {
+    	this.iniPath = iniPath;
+    }
+
+	public String getLogPath() {
+    	return logPath;
+    }
+
+	public void setLogPath(String logPath) {
+    	this.logPath = logPath;
+    }
+
+	public String getLogging() {
+    	return logging;
+    }
+
+	public void setLogging(String logging) {
+    	this.logging = logging;
     }
 }

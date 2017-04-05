@@ -36,6 +36,7 @@
  */
 package net.sf.launch4j.config;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,67 +52,48 @@ public class LdDefaults {
 			"head/consolehead.o",
 			"head/head.o" });
 	
-	private static final List<String> JNI_GUI_32_OBJECTS = Arrays.asList(new String[] {
-			"w32api_jni/crt2.o",
-			"head_jni_BETA/jniguihead.o",
-			"head_jni_BETA/head.o",
-			"head_jni_BETA/jnihead.o" });
-
-	private static final List<String> JNI_CONSOLE_32_OBJECTS = Arrays.asList(new String[] {
-			"w32api_jni/crt2.o",
-			"head_jni_BETA/jniconsolehead.o",
-			"head_jni_BETA/head.o",
-			"head_jni_BETA/jnihead.o" });
-
 	private static final List<List<String>> HEADER_OBJECTS;
 
 	private static final List<String> LIBS = Arrays.asList(new String[] {
 			"w32api/libmingw32.a",
+			"w32api/libmingwex.a",
 			"w32api/libgcc.a",
 			"w32api/libmsvcrt.a",
+			"w32api/libmoldname.a",
 			"w32api/libkernel32.a",
 			"w32api/libuser32.a",
 			"w32api/libadvapi32.a",
 			"w32api/libshell32.a" });
 
-	private static final List<String> JNI_LIBS = Arrays.asList(new String[] {
-			"w32api_jni/libmingw32.a",
-			"w32api_jni/libmingwex.a",
-			"w32api_jni/libgcc.a",
-			"w32api_jni/libmsvcrt.a",
-			"w32api_jni/libmoldname.a",
-			"w32api_jni/libkernel32.a",
-			"w32api_jni/libuser32.a",
-			"w32api_jni/libadvapi32.a",
-			"w32api_jni/libshell32.a" });
-
 	static {
 		HEADER_OBJECTS = new ArrayList<List<String>>();
 		HEADER_OBJECTS.add(GUI_OBJECTS);
 		HEADER_OBJECTS.add(CONSOLE_OBJECTS);
-		HEADER_OBJECTS.add(JNI_GUI_32_OBJECTS);
-		HEADER_OBJECTS.add(JNI_CONSOLE_32_OBJECTS);
 	}
 
-	public static List<String> getHeaderObjects(int headerTypeIndex) {
+	private static List<String> addTargetPath(List<String> objects, String targetType) {
+		List<String> targetObjects = new ArrayList<String>();
+		for(String s : objects) {
+			File f = new File(s);
+			targetObjects.add(new File(f.getParent() + File.separator + targetType, f.getName()).getPath());
+		}
+		return targetObjects;
+	}
+	
+	public static List<String> getHeaderObjects(int headerTypeIndex, String targetType) {
 		if (headerTypeIndex < 0 || headerTypeIndex > 3) {
 			throw new IllegalArgumentException("headerTypeIndex is out of range: " + headerTypeIndex);
 		}
 
-		return HEADER_OBJECTS.get(headerTypeIndex);
+		return addTargetPath(HEADER_OBJECTS.get(headerTypeIndex), targetType);
 	}
 	
-	public static List<String> getLibs(String headerType) {
+	public static List<String> getLibs(String headerType, String targetType) {
 		if (Config.GUI_HEADER.equals(headerType)
 				|| Config.CONSOLE_HEADER.equals(headerType)) {
-			return LIBS;
+			return addTargetPath(LIBS, targetType);
 		}
 
-		if (Config.JNI_GUI_HEADER_32.equals(headerType)
-				|| Config.JNI_CONSOLE_HEADER_32.equals(headerType)) {
-			return JNI_LIBS;
-		}
-		
 		throw new IllegalArgumentException("Unknown headerType: " + headerType);
 	}
 }

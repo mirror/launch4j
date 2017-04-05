@@ -159,6 +159,61 @@
 			</resource>
 		</resources>
 		<plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>1.0-alpha-8</version>
+                <extensions>true</extensions>
+                <configuration>
+					<compilerExecutable>${env.MINGW_HOME}\bin\gcc.exe</compilerExecutable>
+					<objectFileExtension>o</objectFileExtension>
+                    <sources>
+                        <source>
+                            <directory>head_src</directory>
+							<includes>
+								<includes>*.c</includes>
+							</includes>
+                        </source>
+                    </sources>
+                    <compilerProvider>generic</compilerProvider>
+                    <compilerStartOptions>
+                        <compilerStartOption>-fexpensive-optimizations</compilerStartOption>
+                        <compilerStartOption>-O3</compilerStartOption>
+                    </compilerStartOptions>
+					<compilerMiddleOptions>
+						<compilerMiddleOption>-I ${env.JAVA_HOME}\include</compilerMiddleOption>
+						<compilerMiddleOption>-I ${env.JAVA_HOME}\include\win32</compilerMiddleOption>
+					</compilerMiddleOptions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compile-32</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+						<configuration>
+							<compilerOutputDirectory>${project.build.directory}/objs/i686</compilerOutputDirectory>
+							<compilerStartOptions>
+								<compilerStartOption>-m32</compilerStartOption>
+							</compilerStartOptions>
+						</configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-64</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+						<configuration>
+							<compilerOutputDirectory>${project.build.directory}/objs/x86_64</compilerOutputDirectory>
+							<compilerStartOptions>
+								<compilerStartOption>-m64</compilerStartOption>
+							</compilerStartOptions>
+						</configuration>
+                    </execution>
+                </executions>
+            </plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>

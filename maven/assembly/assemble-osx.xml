@@ -44,10 +44,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <outputDirectory>${finalName}-workdir-osx</outputDirectory>
             <includes>
                 <include>w32api/**/*</include>
-				<include>w32api_jni/**/*</include>
-				<include>head/**/*</include>
-				<include>head_jni_BETA/**/*</include>
-            </includes>
-        </fileSet>
+			</includes>
+		</fileSet>
+		<fileSet>
+ 			<directory>${project.build.directory}/objs</directory>
+			<outputDirectory>${finalName}-workdir-osx/head</outputDirectory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</fileSet>
     </fileSets>
 </assembly>

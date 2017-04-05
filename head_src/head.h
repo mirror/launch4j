@@ -52,6 +52,9 @@
 #include <sys/stat.h>
 #include <io.h>
 #include <process.h>
+#include <time.h>
+#include <ctype.h>
+#include <jni.h>
 
 #define LAUNCH4j "Launch4j"
 #define VERSION "3.9"
@@ -71,8 +74,6 @@
 #define USE_32_AND_64_BIT_RUNTIME 3
 #define USE_32_BIT_RUNTIME 4
 #define INIT_RUNTIME_BITS 9
-
-#define KEY_WOW64_64KEY 0x0100
 
 #define HKEY_STR "HKEY"
 #define HKEY_CLASSES_ROOT_STR "HKEY_CLASSES_ROOT"
@@ -140,5 +141,13 @@ BOOL execute(const BOOL wait, DWORD *dwExitCode);
 const char* getJavaHome();
 const char* getMainClass();
 const char* getLauncherArgs();
+void setConsoleFlag();
+
+int getArgCount(const char* pcArgStr);
+void saveJvmOptions(const char *jrePath, const char *mainClass, const char *pcOpts);
+JNIEnv* createVm();
+int invokeMainClass(JNIEnv* psJNIEnv);
+void cleanupVm();
+BOOL executeVm(DWORD *dwExitCode);
 
 #endif // _LAUNCH4J_HEAD__INCLUDED_
