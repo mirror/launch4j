@@ -552,6 +552,15 @@ BOOL findJavaHome(char* path, const int jdkPreference)
 					"SOFTWARE\\JavaSoft\\JDK",
 					jdkPreference);
 
+    // IBM Java 1.8
+	if (search.foundJava == NO_JAVA_FOUND)
+	{
+		regSearchJreSdk("SOFTWARE\\IBM\\Java Runtime Environment",
+						"SOFTWARE\\IBM\\Java Development Kit",
+						jdkPreference);
+	}
+	
+	// IBM Java 1.7 and earlier
 	if (search.foundJava == NO_JAVA_FOUND)
 	{
 		regSearchJreSdk("SOFTWARE\\IBM\\Java2 Runtime Environment",
