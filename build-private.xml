@@ -64,18 +64,6 @@
 		<chmod file="launch4j" perm="+x" />
 	</target>
 
-	<target name="binutils-macosx-x86-10.8">
-		<antcall target="clean-binutils" />
-		<copy todir="${bin}">
-			<fileset dir="${bin}/bin-macosx-x86-10.8">
-				<include name="*" />
-			</fileset>
-		</copy>
-		<chmod file="${bin}/windres" perm="+x" />
-		<chmod file="${bin}/ld" perm="+x" />
-		<chmod file="launch4j" perm="+x" />
-	</target>
-
 	<target name="binutils-win32">
 		<antcall target="clean-binutils" />
 		<copy todir="${bin}">
@@ -126,13 +114,6 @@
 		</exec>
 	</target>
 	
-	<target name="dist.macosx-x86-10.8" depends="remove-sign4j, jar, webdocs" description="generate the x86 Mac OS X 10.8 distribution">
-		<antcall target="binutils-macosx-x86-10.8" />
-		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml --owner=0 --group=0 -f ${dist}/${ant.project.name}-${version}-macosx-x86-10.8.tgz ./launch4j" />
-		</exec>
-	</target>
-
 	<target name="dist.win32" depends="jar, webdocs, binutils-linux" description="generate the Windows distribution">
 		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${build}:./lib/xstream.jar" />
 		<launch4j configFile="./l4j/launch4j.xml" fileVersion="${versionNumber}" txtFileVersion="${version}" productVersion="${versionNumber}" txtProductVersion="${version}" />
@@ -170,7 +151,7 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="demo, webdocs, dist.win32, dist.macosx-x86, dist.macosx-x86-10.8, dist.linux, clean"
+	<target name="dist" depends="demo, webdocs, dist.win32, dist.macosx-x86, dist.linux, clean"
 		description="generate all distributions" />
 
 	<target name="clean-binutils">
