@@ -8,10 +8,11 @@
   <stayAlive>false</stayAlive>
   <jre>
     <minVersion>1.6.0</minVersion>
+    <maxVersion>1.8.9</maxVersion>
   </jre>
   <versionInfo>
     <fileDescription>Cross-platform Java application wrapper</fileDescription>
-    <copyright>Copyright (C) 2004, 2014 Grzegorz Kowal</copyright>
+    <copyright>Copyright (C) 2004, 2017 Grzegorz Kowal</copyright>
     <productName>launch4j</productName>
     <companyName>http://launch4j.sourceforge.net/</companyName>
     <internalName>GUI launcher</internalName>
