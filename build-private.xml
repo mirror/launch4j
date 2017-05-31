@@ -51,6 +51,18 @@
 		<chmod file="${bin}/ld" perm="+x" />
 		<chmod file="launch4j" perm="+x" />
 	</target>
+	
+	<target name="binutils-linux-x64">
+		<antcall target="clean-binutils" />
+		<copy todir="${bin}">
+			<fileset dir="${bin}/bin-linux64">
+				<include name="*" />
+			</fileset>
+		</copy>
+		<chmod file="${bin}/windres" perm="+x" />
+		<chmod file="${bin}/ld" perm="+x" />
+		<chmod file="launch4j" perm="+x" />
+	</target>
 
 	<target name="binutils-macosx-x86">
 		<antcall target="clean-binutils" />
@@ -107,6 +119,13 @@
 		</exec>
 	</target>
 
+	<target name="dist.linux-x64" depends="remove-sign4j, jar, webdocs" description="generate the Linux x64 distribution">
+		<antcall target="binutils-linux-x64" />
+		<exec executable="tar" failonerror="true">
+			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml --owner=0 --group=0 -f ${dist}/${ant.project.name}-${version}-linux-x64.tgz ./launch4j" />
+		</exec>
+	</target>
+
 	<target name="dist.macosx-x86" depends="remove-sign4j, jar, webdocs" description="generate the x86 Mac OS X distribution">
 		<antcall target="binutils-macosx-x86" />
 		<exec executable="tar" failonerror="true">
@@ -151,7 +170,7 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="demo, webdocs, dist.win32, dist.macosx-x86, dist.linux, clean"
+	<target name="dist" depends="demo, webdocs, dist.win32, dist.macosx-x86, dist.linux, dist.linux-x64, clean"
 		description="generate all distributions" />
 
 	<target name="clean-binutils">

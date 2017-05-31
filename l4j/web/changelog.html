@@ -1,5 +1,17 @@
 <h2>Changelog</h2>
 
+<h4>Changes in version 3.10 (31-05-2017)</h4>
+<ul class="changes">
+	<li>Log more regarding Java search and missing resources.</li>
+  	<li>Log resource file during build.</li>
+  	<li>Added basic Java 9 support (only major version is detected right now due to version scheme change).</li>
+  	<li>Ticket #145 Allow literal use of % in JRE options and set environment variables, use %% (blueskyhigh).</li>
+  	<li>Added Linux 64-bit binaries (Sebastian Bögl).</li>
+  	<li>Added IBM Java 1.8 support.</li>
+  	<li>JNI header: fixed a crash where launch4j would try to `free` non-heap memory (Alexander Floh).</li>
+  	<li>Ticket #160 Removed old Mac OS X package which caused problems on newer versions of the system.</li>
+</ul>
+
 <h4>Changes in version 3.9 (20-07-2016)</h4>
 <ul class="changes">
 	<li class="warn">Ticket #146 Fixed java version check where the update number was greater than 99 (e.g. 1.8.0_101).</li>
