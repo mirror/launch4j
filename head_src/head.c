@@ -828,7 +828,14 @@ BOOL bundledJreSearch(const char *exePath, const int pathLen)
 {
     debugAll("bundledJreSearch()\n");
 	char tmpPath[_MAX_PATH] = {0};
+    BOOL is64BitJre = loadBool(BUNDLED_JRE_64_BIT);
 
+    if (!wow64 && is64BitJre)
+    {
+        debug("Bundled JRE:\tCannot use 64-bit runtime on 32-bit OS.\n");
+        return FALSE;
+    }
+    
 	if (loadString(JRE_PATH, tmpPath))
 	{
 		char jrePath[MAX_ARGS] = {0};
@@ -849,9 +856,7 @@ BOOL bundledJreSearch(const char *exePath, const int pathLen)
 
 		if (isLauncherPathValid(launcher.cmd))
 		{
-			search.foundJava = (wow64 && loadBool(BUNDLED_JRE_64_BIT))
-				? FOUND_BUNDLED | KEY_WOW64_64KEY
-				: FOUND_BUNDLED;
+            search.foundJava = is64BitJre ? FOUND_BUNDLED | KEY_WOW64_64KEY : FOUND_BUNDLED;
 			strcpy(search.foundJavaHome, launcher.cmd);
 			return TRUE;
 		}
