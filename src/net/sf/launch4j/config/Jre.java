@@ -54,8 +54,8 @@ public class Jre implements IValidatable {
 	public static final String ARGS = "jvmArgs";
 
 	// __________________________________________________________________________________
-	public static final String VERSION_PATTERN = "(\\d\\.){2}\\d(_\\d+)?";
-
+	public static final String VERSION_PATTERN = "((\\d\\.){2}\\d(_\\d+)?)|(\\d+(\\.\\d+)*)";
+	
 	public static final String JDK_PREFERENCE_JRE_ONLY = "jreOnly";
 	public static final String JDK_PREFERENCE_PREFER_JRE = "preferJre";
 	public static final String JDK_PREFERENCE_PREFER_JDK = "preferJdk";
@@ -116,7 +116,7 @@ public class Jre implements IValidatable {
 		if (!Validator.isEmpty(maxVersion)) {
 			Validator.checkFalse(Validator.isEmpty(minVersion),
 					"jre.minVersion", Messages.getString("Jre.specify.min.version"));
-			Validator.checkTrue(minVersion.compareTo(maxVersion) < 0,
+			Validator.checkTrue(JreVersion.parseString(minVersion).compareTo(JreVersion.parseString(maxVersion)) < 0,
 					"jre.maxVersion", Messages.getString("Jre.max.greater.than.min"));
 		}
 		Validator.checkTrue(initialHeapSize == null || maxHeapSize != null,
