@@ -39,11 +39,14 @@ public class JreVersion implements Comparable<JreVersion> {
 		} else {
 			// java <= 1.8 version schema
 			ret.x1 = first;
-
-			ret.x2 = Integer.parseInt(parts[1]);
-			ret.x3 = Integer.parseInt(parts[2]);
-			if (parts.length == 4) {
-				ret.x4 = Integer.parseInt(parts[3]);
+			if (parts.length >= 2) {
+				ret.x2 = Integer.parseInt(parts[1]);
+				if (parts.length >= 3) {
+					ret.x3 = Integer.parseInt(parts[2]);
+					if (parts.length == 4) {
+						ret.x4 = Integer.parseInt(parts[3]);
+					}
+				}
 			}
 		}
 

@@ -54,7 +54,7 @@ public class Jre implements IValidatable {
 	public static final String ARGS = "jvmArgs";
 
 	// __________________________________________________________________________________
-	public static final String VERSION_PATTERN = "((\\d\\.){2}\\d(_\\d+)?)|(\\d+(\\.\\d+)*)";
+	public static final String VERSION_PATTERN = "((\\d\\.){2}\\d(_\\d+)?)|[1-9][0-9]*(\\.\\d){0,2}";
 	
 	public static final String JDK_PREFERENCE_JRE_ONLY = "jreOnly";
 	public static final String JDK_PREFERENCE_PREFER_JRE = "preferJre";
