@@ -487,10 +487,6 @@ BOOL isJavaHomeValid(const char* keyName, const int searchType)
 				path[i] = buffer[i];
 			} while (path[i++] != 0);
 			
-			if (searchType & FOUND_SDK)
-			{
-				appendPath(path, "jre");
-			}
 			valid = isLauncherPathValid(path);
 		}
 		RegCloseKey(hKey);
