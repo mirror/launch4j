@@ -54,7 +54,7 @@
 #include <process.h>
 
 #define LAUNCH4j "Launch4j"
-#define VERSION "3.11"
+#define VERSION "3.12"
 
 #define NO_JAVA_FOUND 0
 #define FOUND_JRE 1

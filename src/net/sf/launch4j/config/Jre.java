@@ -54,7 +54,7 @@ public class Jre implements IValidatable {
 	public static final String ARGS = "jvmArgs";
 
 	// __________________________________________________________________________________
-	public static final String VERSION_PATTERN = "((\\d\\.){2}\\d(_\\d+)?)|[1-9][0-9]*(\\.\\d){0,2}";
+	public static final String VERSION_PATTERN = "((\\d\\.){2}\\d(_\\d{1,3})?)|[1-9][0-9]{0,2}(\\.\\d{1,3}){0,2}";
 	
 	public static final String JDK_PREFERENCE_JRE_ONLY = "jreOnly";
 	public static final String JDK_PREFERENCE_PREFER_JRE = "preferJre";
@@ -98,9 +98,9 @@ public class Jre implements IValidatable {
 	private List<String> options;
 
 	public void checkInvariants() {
-		Validator.checkOptString(minVersion, 10, VERSION_PATTERN,
+		Validator.checkOptString(minVersion, 20, VERSION_PATTERN,
 				"jre.minVersion", Messages.getString("Jre.min.version"));
-		Validator.checkOptString(maxVersion, 10, VERSION_PATTERN,
+		Validator.checkOptString(maxVersion, 20, VERSION_PATTERN,
 				"jre.maxVersion", Messages.getString("Jre.max.version"));
 		if (Validator.isEmpty(path)) {
 			Validator.checkFalse(bundledJre64Bit, "jre.bundledJre64Bit",
