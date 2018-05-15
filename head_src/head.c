@@ -312,23 +312,31 @@ BOOL regQueryValue(const char* regPath, unsigned char* buffer,
 	return result;
 }
 
-int findNextVersionPart(const char* startAt) {
-	if (startAt == NULL || strlen(startAt) == 0) {
+int findNextVersionPart(const char* startAt)
+{
+	if (startAt == NULL || strlen(startAt) == 0)
+    {
 		return 0;
 	}
 
 	char* firstSeparatorA = strchr(startAt, '.');
 	char* firstSeparatorB = strchr(startAt, '_');
 	char* firstSeparator;
-	if (firstSeparatorA == NULL) {
+	if (firstSeparatorA == NULL)
+    {
 		firstSeparator = firstSeparatorB;
-	} else if (firstSeparatorB == NULL) {
+	}
+    else if (firstSeparatorB == NULL)
+    {
 		firstSeparator = firstSeparatorA;
-	} else {
+	}
+    else
+    {
 		firstSeparator = min(firstSeparatorA, firstSeparatorB);
 	}
 
-	if (firstSeparator == NULL) {
+	if (firstSeparator == NULL)
+    {
 		return strlen(startAt);
 	}
 
@@ -342,10 +350,11 @@ int findNextVersionPart(const char* startAt) {
  * Due to different version schemas <=8 vs. >=9 it will "normalize" versions to 1 format
  * so we can directly compare old and new versions.
  */
-#define JRE_VER_MAX_DIGITS_PER_PART 3
-void formatJavaVersion(char* version, const char* originalVersion) {
+void formatJavaVersion(char* version, const char* originalVersion)
+{
 	strcpy(version, "");
-	if (originalVersion == NULL || strlen(originalVersion) == 0) {
+	if (originalVersion == NULL || strlen(originalVersion) == 0)
+    {
 		return;
 	}
 
@@ -353,51 +362,65 @@ void formatJavaVersion(char* version, const char* originalVersion) {
 	int i;
 	char* pos = (char*) originalVersion;
 	int curPartLen;
-	while ((curPartLen = findNextVersionPart(pos)) > 0) {
+
+	while ((curPartLen = findNextVersionPart(pos)) > 0)
+    {
 		char number[curPartLen + 1];
 		memset(number, 0, curPartLen + 1);
 		strncpy(number, pos, curPartLen);
 
-		if (partsAdded == 0 && (curPartLen != 1 || number[0] != '1')) {
+		if (partsAdded == 0 && (curPartLen != 1 || number[0] != '1'))
+        {
 			// NOTE: When it's java 9+ we'll add "1" as the first part of the version
 			strcpy(version, "1");
 			partsAdded++;
 		}
 
-		if (partsAdded < 3) {
-			if (partsAdded > 0) {
+		if (partsAdded < 3)
+        {
+			if (partsAdded > 0)
+            {
 				strcat(version, ".");
 			}
 			for (i = 0;
 					(partsAdded > 0)
 							&& (i < JRE_VER_MAX_DIGITS_PER_PART - strlen(number));
-					i++) {
+					i++)
+            {
 				strcat(version, "0");
 			}
 			strcat(version, number);
-		} else if (partsAdded == 3) {
+		}
+        else if (partsAdded == 3)
+        {
 			// add as an update
 			strcat(version, "_");
-			for (i = 0; i < JRE_VER_MAX_DIGITS_PER_PART - strlen(number); i++) {
+			for (i = 0; i < JRE_VER_MAX_DIGITS_PER_PART - strlen(number); i++)
+            {
 				strcat(version, "0");
 			}
 			strcat(version, number);
-		} else if (partsAdded == 4) {
-			// TODO: Add warning
+		}
+        else if (partsAdded >= 4)
+        {
+			debug("Warning:\tformatJavaVersion() too many parts added.\n");
 			break;
 		}
 		partsAdded++;
 
 		pos += curPartLen + 1;
-		if (pos >= originalVersion + strlen(originalVersion)) {
+		if (pos >= originalVersion + strlen(originalVersion))
+        {
 			break;
 		}
 	}
 
-	for (i = partsAdded; i < 3; i++) {
+	for (i = partsAdded; i < 3; i++)
+    {
 		strcat(version, ".");
 		int j;
-		for (j = 0; j < JRE_VER_MAX_DIGITS_PER_PART; j++) {
+		for (j = 0; j < JRE_VER_MAX_DIGITS_PER_PART; j++)
+        {
 			strcat(version, "0");
 		}
 	}
