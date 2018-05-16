@@ -56,7 +56,7 @@ import org.w3c.dom.ls.LSSerializer;
 import net.sf.launch4j.Util;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  * @author Copyright (C) 2014 Grzegorz Kowal
@@ -70,7 +70,7 @@ public class ConfigPersister {
 	private File _configPath;
 
 	private ConfigPersister() {
-		_xstream = new XStream(new StaxDriver());
+		_xstream = new XStream(new DomDriver());
 		XStream.setupDefaultSecurity(_xstream);
 		_xstream.allowTypesByWildcard(new String[] {
 		    "net.sf.launch4j.config.*"
