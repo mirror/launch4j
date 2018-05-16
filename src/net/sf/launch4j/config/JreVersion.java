@@ -26,7 +26,7 @@ public class JreVersion implements Comparable<JreVersion> {
 
 		String[] parts = versionStr.split("[\\._]");
 		int first = Integer.parseInt(parts[0]);
-		if (first >= 9) {
+		if (first > 1) {
 			// java 9+ version schema
 			ret.x1 = 1;
 			ret.x2 = first;
@@ -56,10 +56,10 @@ public class JreVersion implements Comparable<JreVersion> {
 	@Override
 	public String toString() {
 		if (x2 >= 9) {
-			return "" + x2 + "." + x3 + "." + x4;
+			return x2 + "." + x3 + "." + x4;
 		}
 
-		return "" + x1 + "." + x2 + "." + x3 + (x4 > 0 ? "_" + x4 : "");
+		return x1 + "." + x2 + "." + x3 + (x4 > 0 ? "_" + x4 : "");
 	}
 
 	@Override
