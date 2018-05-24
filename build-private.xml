@@ -64,6 +64,18 @@
 		<chmod file="launch4j" perm="+x" />
 	</target>
 
+    <target name="binutils-linux-armv6hf">
+		<antcall target="clean-binutils" />
+		<copy todir="${bin}">
+			<fileset dir="${bin}/bin-linuxarmv6hf">
+				<include name="*" />
+			</fileset>
+		</copy>
+		<chmod file="${bin}/windres" perm="+x" />
+		<chmod file="${bin}/ld" perm="+x" />
+		<chmod file="launch4j" perm="+x" />
+	</target>
+
 	<target name="binutils-macosx-x86">
 		<antcall target="clean-binutils" />
 		<copy todir="${bin}">
@@ -126,6 +138,13 @@
 		</exec>
 	</target>
 
+    <target name="dist.linux-armv6hf" depends="remove-sign4j, jar, webdocs" description="generate the Linux armv6hf distribution">
+		<antcall target="binutils-linux-armv6hf" />
+		<exec executable="tar" failonerror="true">
+			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml --owner=0 --group=0 -f ${dist}/${ant.project.name}-${version}-linux-armv6hf.tgz ./launch4j" />
+		</exec>
+	</target>
+
 	<target name="dist.macosx-x86" depends="remove-sign4j, jar, webdocs" description="generate the x86 Mac OS X distribution">
 		<antcall target="binutils-macosx-x86" />
 		<exec executable="tar" failonerror="true">
@@ -170,7 +189,7 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="demo, webdocs, dist.win32, dist.macosx-x86, dist.linux, dist.linux-x64, clean"
+	<target name="dist" depends="demo, webdocs, dist.win32, dist.macosx-x86, dist.linux, dist.linux-x64, dist.linux-armv6hf, clean"
 		description="generate all distributions" />
 
 	<target name="clean-binutils">

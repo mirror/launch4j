@@ -237,6 +237,7 @@
 							<descriptors>
 								<descriptor>assembly/assemble-linux.xml</descriptor>
 								<descriptor>assembly/assemble-linux64.xml</descriptor>
+                                <descriptor>assembly/assemble-linuxarmv6hf.xml</descriptor>
 								<descriptor>assembly/assemble-win32.xml</descriptor>
 								<descriptor>assembly/assemble-mac.xml</descriptor>
 							</descriptors>
