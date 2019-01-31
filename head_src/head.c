@@ -2,7 +2,7 @@
 	Launch4j (http://launch4j.sourceforge.net/)
 	Cross-platform Java application wrapper for creating Windows native executables.
 
-	Copyright (c) 2004, 2015 Grzegorz Kowal,
+	Copyright (c) 2004, 2019 Grzegorz Kowal,
 							 Ian Roberts (jdk preference patch)
 							 Sylvain Mina (single instance patch)
 
@@ -914,7 +914,7 @@ void setWorkingDirectory(const char *exePath, const int pathLen)
 BOOL bundledJreSearch(const char *exePath, const int pathLen)
 {
     debugAll("bundledJreSearch()\n");
-	char tmpPath[_MAX_PATH] = {0};
+	char jrePathSpec[_MAX_PATH] = {0};
     BOOL is64BitJre = loadBool(BUNDLED_JRE_64_BIT);
 
     if (!wow64 && is64BitJre)
@@ -923,30 +923,36 @@ BOOL bundledJreSearch(const char *exePath, const int pathLen)
         return FALSE;
     }
     
-	if (loadString(JRE_PATH, tmpPath))
+	if (loadString(JRE_PATH, jrePathSpec))
 	{
 		char jrePath[MAX_ARGS] = {0};
-		expandVars(jrePath, tmpPath, exePath, pathLen);
-		debug("Bundled JRE:\t%s\n", jrePath);
+		expandVars(jrePath, jrePathSpec, exePath, pathLen);
+		debug("Bundled JRE(s):\t%s\n", jrePath);
+        char* path = strtok(jrePath, ";");
+        
+        while (path != NULL)
+        {
+            if (*path == '\\' || (*path != '\0' && *(path + 1) == ':'))
+    		{
+    			// Absolute
+    			strcpy(launcher.cmd, path);
+    		}
+    		else
+    		{
+    			// Relative
+    			strncpy(launcher.cmd, exePath, pathLen);
+    			appendPath(launcher.cmd, path);
+    		}
 
-		if (jrePath[0] == '\\' || jrePath[1] == ':')
-		{
-			// Absolute
-			strcpy(launcher.cmd, jrePath);
-		}
-		else
-		{
-			// Relative
-			strncpy(launcher.cmd, exePath, pathLen);
-			appendPath(launcher.cmd, jrePath);
-		}
+    		if (isLauncherPathValid(launcher.cmd))
+    		{
+                search.foundJava = is64BitJre ? FOUND_BUNDLED | KEY_WOW64_64KEY : FOUND_BUNDLED;
+    			strcpy(search.foundJavaHome, launcher.cmd);
+    			return TRUE;
+    		}
 
-		if (isLauncherPathValid(launcher.cmd))
-		{
-            search.foundJava = is64BitJre ? FOUND_BUNDLED | KEY_WOW64_64KEY : FOUND_BUNDLED;
-			strcpy(search.foundJavaHome, launcher.cmd);
-			return TRUE;
-		}
+            path = strtok(NULL, ";");
+        }
     }
 
     return FALSE;
