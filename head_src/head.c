@@ -932,16 +932,33 @@ BOOL bundledJreSearch(const char *exePath, const int pathLen)
         
         while (path != NULL)
         {
-            if (*path == '\\' || (*path != '\0' && *(path + 1) == ':'))
+            char pathNoBin[_MAX_PATH] = {0};
+            char *lastBackslash = strrchr(path, '\\');
+            char *lastSlash = strrchr(path, '/');
+
+            if (lastBackslash != NULL && strcasecmp(lastBackslash, "\\bin") == 0)
+            {
+                strncpy(pathNoBin, path, lastBackslash - path);
+            }
+            else if (lastSlash != NULL && strcasecmp(lastSlash, "/bin") == 0)
+            {
+                strncpy(pathNoBin, path, lastSlash - path);
+            }
+            else
+            {
+                strcpy(pathNoBin, path);
+            }
+
+            if (*pathNoBin == '\\' || (*pathNoBin != '\0' && *(pathNoBin + 1) == ':'))
     		{
     			// Absolute
-    			strcpy(launcher.cmd, path);
+    			strcpy(launcher.cmd, pathNoBin);
     		}
     		else
     		{
     			// Relative
     			strncpy(launcher.cmd, exePath, pathLen);
-    			appendPath(launcher.cmd, path);
+    			appendPath(launcher.cmd, pathNoBin);
     		}
 
     		if (isLauncherPathValid(launcher.cmd))
