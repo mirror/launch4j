@@ -321,8 +321,13 @@ int findNextVersionPart(const char* startAt)
 
 	char* firstSeparatorA = strchr(startAt, '.');
 	char* firstSeparatorB = strchr(startAt, '_');
+	char* firstSeparatorC = strchr(startAt, 'u');
 	char* firstSeparator;
-	if (firstSeparatorA == NULL)
+    if (firstSeparatorC != NULL)
+    {
+		firstSeparator = firstSeparatorC;
+	}
+    else if (firstSeparatorA == NULL)
     {
 		firstSeparator = firstSeparatorB;
 	}
