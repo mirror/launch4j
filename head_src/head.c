@@ -1111,7 +1111,7 @@ void setEnvironmentVariables(const char *exePath, const int pathLen)
 	}
 }
 
-void setMainClassAndClassPath(const char *exePath, const int pathLen)
+void setMainClassAndClassPath(const char *exePath, const int pathLen, BOOL jni)
 {
 	char classPath[MAX_ARGS] = {0};
 	char expandedClassPath[MAX_ARGS] = {0};
@@ -1179,7 +1179,9 @@ void setMainClassAndClassPath(const char *exePath, const int pathLen)
 
 		*(launcher.args + strlen(launcher.args) - 1) = 0;
 		strcat(launcher.args, "\" ");
-		strcat(launcher.args, launcher.mainClass);
+		if (!jni) {
+			strcat(launcher.args, launcher.mainClass);
+		}
 	}
 	else if (wrapper)
 	{
@@ -1194,17 +1196,18 @@ void setMainClassAndClassPath(const char *exePath, const int pathLen)
         appendPath(launcher.args, jar);
        	strcat(launcher.args, "\"");
     }
+    
 }
 
-void setCommandLineArgs(const char *lpCmdLine)
+void setCommandLineArgs(const char *lpCmdLine, BOOL jni)
 {
+	const char *target = jni? launcher.mainClass: launcher.args;
 	char tmp[MAX_ARGS] = {0};
-
 	// Constant command line arguments
 	if (loadString(CMD_LINE, tmp))
 	{
-		strcat(launcher.args, " ");
-		strcat(launcher.args, tmp);
+		strcat(target, " ");
+		strcat(target, tmp);
 	}
 
 	// Command line arguments
@@ -1226,13 +1229,13 @@ void setCommandLineArgs(const char *lpCmdLine)
 		}
 		if (*tmp)
 		{
-			strcat(launcher.args, " ");
-			strcat(launcher.args, tmp);
+			strcat(target, " ");
+			strcat(target, tmp);
 		}
 	}
 }
 
-int prepare(const char *lpCmdLine)
+int prepare(const char *lpCmdLine, BOOL jni)
 {
 	if (!initGlobals())
 	{
@@ -1272,7 +1275,6 @@ int prepare(const char *lpCmdLine)
 	}
 
 	setWorkingDirectory(exePath, pathLen);
-    
 	if (!jreSearch(exePath, pathLen))
     {
 		return FALSE;
@@ -1282,7 +1284,6 @@ int prepare(const char *lpCmdLine)
 	{
 		return FALSE;
 	}
-
 	setEnvironmentVariables(exePath, pathLen);
 	processPriority = loadInt(PRIORITY_CLASS);
 	appendLauncher(launcher.cmd);
@@ -1291,8 +1292,8 @@ int prepare(const char *lpCmdLine)
 	char jvmOptions[MAX_ARGS] = {0};
 	setJvmOptions(jvmOptions, exePath);
 	expandVars(launcher.args, jvmOptions, exePath, pathLen);
-	setMainClassAndClassPath(exePath, pathLen);
-	setCommandLineArgs(lpCmdLine);
+	setMainClassAndClassPath(exePath, pathLen, jni);
+	setCommandLineArgs(lpCmdLine, jni);
 
 	debug("Launcher:\t%s\n", launcher.cmd);
 	debug("Launcher args:\t%s\n", launcher.args);
