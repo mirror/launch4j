@@ -321,8 +321,13 @@ int findNextVersionPart(const char* startAt)
 
 	char* firstSeparatorA = strchr(startAt, '.');
 	char* firstSeparatorB = strchr(startAt, '_');
+	char* firstSeparatorC = strchr(startAt, 'u');
 	char* firstSeparator;
-	if (firstSeparatorA == NULL)
+    if (firstSeparatorC != NULL)
+    {
+		firstSeparator = firstSeparatorC;
+	}
+    else if (firstSeparatorA == NULL)
     {
 		firstSeparator = firstSeparatorB;
 	}
@@ -490,9 +495,23 @@ BOOL isJavaHomeValid(const char* keyName, const int searchType)
 	BOOL valid = FALSE;
 	HKEY hKey;
 	char path[_MAX_PATH] = {0};
+	
+	char searchKeyName[_MAX_PATH] = {0};
+	char searchValueName[_MAX_PATH] = {0};
+	if(strstr(keyName, "AdoptOpenJDK") != NULL)
+	{
+		strcpy(searchValueName, "Path");
+		strcpy(searchKeyName, keyName);
+		appendPath(searchKeyName, "hotspot\\MSI");		
+	}
+	else 
+	{
+		strcpy(searchValueName, "JavaHome");
+		strcpy(searchKeyName, keyName);
+	}
 
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-			keyName,
+			searchKeyName,
 			0,
             KEY_READ | (searchType & KEY_WOW64_64KEY),
 			&hKey) == ERROR_SUCCESS)
@@ -501,7 +520,7 @@ BOOL isJavaHomeValid(const char* keyName, const int searchType)
 		unsigned long bufferlength = _MAX_PATH;
 		unsigned long datatype;
 
-		if (RegQueryValueEx(hKey, "JavaHome", NULL, &datatype, buffer,
+		if (RegQueryValueEx(hKey, searchValueName, NULL, &datatype, buffer,
 				&bufferlength) == ERROR_SUCCESS)
 		{
 			int i = 0;
@@ -652,6 +671,14 @@ BOOL findJavaHome(char* path, const int jdkPreference)
 	{
 		regSearchJreSdk("SOFTWARE\\IBM\\Java2 Runtime Environment",
 						"SOFTWARE\\IBM\\Java Development Kit",
+						jdkPreference);
+	}
+	
+	// AdoptOpenJDK
+	if (search.foundJava == NO_JAVA_FOUND)
+	{
+		regSearchJreSdk("SOFTWARE\\AdoptOpenJDK\\JRE",
+						"SOFTWARE\\AdoptOpenJDK\\JDK",
 						jdkPreference);
 	}
 	
