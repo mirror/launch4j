@@ -95,7 +95,7 @@ public class Config implements IValidatable {
 	private String supportUrl;
 	private boolean stayAlive;
 	private boolean restartOnCrash;
-	private Integer restartOnStatus;
+	private int restartOnStatus;
 	private File manifest;
 	private File icon;
 	private List<String> variables;
@@ -359,11 +359,11 @@ public class Config implements IValidatable {
 	}
 
 	/** Restart the application whenever the java application returns the status given here **/
-	public Integer getRestartOnStatus() {
+	public int getRestartOnStatus() {
 		return restartOnStatus;
 	}
 
-	public void setRestartOnStatus(Integer status) {
+	public void setRestartOnStatus(int status) {
 		if(status < 5 && status > 255) throw new NumberFormatException("Restart-Status needs to be between 5 and 255!");
 		restartOnStatus = status;
 	}
