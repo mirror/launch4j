@@ -86,11 +86,11 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-		if ((restartOnCrash && dwExitCode != 0) || dwExitCode == restartOnStatus)
+		if (dwExitCode != 0 && (restartOnCrash || dwExitCode == restartOnStatus))
 		{
 	  		debug("Exit code:\t%d, restarting the application!\n", dwExitCode);
   		}
-	} while ((restartOnCrash && dwExitCode != 0) || dwExitCode == restartOnStatus);
+	} while (dwExitCode != 0 && (restartOnCrash || dwExitCode == restartOnStatus));
 
 	debug("Exit code:\t%d\n", dwExitCode);
 	closeLogFile();
