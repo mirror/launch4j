@@ -149,7 +149,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 			DispatchMessage(&msg);
 		}
 
-        int restartOnStatus = loadInt(RESTART_ON_STATUS);
+		int restartOnStatus = loadInt(RESTART_ON_STATUS);
 
 		if (dwExitCode != 0 && (restartOnCrash || dwExitCode == restartOnStatus))
 		{
