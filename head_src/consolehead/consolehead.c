@@ -73,6 +73,7 @@ int main(int argc, char* argv[])
 	}
 
 	restartOnCrash = loadBool(RESTART_ON_CRASH);
+	int restartOnStatus = loadInt(RESTART_ON_STATUS); // atoi is returning 0 if not an int
 	DWORD dwExitCode;
 
 	do
@@ -85,11 +86,11 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-		if (restartOnCrash && dwExitCode != 0)
+		if ((restartOnCrash && dwExitCode != 0) || dwExitCode == restartOnStatus)
 		{
 	  		debug("Exit code:\t%d, restarting the application!\n", dwExitCode);
   		}
-	} while (restartOnCrash && dwExitCode != 0);
+	} while ((restartOnCrash && dwExitCode != 0) || dwExitCode == restartOnStatus);
 
 	debug("Exit code:\t%d\n", dwExitCode);
 	closeLogFile();
