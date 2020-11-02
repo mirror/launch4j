@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 	}
 
 	restartOnCrash = loadBool(RESTART_ON_CRASH);
-	int restartOnStatus = loadInt(RESTART_ON_STATUS); // atoi is returning 0 if not an int
+	int restartOnStatus = loadInt(RESTART_ON_STATUS);
 	DWORD dwExitCode;
 
 	do
