@@ -160,8 +160,6 @@ public class Config implements IValidatable {
 		if (isJniApplication()) {
 			Validator.checkTrue(".".equals(chdir), "chdir",
 					"Only '.' is allowed in change directory.");
-			Validator.checkTrue(Validator.isEmpty(cmdLine), "cmdLine",
-					"Constant command line arguments not supported.");
 			Validator.checkFalse(stayAlive, "stayAlive",
 					"Stay alive option is not used in JNI, this is the default behavior.");
 			Validator.checkFalse(restartOnCrash, "restartOnCrash",

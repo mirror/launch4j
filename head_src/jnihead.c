@@ -61,6 +61,13 @@ void saveJvmOptions(const char *jrePath, const char *mainClass, const char *pcOp
 	strcpy(g_rgcCurrJrePth, jrePath);
 	strcpy(g_rgcMnCls, mainClass);
 
+	/* Extract main class from arguments */
+	char *delim = strpbrk(g_rgcMnCls, g_pcSep);
+	if (delim != NULL) {
+		*delim = '\0';
+		strcpy(g_rgcMnClsArgs, delim + 1);
+	}
+
 	char 				rgcOptCpy[MAX_ARGS] = {0};
 	int 				iArgCnt = 0, iCurrArg = 0, iSkipArgCnt = 0;
 	char 				*pcCurrOpt;
