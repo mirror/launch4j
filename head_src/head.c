@@ -911,6 +911,19 @@ void setWorkingDirectory(const char *exePath, const int pathLen)
 	}
 }
 
+void removeChar(char *src, const char toRemove)
+{
+    char* dst = src;
+
+    do
+	{
+		if (*src != toRemove)
+		{
+            *dst++ = *src;
+        }
+	} while (*src++ != 0);
+}
+
 BOOL bundledJreSearch(const char *exePath, const int pathLen)
 {
     debugAll("bundledJreSearch()\n");
@@ -948,6 +961,8 @@ BOOL bundledJreSearch(const char *exePath, const int pathLen)
             {
                 strcpy(pathNoBin, path);
             }
+            
+            removeChar(pathNoBin, '"');
 
             if (*pathNoBin == '\\' || (*pathNoBin != '\0' && *(pathNoBin + 1) == ':'))
     		{
