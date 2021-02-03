@@ -297,10 +297,25 @@ may be absolute paths or relative to the configuration file path.
 	<blockquote>
         <dl>
         	<dt>&lt;path&gt;</dt>
-        	<dd>Run if bundled JRE and javaw.exe are present, otherwise stop with error.</dd>
+        	<dd>Run if bundled JRE and javaw.exe are present, otherwise stop with error.
+        	Starting with version 3.13 it is possible to use the JAVA_HOME or PATH environment 
+        	variables to search for a runtime that was installed without adding registry keys
+        	used for searching JREs. This can be particularly useful in combination with 
+        	&lt;minVersion&gt;&nbsp; and &lt;bundledJreAsFallback&gt;. If a registered
+        	runtime is not found, then as a fallback option launch4j will try to locate
+        	it using the environment variables. However, the minVersion does not apply 
+        	in such case.<br /><br />
+        	Bundled example: &lt;path&gtjre&lt;/path&gt;<br />
+            Fallback example: &lt;path&gt;%JAVA_HOME%;%PATH%&lt;/path&gt;
+        	</dd>
             <dt>&lt;path&gt; + &lt;minVersion&gt;&nbsp; [+ &lt;maxVersion&gt;]</dt>
             <dd>Use bundled JRE first, if it cannot be located search for Java,
         		if that fails display error message and open the Java download page.
+        	</dd>
+        	<dt>&lt;path&gt; + &lt;minVersion&gt;&nbsp; [+ &lt;maxVersion&gt;] + &lt;bundledJreAsFallback&gt;</dt>
+            <dd>Search for Java, if an appropriate version cannot be found 
+         	   try &lt;path&gt; as fallback option without version check.
+               If that fails display error message and open the Java download page.
         	</dd>
             <dt>&lt;minVersion&gt;&nbsp; [+ &lt;maxVersion&gt;]</dt>
             <dd>Search for Java, if an appropriate version cannot be found display
