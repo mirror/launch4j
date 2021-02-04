@@ -3,15 +3,15 @@
 		launch4j private build file
 	</description>
 	<property name="src" location="src" />
+	<property file="${src}/launch4j.properties"/>
 	<property name="lib" location="lib" />
 	<property name="bin" location="bin" />
 	<property name="build" location="build" />
 	<property name="build.web" location="web" />
 	<property name="web.src" location="l4j/web" />
-	<property name="dist" location="${user.home}/dist/${ant.project.name}" />
+	<property name="dist" location="../dist/${version}" />
 	<property name="jar" location="./${ant.project.name}.jar" />
 	<property name="launch4j.dir" location="." />
-	<property file="${src}/launch4j.properties"/>
 
 	<path id="dist.classpath">
 		<pathelement path="${build}" />
@@ -85,16 +85,12 @@
 		</copy>
 	</target>
 	
-	<target name="remove-sign4j">
-		<delete file="sign4j/sign4j.exe" />
-	</target>
-
 	<target name="jar" depends="compile" description="create jar">
 		<fileset dir="${lib}" id="lib.dist.fileset">
 			<include name="**/*.jar" />
 			<exclude name="**/ant.jar" />
 		</fileset>
-		<pathconvert pathsep=" " property="dist.classpath" refid="lib.dist.fileset">
+		<pathconvert pathsep=" " dirsep="/" property="dist.classpath" refid="lib.dist.fileset">
 			<map from="${lib}" to="./lib" />
 		</pathconvert>
 		<!-- Put everything in ${build} into a jar file -->
@@ -107,39 +103,99 @@
 		</jar>
 	</target>
 
-	<target name="demo" depends="jar, binutils-linux" description="build the demos">
+	<target name="demo" depends="jar, binutils-win32" description="build the demos">
 		<ant dir="./demo/ConsoleApp" inheritAll="false" />
 		<ant dir="./demo/SimpleApp" inheritAll="false" />
 	</target>
 
-	<target name="dist.linux" depends="remove-sign4j, jar, webdocs" description="generate the Linux distribution">
+	<target name="dist.linux" depends="jar, webdocs" description="generate the Linux distribution">
 		<antcall target="binutils-linux" />
-		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml --owner=0 --group=0 -f ${dist}/${ant.project.name}-${version}-linux.tgz ./launch4j" />
-		</exec>
+		<tar destfile="${dist}/${ant.project.name}-${version}-linux.tgz" compression="gzip">
+			<tarfileset dir="." prefix="/launch4j" filemode="755">
+				<include name="launch4j"/>
+				<include name="launch4jc"/>
+			    <include name="bin/ld"/>
+				<include name="bin/windres"/>
+			</tarfileset>
+			<tarfileset dir="." prefix="/launch4j">
+			    <include name="**"/>
+				<exclude name="launch4j"/>
+				<exclude name="launch4jc"/>
+				<exclude name="bin/ld"/>
+				<exclude name="bin/windres"/>
+			    <exclude name="bin/bin*/**"/>
+				<exclude name="**/build/**"/>
+				<exclude name="**/*.bat"/>
+				<exclude name="**/*.exe"/>
+				<exclude name="head_src/**/*.layout"/>
+				<exclude name="l4j/**"/>
+				<exclude name="sign4j/**"/>
+				<exclude name="build-private.xml"/>
+			</tarfileset>
+		</tar>
 	</target>
 
-	<target name="dist.linux-x64" depends="remove-sign4j, jar, webdocs" description="generate the Linux x64 distribution">
+	<target name="dist.linux-x64" depends="jar, webdocs" description="generate the Linux x64 distribution">
 		<antcall target="binutils-linux-x64" />
-		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml --owner=0 --group=0 -f ${dist}/${ant.project.name}-${version}-linux-x64.tgz ./launch4j" />
-		</exec>
+		<tar destfile="${dist}/${ant.project.name}-${version}-linux-x64.tgz" compression="gzip">
+			<tarfileset dir="." prefix="/launch4j" filemode="755">
+				<include name="launch4j"/>
+				<include name="launch4jc"/>
+			    <include name="bin/ld"/>
+				<include name="bin/windres"/>
+			</tarfileset>
+			<tarfileset dir="." prefix="/launch4j">
+			    <include name="**"/>
+				<exclude name="launch4j"/>
+				<exclude name="launch4jc"/>
+				<exclude name="bin/ld"/>
+				<exclude name="bin/windres"/>
+			    <exclude name="bin/bin*/**"/>
+				<exclude name="**/build/**"/>
+				<exclude name="**/*.bat"/>
+				<exclude name="**/*.exe"/>
+				<exclude name="head_src/**/*.layout"/>
+				<exclude name="l4j/**"/>
+				<exclude name="sign4j/**"/>
+				<exclude name="build-private.xml"/>
+			</tarfileset>
+		</tar>
 	</target>
 
-	<target name="dist.macosx-x86" depends="remove-sign4j, jar, webdocs" description="generate the x86 Mac OS X distribution">
+	<target name="dist.macosx-x86" depends="jar, webdocs" description="generate the x86 Mac OS X distribution">
 		<antcall target="binutils-macosx-x86" />
-		<exec executable="tar" failonerror="true">
-			<arg line="-czC .. --exclude build --exclude bin/bin* --exclude CVS --exclude .cvsignore --exclude *.bat --exclude *.exe --exclude launch4j/l4j --exclude build-private.xml --owner=0 --group=0 -f ${dist}/${ant.project.name}-${version}-macosx-x86.tgz ./launch4j" />
-		</exec>
+		<tar destfile="${dist}/${ant.project.name}-${version}-macosx-x86.tgz" compression="gzip">
+			<tarfileset dir="." prefix="/launch4j" filemode="755">
+				<include name="launch4j"/>
+				<include name="launch4jc"/>
+			    <include name="bin/ld"/>
+				<include name="bin/windres"/>
+			</tarfileset>
+			<tarfileset dir="." prefix="/launch4j">
+			    <include name="**"/>
+				<exclude name="launch4j"/>
+				<exclude name="launch4jc"/>
+				<exclude name="bin/ld"/>
+				<exclude name="bin/windres"/>
+			    <exclude name="bin/bin*/**"/>
+				<exclude name="**/build/**"/>
+				<exclude name="**/*.bat"/>
+				<exclude name="**/*.exe"/>
+				<exclude name="head_src/**/*.layout"/>
+				<exclude name="l4j/**"/>
+				<exclude name="sign4j/**"/>
+				<exclude name="build-private.xml"/>
+			</tarfileset>
+		</tar>
 	</target>
 	
-	<target name="dist.win32" depends="jar, webdocs, binutils-linux" description="generate the Windows distribution">
+	<target name="dist.win32" depends="jar, webdocs, binutils-win32" description="generate the Windows distribution">
 		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${build}:./lib/xstream.jar" />
 		<launch4j configFile="./l4j/launch4j.xml" fileVersion="${versionNumber}" txtFileVersion="${version}" productVersion="${versionNumber}" txtProductVersion="${version}" />
 		<launch4j configFile="./l4j/launch4jc.xml" fileVersion="${versionNumber}" txtFileVersion="${version}" productVersion="${versionNumber}" txtProductVersion="${version}" />
 		<antcall target="binutils-win32" />
 		<zip destfile="${dist}/${ant.project.name}-${version}-win32.zip">
-			<zipfileset dir="." prefix="launch4j" excludes="**/build/** **/CVS/** bin/bin*/** l4j/** build-private.xml launch4j" />
+			<zipfileset dir="." prefix="launch4j" excludes="**/build/** bin/bin*/** head_src/**/*.exe head_src/**/*.layout l4j/** build-private.xml launch4j launch4jc" />
 		</zip>
 	</target>
 
@@ -170,7 +226,7 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="demo, webdocs, dist.win32, dist.macosx-x86, dist.linux, dist.linux-x64, clean"
+	<target name="dist" depends="clean.dist, clean.all, demo, webdocs, dist.win32, dist.macosx-x86, dist.linux, dist.linux-x64"
 		description="generate all distributions" />
 
 	<target name="clean-binutils">
@@ -190,6 +246,10 @@
 		</delete>
 		<ant dir="./demo/ConsoleApp" target="clean" inheritAll="false" />
 		<ant dir="./demo/SimpleApp" target="clean" inheritAll="false" />
+	</target>
+	
+	<target name="clean.dist">
+		<delete dir="${dist}" />
 	</target>
 
 	<target name="clean.all" depends="clean" description="clean up">

@@ -5,3 +5,4 @@ if [ -n "$JAVA_HOME" ]; then
 else
   java -Djava.awt.headless=true -jar "$LAUNCH4J" "$@"
 fi
+
