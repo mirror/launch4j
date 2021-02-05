@@ -197,6 +197,16 @@
 		<zip destfile="${dist}/${ant.project.name}-${version}-win32.zip">
 			<zipfileset dir="." prefix="launch4j" excludes="**/build/** bin/bin*/** head_src/**/*.exe head_src/**/*.layout l4j/** build-private.xml launch4j launch4jc" />
 		</zip>
+		<mkdir dir="${dist}/nsis" />
+		<unzip src="${dist}/${ant.project.name}-${version}-win32.zip" dest="${dist}/nsis"/>
+		<copy todir="${dist}/nsis">
+		  <fileset dir="l4j/nsis"/>
+		</copy>
+		<exec dir="${dist}/nsis" executable="c:\Program Files (x86)\NSIS\makensis.exe" failonerror="true">
+			<arg line="launch4j.nsi"/>
+		</exec>
+		<move file="${dist}/nsis/${ant.project.name}-${version}-win32.exe" todir="${dist}"/>
+		<delete dir="${dist}/nsis" />
 	</target>
 
 	<target name="webdocs">
