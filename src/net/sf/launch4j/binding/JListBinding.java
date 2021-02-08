@@ -76,6 +76,7 @@ public class JListBinding<T> implements Binding {
 	public void put(IValidatable bean) {
 		try {
 			DefaultListModel<T> model = new DefaultListModel<T>();
+			@SuppressWarnings("unchecked")
 			List<T> list = (List<T>) PropertyUtils.getProperty(bean, _property);
 
 			if (list != null) {
