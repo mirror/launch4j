@@ -20,7 +20,7 @@ public abstract class ClassPathForm extends JPanel
    protected final JTextField _classpathField = new JTextField();
    protected final JLabel _classpathFieldLabel = new JLabel();
    protected final JLabel _classpathListLabel = new JLabel();
-   protected final JList _classpathList = new JList();
+   protected final JList<String> _classpathList = new JList<String>();
    protected final JLabel _mainclassLabel = new JLabel();
    protected final JTextField _mainclassField = new JTextField();
    protected final JButton _acceptClasspathButton = new JButton();
