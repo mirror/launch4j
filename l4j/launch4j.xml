@@ -7,7 +7,7 @@
   <chdir>.</chdir>
   <stayAlive>false</stayAlive>
   <jre>
-    <minVersion>1.6.0</minVersion>
+    <minVersion>1.8.0</minVersion>
   </jre>
   <versionInfo>
     <fileDescription>Cross-platform Java application wrapper</fileDescription>
