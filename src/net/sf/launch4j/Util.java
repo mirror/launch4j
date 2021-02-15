@@ -56,7 +56,10 @@ import java.util.regex.Pattern;
 public class Util {
 	public static final boolean WINDOWS_OS = System.getProperty("os.name")
 			.toLowerCase().startsWith("windows");
-	
+
+	public static final boolean MAC_OS = System.getProperty("os.name")
+			.toLowerCase().startsWith("mac os");
+
 	private static final String Launch4jProperties = "launch4j.properties";
 
 	private Util() {}

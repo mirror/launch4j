@@ -54,8 +54,6 @@ import javax.swing.JToolBar;
 import javax.swing.UIManager;
 
 import com.jgoodies.looks.Options;
-import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
-import com.jgoodies.looks.windows.WindowsLookAndFeel;
 
 import foxtrot.Task;
 import foxtrot.Worker;
@@ -78,6 +76,9 @@ import net.sf.launch4j.config.ConfigPersisterException;
 public class MainFrame extends JFrame {
 	private static MainFrame _instance;
 
+  private static final String WINDOWS_LNF = "com.jgoodies.looks.windows.WindowsLookAndFeel";
+  private static final String PLASTICXP_LNF = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
+
 	private final JToolBar _toolBar;
 	private final JButton _runButton;
 	private final ConfigFormImpl _configForm;
@@ -95,8 +96,14 @@ public class MainFrame extends JFrame {
 			Options.setUseNarrowButtons(false);
 			Options.setPopupDropShadowEnabled(true);
 
-			UIManager.setLookAndFeel(System.getProperty("os.name").toLowerCase().startsWith("windows")
-					? new WindowsLookAndFeel() : new PlasticXPLookAndFeel());
+      if (Util.WINDOWS_OS) {
+        UIManager.setLookAndFeel(WINDOWS_LNF);
+      } else if (Util.MAC_OS) {
+        String systemClassName = UIManager.getSystemLookAndFeelClassName();
+        UIManager.setLookAndFeel(systemClassName);
+      } else {
+        UIManager.setLookAndFeel(PLASTICXP_LNF);
+      }
 
 			_instance = new MainFrame();
 		} catch (Exception e) {
