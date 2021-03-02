@@ -12,7 +12,7 @@
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry kind="lib" path="lib/jgoodies-common.jar"/>
 	<classpathentry kind="lib" path="lib/jgoodies-forms.jar"/>
-	<classpathentry kind="lib" path="lib/jgoodies-looks.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/flatlaf.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

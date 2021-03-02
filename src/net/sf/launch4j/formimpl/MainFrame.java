@@ -51,11 +51,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
-import javax.swing.UIManager;
 
-import com.jgoodies.looks.Options;
-import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
-import com.jgoodies.looks.windows.WindowsLookAndFeel;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import foxtrot.Task;
 import foxtrot.Worker;
@@ -87,17 +84,7 @@ public class MainFrame extends JFrame {
 
 	public static void createInstance() {
 		try {
-			Toolkit.getDefaultToolkit().setDynamicLayout(true);
-			System.setProperty("sun.awt.noerasebackground","true");
-	
-			// JGoodies
-			Options.setDefaultIconSize(new Dimension(16, 16));		// menu icons
-			Options.setUseNarrowButtons(false);
-			Options.setPopupDropShadowEnabled(true);
-
-			UIManager.setLookAndFeel(System.getProperty("os.name").toLowerCase().startsWith("windows")
-					? new WindowsLookAndFeel() : new PlasticXPLookAndFeel());
-
+			FlatLightLaf.install();
 			_instance = new MainFrame();
 		} catch (Exception e) {
 			System.err.println(e);
@@ -144,7 +131,7 @@ public class MainFrame extends JFrame {
 		pack();
 		Dimension scr = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension fr = getSize();
-		fr.width += 25;
+		fr.width = 900;
 		fr.height += 100;
 		setBounds((scr.width - fr.width) / 2, (scr.height - fr.height) / 2,
 				fr.width, fr.height);
