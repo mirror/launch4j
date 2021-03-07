@@ -45,12 +45,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
+import javax.swing.UIManager;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
@@ -107,21 +109,21 @@ public class MainFrame extends JFrame {
 		_toolBar = new JToolBar();
 		_toolBar.setFloatable(false);
 		_toolBar.setRollover(true);
-		addButton("images/new.png",	Messages.getString("MainFrame.new.config"),
+		addButton(UIManager.getIcon("Tree.leafIcon"), Messages.getString("MainFrame.new.config"),
 				new NewActionListener());
-		addButton("images/open.png", Messages.getString("MainFrame.open.config"),
+		addButton(UIManager.getIcon("Tree.openIcon"), Messages.getString("MainFrame.open.config"),
 				new OpenActionListener());
-		addButton("images/save.png", Messages.getString("MainFrame.save.config"),
+		addButton(UIManager.getIcon("FileView.floppyDriveIcon"), Messages.getString("MainFrame.save.config"),
 				new SaveActionListener());
 		_toolBar.addSeparator();
-		addButton("images/build.png", Messages.getString("MainFrame.build.wrapper"),
+		addButton(getLocalIcon("images/build.png"), Messages.getString("MainFrame.build.wrapper"),
 				new BuildActionListener());
-		_runButton = addButton("images/run.png",
+		_runButton = addButton(getLocalIcon("images/run.png"),
 				Messages.getString("MainFrame.test.wrapper"),
 				new RunActionListener());
 		setRunEnabled(false);
 		_toolBar.addSeparator();
-		addButton("images/info.png", Messages.getString("MainFrame.about.launch4j"),
+		addButton(UIManager.getIcon("HelpButton.icon"), Messages.getString("MainFrame.about.launch4j"),
 				new AboutActionListener());
 
 		_configForm = new ConfigFormImpl();
@@ -137,10 +139,12 @@ public class MainFrame extends JFrame {
 				fr.width, fr.height);
 		setVisible(true);
 	}
+	
+	private ImageIcon getLocalIcon(String iconPath) {
+		return  new ImageIcon(MainFrame.class.getClassLoader().getResource(iconPath));
+	}
 
-	private JButton addButton(String iconPath, String tooltip, ActionListener l) {
-		ImageIcon icon = new ImageIcon(MainFrame.class.getClassLoader()
-				.getResource(iconPath));
+	private JButton addButton(Icon icon, String tooltip, ActionListener l) {
 		JButton b = new JButton(icon);
 		b.setToolTipText(tooltip);
 		b.addActionListener(l);
