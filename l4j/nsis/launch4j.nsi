@@ -10,6 +10,7 @@
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
 Unicode True
+ManifestDPIAware True
 SetCompressor lzma
 
 ; MUI Settings
