@@ -464,8 +464,7 @@ void regSearch(const char* keyName, const int searchType)
 		debug("Check:\t\t%s\n", fullKeyName);
         formatJavaVersion(version, originalVersion);
 
-		if (strcmp(version, search.javaMinVer) >= 0
-				&& (!*search.javaMaxVer || strcmp(version, search.javaMaxVer) <= 0)
+		if (isJavaVersionGood(version)
 				&& strcmp(version, search.foundJavaVer) > 0
 				&& isJavaHomeValid(fullKeyName, searchType))
 		{
@@ -976,7 +975,7 @@ BOOL bundledJreSearch(const char *exePath, const int pathLen)
     			appendPath(launcher.cmd, pathNoBin);
     		}
 
-    		if (isLauncherPathValid(launcher.cmd))
+			if (isLauncherPathValid(launcher.cmd) && isPathJavaVersionGood(launcher.cmd))
     		{
                 search.foundJava = is64BitJre ? FOUND_BUNDLED | KEY_WOW64_64KEY : FOUND_BUNDLED;
     			strcpy(search.foundJavaHome, launcher.cmd);
@@ -1369,5 +1368,127 @@ const char* getMainClass()
 const char* getLauncherArgs()
 {
     return launcher.args;    
+}
+
+/* read java version output and save version string in version */
+void getVersionFromOutput(HANDLE outputRd, char *version, int versionLen)
+{
+	CHAR chBuf[BIG_STR] = {0}, *bptr = chBuf;
+	DWORD dwRead, remain = sizeof(chBuf);
+	BOOL bSuccess = FALSE;
+
+	while (remain > 0) {
+		bSuccess = ReadFile(outputRd, bptr, remain, &dwRead, NULL);
+		if (! bSuccess || dwRead == 0) break;
+		bptr += dwRead;
+		remain -= dwRead;
+	}
+	debugAll("Java version output: %s\n", chBuf);
+	*version = '\0';
+	const char *verStartPtr = strchr(chBuf, '"');
+	if (verStartPtr == NULL)
+	{
+		debug("Cannot get version string: cannot find quote\n");
+		return;
+	}
+	const char *verEndPtr = strchr(++verStartPtr, '"');
+	if (verEndPtr == NULL)
+	{
+		debug("Cannot get version string: missing end quote\n");
+		return;
+	}
+	size_t len = verEndPtr - verStartPtr;
+	if (len >= versionLen) {
+		debug("Cannot get version string: data too large\n");
+		return;
+	}
+	memcpy(version, verStartPtr, len);
+	version[len] = '\0';
+	debug("Version string is: %s\n", version);
+}
+
+/* create a child process with cmdline and set stderr/stdout to outputWr */
+BOOL CreateChildProcess(char *cmdline, HANDLE outputWr)
+{
+	PROCESS_INFORMATION piProcInfo;
+	STARTUPINFO siStartInfo;
+	BOOL bSuccess = FALSE;
+
+	ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
+	ZeroMemory(&siStartInfo, sizeof(STARTUPINFO));
+	siStartInfo.cb = sizeof(STARTUPINFO);
+	siStartInfo.hStdError = outputWr;
+	siStartInfo.hStdOutput = outputWr;
+	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+
+	debugAll("createProcess: %s\n", cmdline);
+	bSuccess = CreateProcess(NULL, cmdline, NULL, NULL, TRUE, 0, NULL, NULL, &siStartInfo, &piProcInfo);   
+	if (!bSuccess)
+	{
+		debug("cannot create process %s\n", cmdline);
+	}
+	else
+	{
+		CloseHandle(piProcInfo.hProcess);
+		CloseHandle(piProcInfo.hThread);
+	}
+	CloseHandle(outputWr);
+	return bSuccess;
+}
+
+/* return TRUE if version string is >= min and <= max, FALSE otherwise. */ 
+BOOL isJavaVersionGood(const char *version)
+{
+	return (strcmp(version, search.javaMinVer) >= 0
+		&& (!*search.javaMaxVer || strcmp(version, search.javaMaxVer) <= 0));	
+}
+
+/*
+ * Run <path>/bin/java -version. Return TRUE if version is good.
+ */
+BOOL isPathJavaVersionGood(const char *path)
+{
+	SECURITY_ATTRIBUTES saAttr;
+	HANDLE outputRd = NULL;
+	HANDLE outputWr = NULL;
+
+	debugAll("Check Java Version path=%s min=%s max=%S\n", path, search.javaMinVer, search.javaMaxVer);
+
+	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+	saAttr.bInheritHandle = TRUE;
+	saAttr.lpSecurityDescriptor = NULL;
+
+	// Create a pipe for the child process's STDOUT.
+	if (!CreatePipe(&outputRd, &outputWr, &saAttr, 0))
+	{
+		debug("Cannot create pipe\n");
+		return FALSE;
+	}
+	// Ensure the read handle to the pipe for STDOUT is not inherited.
+	if (!SetHandleInformation(outputRd, HANDLE_FLAG_INHERIT, 0))
+	{
+		debug("Cannot set handle information\n");
+		CloseHandle(outputRd);
+		CloseHandle(outputWr);
+		return FALSE;
+	}
+	// create child process
+	char cmdline[MAX_ARGS] = {0};
+	snprintf(cmdline, MAX_ARGS, "\"%s\\bin\\java\" -version", launcher.cmd);
+	if (!CreateChildProcess(cmdline, outputWr))
+	{
+		debug("Cannot run java -version\n");
+		CloseHandle(outputRd);
+		return FALSE;
+	}
+	char version[STR] = {0}, formattedVersion[STR] = {0};
+	getVersionFromOutput(outputRd, version, sizeof(version));
+	CloseHandle(outputRd);
+	if (*version != '\0')
+	{
+		formatJavaVersion(formattedVersion, version);
+		return isJavaVersionGood(formattedVersion);
+	}
+	return FALSE;
 }
 
