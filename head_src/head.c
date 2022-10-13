@@ -53,6 +53,7 @@ struct
 {
 	int runtimeBits;
 	int foundJava;
+	BOOL requires64BitJre;
 	BOOL bundledJreAsFallback;
 	BOOL corruptedJreFound;
 	char originalJavaMinVer[STR];
@@ -84,6 +85,7 @@ BOOL initGlobals()
 
 	search.runtimeBits = INIT_RUNTIME_BITS;
 	search.foundJava = NO_JAVA_FOUND;
+	search.requires64BitJre = FALSE;
 	search.bundledJreAsFallback = FALSE;
 	search.corruptedJreFound = FALSE;
 	
@@ -141,7 +143,7 @@ void setWow64Flag()
 		fnIsWow64Process(GetCurrentProcess(), &wow64);
 	}
 
-	debug("WOW64:\t\t%s\n", wow64 ? "yes" : "no"); 
+	debug("WOW64:\t\t%s\n", wow64 ? "Yes" : "No"); 
 }
 
 void setConsoleFlag()
@@ -464,7 +466,7 @@ void regSearch(const char* keyName, const int searchType)
 		debug("Check:\t\t%s\n", fullKeyName);
         formatJavaVersion(version, originalVersion);
 
-		if (isJavaVersionGood(version)
+		if (isJavaVersionGood(version, TRUE) // TODO: Remove reg search.
 				&& strcmp(version, search.foundJavaVer) > 0
 				&& isJavaHomeValid(fullKeyName, searchType))
 		{
@@ -927,9 +929,10 @@ BOOL bundledJreSearch(const char *exePath, const int pathLen)
 {
     debugAll("bundledJreSearch()\n");
 	char jrePathSpec[_MAX_PATH] = {0};
-    BOOL is64BitJre = loadBool(BUNDLED_JRE_64_BIT);
+	search.requires64BitJre = loadBool(BUNDLED_JRE_64_BIT);
+	debug("Requires 64-Bit: %s\n", search.requires64BitJre ? "Yes" : "No");
 
-    if (!wow64 && is64BitJre)
+    if (!wow64 && search.requires64BitJre)
     {
         debug("Bundled JRE:\tCannot use 64-bit runtime on 32-bit OS.\n");
         return FALSE;
@@ -977,7 +980,7 @@ BOOL bundledJreSearch(const char *exePath, const int pathLen)
 
 			if (isLauncherPathValid(launcher.cmd) && isPathJavaVersionGood(launcher.cmd))
     		{
-                search.foundJava = is64BitJre ? FOUND_BUNDLED | KEY_WOW64_64KEY : FOUND_BUNDLED;
+                search.foundJava = search.requires64BitJre ? FOUND_BUNDLED | KEY_WOW64_64KEY : FOUND_BUNDLED;
     			strcpy(search.foundJavaHome, launcher.cmd);
     			return TRUE;
     		}
@@ -1371,7 +1374,7 @@ const char* getLauncherArgs()
 }
 
 /* read java version output and save version string in version */
-void getVersionFromOutput(HANDLE outputRd, char *version, int versionLen)
+void getVersionFromOutput(HANDLE outputRd, char *version, int versionLen, BOOL *is64BitJre)
 {
 	CHAR chBuf[BIG_STR] = {0}, *bptr = chBuf;
 	DWORD dwRead, remain = sizeof(chBuf);
@@ -1404,7 +1407,7 @@ void getVersionFromOutput(HANDLE outputRd, char *version, int versionLen)
 	}
 	memcpy(version, verStartPtr, len);
 	version[len] = '\0';
-	debug("Version string is: %s\n", version);
+	*is64BitJre = strstr(chBuf, "64-Bit") != NULL;
 }
 
 /* create a child process with cmdline and set stderr/stdout to outputWr */
@@ -1421,11 +1424,11 @@ BOOL CreateChildProcess(char *cmdline, HANDLE outputWr)
 	siStartInfo.hStdOutput = outputWr;
 	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
 
-	debugAll("createProcess: %s\n", cmdline);
-	bSuccess = CreateProcess(NULL, cmdline, NULL, NULL, TRUE, 0, NULL, NULL, &siStartInfo, &piProcInfo);   
+	debugAll("Create process: %s\n", cmdline);
+	bSuccess = CreateProcess(NULL, cmdline, NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &siStartInfo, &piProcInfo);   
 	if (!bSuccess)
 	{
-		debug("cannot create process %s\n", cmdline);
+		debug("Cannot create process %s\n", cmdline);
 	}
 	else
 	{
@@ -1437,22 +1440,31 @@ BOOL CreateChildProcess(char *cmdline, HANDLE outputWr)
 }
 
 /* return TRUE if version string is >= min and <= max, FALSE otherwise. */ 
-BOOL isJavaVersionGood(const char *version)
+BOOL isJavaVersionGood(const char *version, BOOL is64BitJre)
 {
-	return (strcmp(version, search.javaMinVer) >= 0
-		&& (!*search.javaMaxVer || strcmp(version, search.javaMaxVer) <= 0));	
+	BOOL result = (strcmp(version, search.javaMinVer) >= 0
+		&& (!*search.javaMaxVer || strcmp(version, search.javaMaxVer) <= 0))
+		&& (!search.requires64BitJre || is64BitJre);
+	debug("Version string: %s / %s-Bit (%s)\n", version, is64BitJre ? "64" : "32", result ? "OK" : "Ignore");
+	return result;
 }
 
 /*
- * Run <path>/bin/java -version. Return TRUE if version is good.
+ * Run <path>/bin/java(w) -version. Return TRUE if version is good.
  */
 BOOL isPathJavaVersionGood(const char *path)
 {
+	if (!*search.javaMinVer)
+	{
+		debug("Skip version check: Minimum version not defined.\n");
+		return TRUE;
+	}
+	
 	SECURITY_ATTRIBUTES saAttr;
 	HANDLE outputRd = NULL;
 	HANDLE outputWr = NULL;
 
-	debugAll("Check Java Version path=%s min=%s max=%S\n", path, search.javaMinVer, search.javaMaxVer);
+	debugAll("Check Java Version: %s min=%s max=%S\n", path, search.javaMinVer, search.javaMaxVer);
 
 	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
 	saAttr.bInheritHandle = TRUE;
@@ -1474,20 +1486,24 @@ BOOL isPathJavaVersionGood(const char *path)
 	}
 	// create child process
 	char cmdline[MAX_ARGS] = {0};
-	snprintf(cmdline, MAX_ARGS, "\"%s\\bin\\java\" -version", launcher.cmd);
+	char launcherPath[_MAX_PATH] = {0};
+	strcpy(launcherPath, path);
+	appendLauncher(launcherPath);
+	snprintf(cmdline, MAX_ARGS, "\"%s\" -version", launcherPath);
 	if (!CreateChildProcess(cmdline, outputWr))
 	{
-		debug("Cannot run java -version\n");
+		debug("Cannot run java(w) -version\n");
 		CloseHandle(outputRd);
 		return FALSE;
 	}
 	char version[STR] = {0}, formattedVersion[STR] = {0};
-	getVersionFromOutput(outputRd, version, sizeof(version));
+	BOOL is64BitJre;
+	getVersionFromOutput(outputRd, version, sizeof(version), &is64BitJre);
 	CloseHandle(outputRd);
 	if (*version != '\0')
 	{
 		formatJavaVersion(formattedVersion, version);
-		return isJavaVersionGood(formattedVersion);
+		return isJavaVersionGood(formattedVersion, is64BitJre);
 	}
 	return FALSE;
 }

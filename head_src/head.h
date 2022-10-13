@@ -143,9 +143,9 @@ BOOL execute(const BOOL wait, DWORD *dwExitCode);
 const char* getJavaHome();
 const char* getMainClass();
 const char* getLauncherArgs();
-void getVersionFromOutput(HANDLE outputRd, char *version, int versionLen);
+void getVersionFromOutput(HANDLE outputRd, char *version, int versionLen, BOOL *is64Bit);
 BOOL CreateChildProcess(char *cmdline, HANDLE outputWr);
-BOOL isJavaVersionGood(const char* version);
+BOOL isJavaVersionGood(const char* version, BOOL is64BitJre);
 BOOL isJavaPathVersionGood(const char *path);
 
 #endif // _LAUNCH4J_HEAD__INCLUDED_
