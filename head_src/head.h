@@ -54,25 +54,12 @@
 #include <process.h>
 
 #define LAUNCH4j "Launch4j"
-#define VERSION "3.15"
+#define VERSION "3.50"
 
 #define JRE_VER_MAX_DIGITS_PER_PART 3
 
-#define NO_JAVA_FOUND 0
-#define FOUND_JRE 1
-#define FOUND_SDK 2
-#define FOUND_BUNDLED 4
-
-#define JRE_ONLY 0
-#define PREFER_JRE 1
-#define PREFER_JDK 2
-#define JDK_ONLY 3
-
-#define USE_64_BIT_RUNTIME 1
-#define USE_64_AND_32_BIT_RUNTIME 2
-#define USE_32_AND_64_BIT_RUNTIME 3
-#define USE_32_BIT_RUNTIME 4
-#define INIT_RUNTIME_BITS 9
+#define JAVA_NOT_FOUND 0
+#define JAVA_FOUND 1
 
 #define KEY_WOW64_64KEY 0x0100
 
@@ -110,12 +97,10 @@ BOOL regQueryValue(const char* regPath, unsigned char* buffer,
 		unsigned long bufferLength);
 void formatJavaVersion(char* version, const char* originalVersion);
 void regSearch(const char* keyName, const int searchType);
-BOOL isJavaHomeValid(const char* keyName, const int searchType);
+BOOL isRegistryJavaHomeValid(const char* keyName, const int searchType);
 BOOL isLauncherPathValid(const char* path);
-void regSearchWow(const char* keyName, const int searchType);
-void regSearchJreSdk(const char* jreKeyName, const char* sdkKeyName,
-		const int jdkPreference);
-BOOL findJavaHome(char* path, const int jdkPreference);
+void regSearchWow(const char* keyName);
+BOOL findRegistryJavaHome(char* path);
 int getExePath(char* exePath);
 void appendPath(char* basepath, const char* path);
 void appendLauncher(char* jrePath);
@@ -128,8 +113,8 @@ void setJvmOptions(char *jvmOptions, const char *exePath);
 BOOL createMutex();
 void setWorkingDirectory(const char *exePath, const int pathLen);
 void removeChar(char *src, const char toRemove);
-BOOL bundledJreSearch(const char *exePath, const int pathLen);
-BOOL installedJreSearch();
+BOOL pathJreSearch(const char *exePath, const int pathLen);
+BOOL registryJreSearch();
 void createJreSearchError();
 BOOL jreSearch(const char *exePath, const int pathLen);
 BOOL appendToPathVar(const char* path);
