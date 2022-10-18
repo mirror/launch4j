@@ -53,7 +53,7 @@ struct
 {
 	int foundJava;
 	BOOL requiresJdk;
-	BOOL requires64BitJre;
+	BOOL requires64Bit;
 	BOOL corruptedJreFound;
 	char originalJavaMinVer[STR];
 	char originalJavaMaxVer[STR];
@@ -84,7 +84,7 @@ BOOL initGlobals()
 
 	search.foundJava = JAVA_NOT_FOUND;
 	search.requiresJdk = FALSE;
-	search.requires64BitJre = FALSE;
+	search.requires64Bit = FALSE;
 	search.corruptedJreFound = FALSE;
 	
 	return TRUE;
@@ -570,7 +570,7 @@ void regSearchWow(const char* keyName)
 		}
 	}
 
-	if (!search.requires64BitJre)
+	if (!search.requires64Bit)
 	{
 		regSearch(keyName, JAVA_FOUND);
 	}
@@ -886,7 +886,7 @@ BOOL pathJreSearch(const char *exePath, const int pathLen)
     debugAll("pathJreSearch()\n");
 	char jrePathSpec[_MAX_PATH] = {0};
 
-    if (!wow64 && search.requires64BitJre)
+    if (!wow64 && search.requires64Bit)
     {
         debug("JRE:\t\tCannot use 64-bit runtime on 32-bit OS.\n");
         return FALSE;
@@ -934,7 +934,7 @@ BOOL pathJreSearch(const char *exePath, const int pathLen)
 
 			if (isLauncherPathValid(launcher.cmd) && isPathJavaVersionGood(launcher.cmd))
     		{
-                search.foundJava = search.requires64BitJre ? JAVA_FOUND | KEY_WOW64_64KEY : JAVA_FOUND;
+                search.foundJava = search.requires64Bit ? JAVA_FOUND | KEY_WOW64_64KEY : JAVA_FOUND;
     			strcpy(search.foundJavaHome, launcher.cmd);
     			return TRUE;
     		}
@@ -966,7 +966,7 @@ void createJreSearchError()
 			strcat(error.msg, search.originalJavaMaxVer);
 		}
 	
-		if (search.requires64BitJre)
+		if (search.requires64Bit)
 		{
 			strcat(error.msg, " (64-bit)");
 		}			
@@ -997,8 +997,8 @@ BOOL jreSearch(const char *exePath, const int pathLen)
 
 	search.requiresJdk = loadBool(REQUIRES_JDK);
 	debug("Requires JDK:\t%s\n", search.requiresJdk ? "Yes" : "No");
-	search.requires64BitJre = loadBool(REQUIRES_64_BIT_JRE);
-	debug("Requires 64-Bit: %s\n", search.requires64BitJre ? "Yes" : "No");
+	search.requires64Bit = loadBool(REQUIRES_64_BIT);
+	debug("Requires 64-Bit: %s\n", search.requires64Bit ? "Yes" : "No");
 	loadString(JAVA_MIN_VER, search.originalJavaMinVer);
 	formatJavaVersion(search.javaMinVer, search.originalJavaMinVer);
 	debug("Java min ver:\t%s\n", search.javaMinVer);
@@ -1318,7 +1318,7 @@ const char* getLauncherArgs()
 }
 
 /* read java version output and save version string in version */
-void getVersionFromOutput(HANDLE outputRd, char *version, int versionLen, BOOL *is64BitJre)
+void getVersionFromOutput(HANDLE outputRd, char *version, int versionLen, BOOL *is64Bit)
 {
 	CHAR chBuf[BIG_STR] = {0}, *bptr = chBuf;
 	DWORD dwRead, remain = sizeof(chBuf);
@@ -1351,7 +1351,7 @@ void getVersionFromOutput(HANDLE outputRd, char *version, int versionLen, BOOL *
 	}
 	memcpy(version, verStartPtr, len);
 	version[len] = '\0';
-	*is64BitJre = strstr(chBuf, "64-Bit") != NULL;
+	*is64Bit = strstr(chBuf, "64-Bit") != NULL;
 }
 
 /* create a child process with cmdline and set stderr/stdout to outputWr */
@@ -1384,12 +1384,12 @@ BOOL CreateChildProcess(char *cmdline, HANDLE outputWr)
 }
 
 /* return TRUE if version string is >= min and <= max, FALSE otherwise. */ 
-BOOL isJavaVersionGood(const char *version, BOOL is64BitJre)
+BOOL isJavaVersionGood(const char *version, BOOL is64Bit)
 {
 	BOOL result = (strcmp(version, search.javaMinVer) >= 0
 		&& (!*search.javaMaxVer || strcmp(version, search.javaMaxVer) <= 0))
-		&& (!search.requires64BitJre || is64BitJre);
-	debug("Version string: %s / %s-Bit (%s)\n", version, is64BitJre ? "64" : "32", result ? "OK" : "Ignore");
+		&& (!search.requires64Bit || is64Bit);
+	debug("Version string: %s / %s-Bit (%s)\n", version, is64Bit ? "64" : "32", result ? "OK" : "Ignore");
 	return result;
 }
 
@@ -1441,13 +1441,13 @@ BOOL isPathJavaVersionGood(const char *path)
 		return FALSE;
 	}
 	char version[STR] = {0}, formattedVersion[STR] = {0};
-	BOOL is64BitJre;
-	getVersionFromOutput(outputRd, version, sizeof(version), &is64BitJre);
+	BOOL is64Bit;
+	getVersionFromOutput(outputRd, version, sizeof(version), &is64Bit);
 	CloseHandle(outputRd);
 	if (*version != '\0')
 	{
 		formatJavaVersion(formattedVersion, version);
-		return isJavaVersionGood(formattedVersion, is64BitJre);
+		return isJavaVersionGood(formattedVersion, is64Bit);
 	}
 	return FALSE;
 }

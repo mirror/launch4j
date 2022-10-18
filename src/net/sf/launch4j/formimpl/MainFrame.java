@@ -104,7 +104,7 @@ public class MainFrame extends JFrame {
 		setGlassPane(new GlassPane(this));
 		_fileChooser.setFileFilter(new FileChooserFilter(
 				Messages.getString("MainFrame.config.files"),
-				new String[] {".xml", ".cfg"}));
+				new String[] { ".xml" }));
 
 		_toolBar = new JToolBar();
 		_toolBar.setFloatable(false);
@@ -261,14 +261,9 @@ public class MainFrame extends JFrame {
 			try {
 				if (canDiscardChanges() && _fileChooser.showOpenDialog(MainFrame.this)
 									== JOptionPane.YES_OPTION) {
-					final File f = _fileChooser.getSelectedFile(); 
-					if (f.getPath().endsWith(".xml")) {
-						ConfigPersister.getInstance().load(f);	
-						_saved = true;
-					} else {
-						ConfigPersister.getInstance().loadVersion1(f);
-						_saved = false;
-					}
+					final File f = _fileChooser.getSelectedFile();
+					ConfigPersister.getInstance().load(f);	
+					_saved = true;
 					_configForm.put(ConfigPersister.getInstance().getConfig());
 					showConfigName(f);
 					setRunEnabled(false);
