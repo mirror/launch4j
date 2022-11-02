@@ -464,7 +464,7 @@ void regSearch(const char* keyName, const int searchType)
 		debug("Check:\t\t%s\n", fullKeyName);
         formatJavaVersion(version, originalVersion);
 
-		if (isJavaVersionGood(version, TRUE) // TODO: Remove reg search.
+		if (isJavaVersionGood(version, wow64KeyMask)
 				&& strcmp(version, search.foundJavaVer) > 0
 				&& isRegistryJavaHomeValid(fullKeyName, searchType))
 		{
@@ -1351,7 +1351,7 @@ void getVersionFromOutput(HANDLE outputRd, char *version, int versionLen, BOOL *
 	}
 	memcpy(version, verStartPtr, len);
 	version[len] = '\0';
-	*is64Bit = strstr(chBuf, "64-Bit") != NULL;
+	*is64Bit = strstr(chBuf, "64-Bit") != NULL || strstr(chBuf, "64-bit") != NULL;
 }
 
 /* create a child process with cmdline and set stderr/stdout to outputWr */
@@ -1386,8 +1386,8 @@ BOOL CreateChildProcess(char *cmdline, HANDLE outputWr)
 /* return TRUE if version string is >= min and <= max, FALSE otherwise. */ 
 BOOL isJavaVersionGood(const char *version, BOOL is64Bit)
 {
-	BOOL result = (strcmp(version, search.javaMinVer) >= 0
-		&& (!*search.javaMaxVer || strcmp(version, search.javaMaxVer) <= 0))
+	BOOL result = (!*search.javaMinVer || strcmp(version, search.javaMinVer) >= 0)
+		&& (!*search.javaMaxVer || strcmp(version, search.javaMaxVer) <= 0)
 		&& (!search.requires64Bit || is64Bit);
 	debug("Version string: %s / %s-Bit (%s)\n", version, is64Bit ? "64" : "32", result ? "OK" : "Ignore");
 	return result;
@@ -1398,9 +1398,9 @@ BOOL isJavaVersionGood(const char *version, BOOL is64Bit)
  */
 BOOL isPathJavaVersionGood(const char *path)
 {
-	if (!*search.javaMinVer)
+	if (!*search.javaMinVer && !search.requires64Bit)
 	{
-		debug("Skip version check: Minimum version not defined.\n");
+		debug("Skip check:\tMinimum version and requires 64-bit not defined => not checking launcher version.\n");
 		return TRUE;
 	}
 	
