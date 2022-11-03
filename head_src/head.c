@@ -60,7 +60,6 @@ struct
 	char javaMinVer[STR];
 	char javaMaxVer[STR];
 	char foundJavaVer[STR];
-	char foundJavaKey[_MAX_PATH];
 	char foundJavaHome[_MAX_PATH];
 } search;
 
@@ -465,19 +464,15 @@ void regSearch(const char* keyName, const int searchType)
         formatJavaVersion(version, originalVersion);
 
 		if (isJavaVersionGood(version, wow64KeyMask)
-				&& strcmp(version, search.foundJavaVer) > 0
 				&& isRegistryJavaHomeValid(fullKeyName, searchType))
 		{
 			strcpy(search.foundJavaVer, version);
-			strcpy(search.foundJavaKey, fullKeyName);
 			search.foundJava = searchType;
 			debug("Match:\t\t%s\n", version);
-		}
-		else
-		{
-			debug("Ignore:\t\t%s\n", version);
+			break;
 		}
 
+		debug("Ignore:\t\t%s\n", version);
 		versionSize = _MAX_PATH;
 	}
 
@@ -560,6 +555,11 @@ BOOL isLauncherPathValid(const char* path)
 
 void regSearchWow(const char* keyName)
 {
+	if (search.foundJava != JAVA_NOT_FOUND)
+	{
+		return;
+	}
+
 	if (wow64)
 	{
 		regSearch(keyName, JAVA_FOUND | KEY_WOW64_64KEY);
