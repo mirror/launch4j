@@ -43,6 +43,7 @@ may be absolute paths or relative to the configuration file path.
   &lt;downloadUrl&gt;<span class="codeword"><u>http://java.com/download</u></span>&lt;/downloadUrl&gt;
   &lt;supportUrl&gt;<span class="codeword">url</span>&lt;/supportUrl&gt;
   &lt;cmdLine&gt;<span class="codeword">text</span>&lt;/cmdLine&gt;
+  &lt;iniFile&gt;<span class="codeword">text</span>&lt;/iniFile&gt;
   &lt;chdir&gt;<span class="codeword">path</span>&lt;/chdir&gt;
   &lt;priority&gt;<span class="codeword"><u>normal</u>|idle|high</span>&lt;/priority&gt;
   &lt;stayAlive&gt;<span class="codeword">true|false</span>&lt;/stayAlive&gt;
@@ -220,6 +221,10 @@ may be absolute paths or relative to the configuration file path.
 <dl>
 	<dt>&lt;cmdLine&gt;</dt>
 	<dd>Optional, constant command line arguments.</dd>
+</dl>
+<dl>
+	<dt>&lt;iniFile&gt;</dt>
+	<dd>Optional, relative path (resolved at .exe runtime) pointing to an INI file containing <a href="#Additional_jvm_options">additional JVM options</a>.</dd>
 </dl>
 <dl>
 	<dt>&lt;chdir&gt;</dt>
@@ -589,7 +594,7 @@ You can set or override the following configuration properties...
 
 You can also define the entire configuration in the task, but it will
 not be possible to edit such a file in the GUI mode. All paths except
-for <em>&lt;chdir&gt;</em>, <em>&lt;jre&gt;&lt;path&gt;</em> and <em>jarPath</em>
+for <em>&lt;chdir&gt;</em>, <em>&lt;iniFile&gt;</em>, <em>&lt;jre&gt;&lt;path&gt;</em> and <em>jarPath</em>
 are calculated using the <em>basedir</em> project attribute.
 
 <pre>
@@ -613,9 +618,9 @@ are calculated using the <em>basedir</em> project attribute.
 When you create a wrapper or launcher all configuration details are compiled into the
 executable and cannot be changed without recreating it or hacking with a resource editor.
 Launch4j 2.1.2 introduces a new feature that allows to pass additional JVM options
-at runtime from an .l4j.ini file. Now you can specify the options in the configuration file,
-ini file or in both, but you cannot override them. The ini file's name must correspond
-to the executable's <em>(myapp.exe : myapp.l4j.ini)</em>.
+at runtime from an INI file. Now you can specify the options in the configuration file,
+ini file or in both, but you cannot override them. The ini file's name corresponds by default
+to the executable's <em>(myapp.exe : myapp.l4j.ini)</em> but can be configured with the <em>&lt;iniFile&gt;</em> option.
 The arguments should be separated with spaces or new lines, environment variable
 expansion is supported, for example:
 <pre>

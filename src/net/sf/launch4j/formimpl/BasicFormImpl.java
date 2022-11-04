@@ -58,6 +58,7 @@ public class BasicFormImpl extends BasicForm {
 				.add("manifest", _manifestField)
 				.add("icon", _iconField)
 				.add("cmdLine", _cmdLineField)
+				.add("iniFile", _iniFileField)
 				.add("errTitle", _errorTitleField)
 				.add("downloadUrl", _downloadUrlField, Config.DOWNLOAD_URL)
 				.add("supportUrl", _supportUrlField)

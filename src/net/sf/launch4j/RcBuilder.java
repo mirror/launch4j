@@ -103,6 +103,7 @@ public class RcBuilder {
 	public static final int RUNTIME_BITS = 30;
 	public static final int RESTART_ON_CRASH = 31;
 	public static final int BUNDLED_JRE_AS_FALLBACK	= 32;
+	public static final int INI_FILE = 33;
 
 	public static final int STARTUP_ERR = 101;
 	public static final int BUNDLED_JRE_ERR = 102;
@@ -139,6 +140,7 @@ public class RcBuilder {
 		addTrue(GUI_HEADER_STAYS_ALIVE, c.isStayAlive());
 		addTrue(RESTART_ON_CRASH, c.isRestartOnCrash());
 		addSplash(c.getSplash());
+		addText(INI_FILE, c.getIniFile());
 		addMessages(c);
 
 		if (c.getSingleInstance() != null) {

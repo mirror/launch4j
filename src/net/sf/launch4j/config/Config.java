@@ -89,6 +89,7 @@ public class Config implements IValidatable {
 	// Runtime header configuration
 	private String errTitle;
 	private String cmdLine;
+	private String iniFile;
 	private String chdir;
 	private String priority;
 	private String downloadUrl;
@@ -131,6 +132,8 @@ public class Config implements IValidatable {
 		Validator.checkOptFile(icon, "icon", Messages.getString("Config.icon"));
 		Validator.checkOptString(cmdLine, Validator.MAX_BIG_STR, "jarArgs",
 				Messages.getString("Config.jar.arguments"));
+		Validator.checkOptString(iniFile, 256,
+				"iniFile", Messages.getString("Config.ini.file"));
 		Validator.checkOptString(errTitle, Validator.MAX_STR, "errTitle",
 				Messages.getString("Config.error.title"));
 		Validator.checkOptString(downloadUrl, 256,
@@ -205,6 +208,15 @@ public class Config implements IValidatable {
 
 	public void setCmdLine(String cmdLine) {
 		this.cmdLine = cmdLine;
+	}
+
+	/** Relative path resolved at .exe runtime pointing to the file where to read JVM options from */
+	public String getIniFile() {
+		return iniFile;
+	}
+
+	public void setIniFile(String iniFile) {
+		this.iniFile = iniFile;
 	}
 
 	/** Optional, error message box title. */
