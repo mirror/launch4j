@@ -37,6 +37,7 @@ FILE* hLog;
 BOOL debugAll = FALSE;
 BOOL console = FALSE;
 BOOL wow64 = FALSE;
+BOOL jniHeader = FALSE;
 char oldPwd[_MAX_PATH];
 
 PROCESS_INFORMATION processInformation;
@@ -70,8 +71,9 @@ struct
 	char args[MAX_ARGS];
 } launcher;
 
-BOOL initGlobals()
+BOOL initGlobals(BOOL jni)
 {
+	jniHeader = jni;
 	hModule = GetModuleHandle(NULL);
 
 	if (hModule == NULL)
@@ -560,7 +562,7 @@ void regSearchWow(const char* keyName)
 		return;
 	}
 
-	if (wow64)
+	if (wow64 && !jniHeader)
 	{
 		regSearch(keyName, JAVA_FOUND | KEY_WOW64_64KEY);
 				
@@ -1194,9 +1196,9 @@ void setCommandLineArgs(const char *lpCmdLine)
 	}
 }
 
-int prepare(const char *lpCmdLine)
+int prepare(const char *lpCmdLine, BOOL jni)
 {
-	if (!initGlobals())
+	if (!initGlobals(jni))
 	{
 		return FALSE;
 	}
@@ -1215,6 +1217,7 @@ int prepare(const char *lpCmdLine)
 		return FALSE;
 	}
 
+	debug("JNI:\t\t%s\n", jniHeader ? "Yes" : "No");
     setWow64Flag();
 
 	// Set default error message, title and optional support web site url.
@@ -1389,7 +1392,8 @@ BOOL isJavaVersionGood(const char *version, BOOL is64Bit)
 {
 	BOOL result = (!*search.javaMinVer || strcmp(version, search.javaMinVer) >= 0)
 		&& (!*search.javaMaxVer || strcmp(version, search.javaMaxVer) <= 0)
-		&& (!search.requires64Bit || is64Bit);
+		&& (!search.requires64Bit || is64Bit)
+		&& (!jniHeader || !is64Bit);
 	debug("Version string: %s / %s-Bit (%s)\n", version, is64Bit ? "64" : "32", result ? "OK" : "Ignore");
 	return result;
 }
@@ -1399,9 +1403,9 @@ BOOL isJavaVersionGood(const char *version, BOOL is64Bit)
  */
 BOOL isPathJavaVersionGood(const char *path)
 {
-	if (!*search.javaMinVer && !search.requires64Bit)
+	if (!(*search.javaMinVer || search.requires64Bit || jniHeader))
 	{
-		debug("Skip check:\tMinimum version and requires 64-bit not defined => not checking launcher version.\n");
+		debug("Skip check:\tMinimum version / requires 64-bit / jni flag not defined => skip launcher version check.\n");
 		return TRUE;
 	}
 	

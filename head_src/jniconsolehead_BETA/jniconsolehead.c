@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 		cmdLine = "";
 	}
 
-	int result = prepare(cmdLine);
+	int result = prepare(cmdLine, TRUE);
 
 	if (result == ERROR_ALREADY_EXISTS)
 	{

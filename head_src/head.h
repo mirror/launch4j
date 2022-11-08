@@ -84,7 +84,7 @@
 
 typedef void (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
-BOOL initGlobals();
+BOOL initGlobals(BOOL jni);
 FILE* openLogFile(const char* exePath, const int pathLen);
 void closeLogFile();
 BOOL initializeLogging(const char *lpCmdLine, const char* exePath, const int pathLen);
@@ -122,7 +122,7 @@ BOOL appendJreBinToPathVar();
 void setEnvironmentVariables(const char *exePath, const int pathLen);
 void setMainClassAndClassPath(const char *exePath, const int pathLen);
 void setCommandLineArgs(const char *lpCmdLine);
-int prepare(const char *lpCmdLine);
+int prepare(const char *lpCmdLine, BOOL jni);
 void closeProcessHandles();
 BOOL execute(const BOOL wait, DWORD *dwExitCode);
 const char* getJavaHome();
