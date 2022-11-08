@@ -929,6 +929,7 @@ BOOL pathJreSearch(const char *exePath, const int pathLen)
     		{
     			// Relative
     			strncpy(launcher.cmd, exePath, pathLen);
+				launcher.cmd[pathLen] = 0;
     			appendPath(launcher.cmd, pathNoBin);
     		}
 
