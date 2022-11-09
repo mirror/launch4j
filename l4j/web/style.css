@@ -23,6 +23,9 @@ pre {
 .attrib {
 	color: #404040;
 }
+.warn {
+    color: red;
+}
 .option {
 	font-family: "Courier New", Courier, monospace;
 	font-weight: bold;
