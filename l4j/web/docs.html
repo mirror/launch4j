@@ -26,7 +26,18 @@ Launch4j requires an xml configuration file for each output executable.
 You can create and edit it conveniently using the graphic user
 interface or your favorite editor. Alternatively it's possible to pass
 all of the configuration parameters through the Ant task. All files
-may be absolute paths or relative to the configuration file path.
+may be absolute paths or relative to the configuration file path.<br />
+<strong class="warn">Launch4j 3.50</strong> Configuration changes:
+<ul>
+  <li>Removed <em>&lt;bundledJreAsFallback&gt;</em>, path search is always first and registry search second
+  in order to improve compatibility with modern runtimes.</li>
+  <li>Replaced <em>&lt;bundledJre64Bit&gt;</em> and <em>&lt;runtimeBits&gt;</em> with <em>&lt;requires64Bit&gt;</em>
+   which works during path and registry search.</li>
+  <li>Replaced <em>&lt;jdkPreference&gt;</em> with <em>&lt;requiresJdk&gt;</em> which works during path and registry search.</li>
+  <li>Replaced <em>&lt;bundledJreErr&gt;</em> with <em>&lt;jreNotFoundErr&gt;</em>.
+  <li><em>&lt;minVersion&gt;</em> and <em>&lt;maxVersion&gt;</em> are now used during path and registry search, previously
+  they were only checked during registry search.</li>
+</ul>
 
 <pre>
 &lt;!--
@@ -332,21 +343,18 @@ may be absolute paths or relative to the configuration file path.
 <blockquote>
 	<dl>
 		<dt>&lt;requiresJdk&gt;</dt>
-		<dd>Optional, defaults to preferJre; Allows you to specify a preference
-			for a public JRE or a private JDK runtime. Valid values are:
-			<strong>TODO</strong>
+		<dd>Optional, defaults to false. When true only a JDK will be used for execution.<br />
+		<strong class="warn">Launch4j 3.50</strong> An additional check will be performed if javac is available
+		during path and registry search.
 		</dd>
 	</dl>
 </blockquote>
 <blockquote>
 	<dl>
 		<dt>&lt;requires64Bit&gt;</dt>
-		<dd>Optional, defaults to false which limits the calculated heap size to the 32-bit maximum.
-			Set to true in order to use the available memory without this limit. This option works 
-			in combination with the HeapSize and HeapPercent options only if the found JRE is a bundled one.
-			In the standard JRE search based on registry the wrapper detects the type of JRE itself
-			and uses the 32-bit heap limit when needed. 
-			<strong>TODO</strong>
+		<dd>Optional, defaults to false. True limits the runtimes to 64-Bit only, false will use
+		64-Bit or 32-Bit depending on which is found.<br />
+		<strong class="warn">Launch4j 3.50</strong> This option works with path and registry search.
 		</dd>
 	</dl>
 </blockquote>
@@ -355,7 +363,9 @@ may be absolute paths or relative to the configuration file path.
 		<dt>HeapSize, HeapPercent</dt>
 		<dd>If size and percent are specified, then the setting which yields
 			more memory will be chosen at runtime. In other words, setting both values
-			means: percent of available memory no less than size in MB.
+			means: percent of available memory no less than size in MB.<br />
+			<strong class="warn">Launch4j 3.50</strong> If the runtime is 32-Bit then a 32-Bit limit
+			will be imposed even if more memory is available during path and registry search.
 		</dd>
 	</dl>
 	<blockquote>
