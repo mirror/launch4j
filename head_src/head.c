@@ -935,9 +935,10 @@ BOOL pathJreSearch(const char *exePath, const int pathLen)
     			appendPath(launcher.cmd, pathNoBin);
     		}
 
-			if (isLauncherPathValid(launcher.cmd) && isPathJavaVersionGood(launcher.cmd))
+			BOOL is64Bit;
+			if (isLauncherPathValid(launcher.cmd) && isPathJavaVersionGood(launcher.cmd, &is64Bit))
     		{
-                search.foundJava = search.requires64Bit ? JAVA_FOUND | KEY_WOW64_64KEY : JAVA_FOUND;
+                search.foundJava = is64Bit ? JAVA_FOUND | KEY_WOW64_64KEY : JAVA_FOUND;
     			strcpy(search.foundJavaHome, launcher.cmd);
     			return TRUE;
     		}
@@ -1387,7 +1388,6 @@ BOOL CreateChildProcess(char *cmdline, HANDLE outputWr)
 	return bSuccess;
 }
 
-/* return TRUE if version string is >= min and <= max, FALSE otherwise. */ 
 BOOL isJavaVersionGood(const char *version, BOOL is64Bit)
 {
 	BOOL result = (!*search.javaMinVer || strcmp(version, search.javaMinVer) >= 0)
@@ -1401,19 +1401,13 @@ BOOL isJavaVersionGood(const char *version, BOOL is64Bit)
 /*
  * Run <path>/bin/java(w) -version. Return TRUE if version is good.
  */
-BOOL isPathJavaVersionGood(const char *path)
+BOOL isPathJavaVersionGood(const char *path, BOOL *is64Bit)
 {
-	if (!(*search.javaMinVer || search.requires64Bit || jniHeader))
-	{
-		debug("Skip check:\tMinimum version / requires 64-bit / jni flag not defined => skip launcher version check.\n");
-		return TRUE;
-	}
-	
 	SECURITY_ATTRIBUTES saAttr;
 	HANDLE outputRd = NULL;
 	HANDLE outputWr = NULL;
 
-	debugAll("Check Java Version: %s min=%s max=%S\n", path, search.javaMinVer, search.javaMaxVer);
+	debugAll("Check Java Version: %s min=%s max=%s\n", path, search.javaMinVer, search.javaMaxVer);
 
 	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
 	saAttr.bInheritHandle = TRUE;
@@ -1446,14 +1440,13 @@ BOOL isPathJavaVersionGood(const char *path)
 		return FALSE;
 	}
 	char version[STR] = {0}, formattedVersion[STR] = {0};
-	BOOL is64Bit;
-	getVersionFromOutput(outputRd, version, sizeof(version), &is64Bit);
+	
+	getVersionFromOutput(outputRd, version, sizeof(version), is64Bit);
 	CloseHandle(outputRd);
 	if (*version != '\0')
 	{
 		formatJavaVersion(formattedVersion, version);
-		return isJavaVersionGood(formattedVersion, is64Bit);
+		return isJavaVersionGood(formattedVersion, *is64Bit);
 	}
 	return FALSE;
 }
-
