@@ -52,12 +52,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
-import foxtrot.Task;
-import foxtrot.Worker;
 import net.sf.launch4j.Builder;
 import net.sf.launch4j.BuilderException;
 import net.sf.launch4j.ExecException;
@@ -72,7 +71,7 @@ import net.sf.launch4j.config.ConfigPersister;
 import net.sf.launch4j.config.ConfigPersisterException;
 
 /**
- * @author Copyright (C) 2005 Grzegorz Kowal
+ * @author Copyright (C) 2022 Grzegorz Kowal
  */
 public class MainFrame extends JFrame {
 	private static MainFrame _instance;
@@ -313,9 +312,11 @@ public class MainFrame extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			try {
 				getGlassPane().setVisible(true);
-				Worker.post(new Task() {
-					public Object run() throws ExecException {
-						Log log = Log.getSwingLog(_configForm.getLogTextArea());
+				new SwingWorker<Boolean, Boolean>() {
+		            @Override
+		            protected Boolean doInBackground() throws ExecException
+		            {
+		            	Log log = Log.getSwingLog(_configForm.getLogTextArea());
 						log.clear();
 						String path = _outfile.getPath();
 						if (Util.WINDOWS_OS) {
@@ -326,9 +327,9 @@ public class MainFrame extends JFrame {
 									+ path);
 							Util.exec(new String[] { "java", "-jar", path }, log);
 						}
-						return null;
-					}
-				});
+		            	return true;
+		            }
+				}.execute();
 			} catch (Exception ex) {
 				// XXX errors logged by exec
 			} finally {
