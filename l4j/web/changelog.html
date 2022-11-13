@@ -1,9 +1,19 @@
 <h2>Changelog</h2>
 
+<h4>Changes in version 3.50 (13-11-2022)</h4>
+<ul class="changes">
+	<li>Ticket #218, #222 Support min/max version check during path search (Barry McGillin, Han Shum).</li>
+	<li>Ticket #224 Setting multiple relative paths for bundled JREs is not working (Wladimir Leite).</li>
+	<li>Simplified and consistent configuration for finding 64-Bit runtimes and JDKs during path and registry search.</li>
+	<li>Path is now the primary search, registry secondary for better compatibility with latest runtimes.</li>
+	<li class="warn"><strong>Please see the docs regarding configuration changes.</strong></li>
+</ul>
+
 <h4>Changes in version 3.14 (07-03-2021)</h4>
 <ul class="changes">
 	<li>Updated dependencies and switched to Java 1.8.</li>
 	<li>Ticket #120 Switched to FlatLaf and removed WindowsLookAndFeel for multi-platform compatibility.</li>
+	<li>Ticket #211 Fixed JNI header missing file.</li>
 </ul>
 
 <h4>Changes in version 3.13 (03-02-2021)</h4>

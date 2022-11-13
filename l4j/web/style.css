@@ -86,14 +86,14 @@ table td {
 	padding: 0;
 }
 
-
-#leftnav {
+.sidebar {
 	float: left;
 	width: 170px;
 	margin: 0;
 	padding: 0.5em;
 	background-color: #ffffff;
 }
+
 #leftnav ul {
 	margin: 0;
 	padding: 0;
