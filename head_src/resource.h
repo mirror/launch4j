@@ -64,6 +64,7 @@
 #define MAX_HEAP_PERCENT			28
 #define REQUIRES_64_BIT		 		29
 #define RESTART_ON_CRASH			31
+#define INI_FILE				    33
 
 #define STARTUP_ERR					101
 #define JRE_NOT_FOUND_ERR			102

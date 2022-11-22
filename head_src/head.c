@@ -788,8 +788,12 @@ void setJvmOptions(char *jvmOptions, const char *exePath)
 	 * # starts an inline comment
 	 */
 	char iniFilePath[_MAX_PATH] = {0};
-	strncpy(iniFilePath, exePath, strlen(exePath) - 3);
-	strcat(iniFilePath, "l4j.ini");
+	loadString(INI_FILE, iniFilePath);
+	if (strlen(iniFilePath) == 0)
+	{
+	    strncpy(iniFilePath, exePath, strlen(exePath) - 3);
+	    strcat(iniFilePath, "l4j.ini");
+	}
 	long hFile;
 
 	if ((hFile = _open(iniFilePath, _O_RDONLY)) != -1)

@@ -101,6 +101,7 @@ public class RcBuilder {
 	public static final int MAX_HEAP_PERCENT = 28;
 	public static final int REQUIRES_64_BIT = 29;
 	public static final int RESTART_ON_CRASH = 31;
+	public static final int INI_FILE = 33;
 
 	public static final int STARTUP_ERR = 101;
 	public static final int JRE_NOT_FOUND_ERR = 102;
@@ -137,6 +138,7 @@ public class RcBuilder {
 		addTrue(GUI_HEADER_STAYS_ALIVE, c.isStayAlive());
 		addTrue(RESTART_ON_CRASH, c.isRestartOnCrash());
 		addSplash(c.getSplash());
+		addText(INI_FILE, c.getIniFile());
 		addMessages(c);
 
 		if (c.getSingleInstance() != null) {
