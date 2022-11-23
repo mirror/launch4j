@@ -775,7 +775,7 @@ void appendHeapSize(char *dst, const int megabytesID, const int percentID,
 	}
 }
 
-void setJvmOptions(char *jvmOptions, const char *exePath)
+void setJvmOptions(char *jvmOptions, const char *exePath, int pathLen)
 {
 	if (loadString(JVM_OPTIONS, jvmOptions))
 	{
@@ -787,13 +787,22 @@ void setJvmOptions(char *jvmOptions, const char *exePath)
 	 * Options are separated by spaces or CRLF
 	 * # starts an inline comment
 	 */
+	char iniFileName[_MAX_PATH] = {0};
 	char iniFilePath[_MAX_PATH] = {0};
-	loadString(INI_FILE, iniFilePath);
-	if (strlen(iniFilePath) == 0)
+	loadString(INI_FILE, iniFileName);
+	if (strlen(iniFileName) == 0)
 	{
+            // default behaviour: program.l4j.ini (located in same directory as program.exe)
 	    strncpy(iniFilePath, exePath, strlen(exePath) - 3);
 	    strcat(iniFilePath, "l4j.ini");
 	}
+        else
+        {
+            // if overriden: any file name (or relative path with backslashes…),
+            // resolved from the same directory as the exe file
+	    strncpy(iniFilePath, exePath, pathLen);
+            appendPath(iniFilePath, iniFileName);
+        }
 	long hFile;
 
 	if ((hFile = _open(iniFilePath, _O_RDONLY)) != -1)
@@ -1259,7 +1268,7 @@ int prepare(const char *lpCmdLine, BOOL jni)
 	appendHeapSizes(launcher.args);
 
 	char jvmOptions[MAX_ARGS] = {0};
-	setJvmOptions(jvmOptions, exePath);
+	setJvmOptions(jvmOptions, exePath, pathLen);
 	expandVars(launcher.args, jvmOptions, exePath, pathLen);
 	setMainClassAndClassPath(exePath, pathLen);
 	setCommandLineArgs(lpCmdLine);
