@@ -26,7 +26,6 @@ public abstract class BasicForm extends JPanel
    protected final JButton _jarButton = new JButton();
    protected final JButton _iconButton = new JButton();
    protected final JLabel _cmdLineLabel = new JLabel();
-   protected final JLabel _iniFileLabel = new JLabel();
    protected final JLabel _optionsLabel = new JLabel();
    protected final JLabel _chdirLabel = new JLabel();
    protected final JLabel _processPriorityLabel = new JLabel();
@@ -35,7 +34,6 @@ public abstract class BasicForm extends JPanel
    protected final JRadioButton _idlePriorityRadio = new JRadioButton();
    protected final JRadioButton _highPriorityRadio = new JRadioButton();
    protected final JTextField _cmdLineField = new JTextField();
-   protected final JTextField _iniFileField = new JTextField();
    protected final JTextField _chdirField = new JTextField();
    protected final JTextField _iconField = new JTextField();
    protected final JCheckBox _dontWrapJarCheck = new JCheckBox();
@@ -51,6 +49,8 @@ public abstract class BasicForm extends JPanel
    protected final JButton _manifestButton = new JButton();
    protected final JCheckBox _stayAliveCheck = new JCheckBox();
    protected final JCheckBox _restartOnCrashCheck = new JCheckBox();
+   protected final JLabel _iniFileLabel = new JLabel();
+   protected final JTextField _iniFileField = new JTextField();
 
    /**
     * Default constructor
@@ -130,7 +130,7 @@ public abstract class BasicForm extends JPanel
    public JPanel createPanel()
    {
       JPanel jpanel1 = new JPanel();
-      FormLayout formlayout1 = new FormLayout("FILL:7DLU:NONE,RIGHT:MAX(65DLU;DEFAULT):NONE,FILL:3DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:GROW(1.0),FILL:3DLU:NONE,FILL:26PX:NONE,FILL:7DLU:NONE","CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE");
+      FormLayout formlayout1 = new FormLayout("FILL:7DLU:NONE,RIGHT:MAX(65DLU;DEFAULT):NONE,FILL:3DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:DEFAULT:NONE,FILL:7DLU:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:GROW(1.0),FILL:3DLU:NONE,FILL:26PX:NONE,FILL:7DLU:NONE","CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:3DLU:NONE,CENTER:DEFAULT:NONE,CENTER:9DLU:NONE");
       CellConstraints cc = new CellConstraints();
       jpanel1.setLayout(formlayout1);
 
@@ -165,11 +165,6 @@ public abstract class BasicForm extends JPanel
       _cmdLineLabel.setToolTipText("");
       jpanel1.add(_cmdLineLabel,cc.xy(2,14));
 
-      _iniFileLabel.setName("iniFileLabel");
-      _iniFileLabel.setText(Messages.getString("iniFile"));
-      _iniFileLabel.setToolTipText("");
-      jpanel1.add(_iniFileLabel,cc.xy(2,16));
-
       _optionsLabel.setName("optionsLabel");
       _optionsLabel.setText(Messages.getString("options"));
       jpanel1.add(_optionsLabel,cc.xy(2,20));
@@ -203,10 +198,6 @@ public abstract class BasicForm extends JPanel
       _cmdLineField.setName("cmdLineField");
       _cmdLineField.setToolTipText(Messages.getString("cmdLineTip"));
       jpanel1.add(_cmdLineField,cc.xywh(4,14,7,1));
-
-      _iniFileField.setName("iniFileField");
-      _iniFileField.setToolTipText(Messages.getString("iniFileTip"));
-      jpanel1.add(_iniFileField,cc.xywh(4,16,7,1));
 
       _chdirField.setName("chdirField");
       _chdirField.setToolTipText(Messages.getString("chdirTip"));
@@ -277,6 +268,14 @@ public abstract class BasicForm extends JPanel
       _restartOnCrashCheck.setText(Messages.getString("restartOnCrash"));
       _restartOnCrashCheck.setToolTipText(Messages.getString("restartOnCrashToolTip"));
       jpanel1.add(_restartOnCrashCheck,cc.xywh(4,22,7,1));
+
+      _iniFileLabel.setName("iniFileLabel");
+      _iniFileLabel.setText(Messages.getString("iniFile"));
+      jpanel1.add(_iniFileLabel,cc.xy(2,16));
+
+      _iniFileField.setName("iniFileField");
+      _iniFileField.setToolTipText(Messages.getString("iniFileTip"));
+      jpanel1.add(_iniFileField,cc.xywh(4,16,7,1));
 
       addFillComponents(jpanel1,new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13 },new int[]{ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31 });
       return jpanel1;
