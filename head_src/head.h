@@ -109,7 +109,7 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
 void appendHeapSizes(char *dst);
 void appendHeapSize(char *dst, const int megabytesID, const int percentID,
 		const DWORDLONG availableMemory, const char *option);
-void setJvmOptions(char *jvmOptions, const char *exePath);
+void setJvmOptions(char *jvmOptions, const char *exePath, int pathLen);
 BOOL createMutex();
 void setWorkingDirectory(const char *exePath, const int pathLen);
 void removeChar(char *src, const char toRemove);

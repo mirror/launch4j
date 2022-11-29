@@ -792,17 +792,17 @@ void setJvmOptions(char *jvmOptions, const char *exePath, int pathLen)
 	loadString(INI_FILE, iniFileName);
 	if (strlen(iniFileName) == 0)
 	{
-            // default behaviour: program.l4j.ini (located in same directory as program.exe)
+        // default behaviour: program.l4j.ini (located in same directory as program.exe)
 	    strncpy(iniFilePath, exePath, strlen(exePath) - 3);
 	    strcat(iniFilePath, "l4j.ini");
 	}
-        else
-        {
-            // if overriden: any file name (or relative path with backslashes…),
-            // resolved from the same directory as the exe file
-	    strncpy(iniFilePath, exePath, pathLen);
-            appendPath(iniFilePath, iniFileName);
-        }
+	else
+	{
+		// if overriden: any file name (or relative path with backslashes…),
+		// resolved from the same directory as the exe file
+		strncpy(iniFilePath, exePath, pathLen);
+		appendPath(iniFilePath, iniFileName);
+	}
 	long hFile;
 
 	if ((hFile = _open(iniFilePath, _O_RDONLY)) != -1)
